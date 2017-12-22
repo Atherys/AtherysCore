@@ -1,6 +1,7 @@
 package com.atherys.core.database.impl;
 
 import com.atherys.core.AtherysCore;
+import com.atherys.core.database.api.Database;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -8,7 +9,7 @@ import com.mongodb.client.MongoDatabase;
 
 import java.util.Arrays;
 
-public class MongoCoreDatabase {
+public class MongoCoreDatabase implements Database<MongoDatabase> {
 
     private static MongoCoreDatabase instance = new MongoCoreDatabase();
 
@@ -21,6 +22,7 @@ public class MongoCoreDatabase {
         db = client.getDatabase( AtherysCore.getConfig().mongoDatabase );
     }
 
+    @Override
     public MongoDatabase getDatabase() {
         return db;
     }

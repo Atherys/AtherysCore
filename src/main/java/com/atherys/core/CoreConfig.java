@@ -13,22 +13,22 @@ import java.io.IOException;
 @ConfigSerializable
 public final class CoreConfig {
 
-    @Setting
+    @Setting( value = "database.host" )
     public String mongoHost = "localhost";
 
-    @Setting
+    @Setting( value = "database.port" )
     public int mongoPort = 27017;
 
-    @Setting
+    @Setting( value = "database.database" )
     public String mongoDatabase = "core_Database";
 
-    @Setting
+    @Setting( value = "database.user_database" )
     public String mongoUserDB = "user_database";
 
-    @Setting
+    @Setting( value = "database.username" )
     public String mongoUsername = "username";
 
-    @Setting
+    @Setting( value = "database.password" )
     public String mongoPassword = "password";
 
     private ObjectMapper<CoreConfig>.BoundInstance configMapper;
