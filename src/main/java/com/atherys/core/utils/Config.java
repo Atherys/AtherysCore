@@ -12,6 +12,8 @@ import java.io.IOException;
 
 public abstract class Config {
 
+    private boolean firstTime = true;
+
     private ObjectMapper<Config>.BoundInstance configMapper;
     protected ConfigurationLoader<CommentedConfigurationNode> loader;
 
@@ -30,13 +32,10 @@ public abstract class Config {
             } else {
                 throw new IOException("Failed to create config directory/file.");
             }
-
-            this.save();
         } else {
+            firstTime = false;
             this.loader = HoconConfigurationLoader.builder().setPath( workingDir.toPath() ).build();
         }
-
-        this.load();
     }
 
     public void save() {
@@ -57,4 +56,7 @@ public abstract class Config {
         }
     }
 
+    public boolean isDefault() {
+        return firstTime;
+    }
 }

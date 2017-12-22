@@ -47,11 +47,12 @@ public class AtherysCore {
             return;
         }
 
-        if ( config.defaultConfig ) {
+        if ( config.isDefault() ) {
+            config.save();
             logger.error( "AtherysCore config set to default. Plugin will halt. Please modify defaultConfig in config.conf to 'false' once non-default values have been inserted." );
             init = false;
             return;
-        }
+        } else config.load();
 
         init = true;
     }
