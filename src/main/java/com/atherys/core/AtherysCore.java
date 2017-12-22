@@ -2,7 +2,6 @@ package com.atherys.core;
 
 import com.atherys.core.party.PartyManager;
 import com.atherys.core.party.commands.PartyCommand;
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
@@ -13,7 +12,7 @@ import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 
 import javax.inject.Inject;
-import java.io.File;
+
 import java.io.IOException;
 
 import static com.atherys.core.AtherysCore.*;
@@ -39,26 +38,13 @@ public class AtherysCore {
     private static CoreConfig config;
 
     private void init() {
-        File workingDir = new File( directory + "/config.conf" );
-        if ( !workingDir.exists() ) {
-            try {
-                if ( workingDir.mkdirs() && workingDir.createNewFile() ) {
-                    config = new CoreConfig(HoconConfigurationLoader.builder().setPath(workingDir.toPath()).build());
-                    config.save();
-                    config.load();
-                } else {
-                    logger.error("Failed to create config directory/file without exception. ");
-                    init = false;
-                    return;
-                }
-            } catch (IOException e) {
-                logger.error("Failed to create config directory/file with exception: ");
-                e.printStackTrace();
-                init = false;
-                return;
-            }
+        try {
+            config = new CoreConfig();
+        } catch (IOException e) {
+            e.printStackTrace();
+            init = false;
+            return;
         }
-
         init = true;
     }
 
@@ -104,5 +90,9 @@ public class AtherysCore {
 
     public static CoreConfig getConfig() {
         return config;
+    }
+
+    public String getWorkingDirectory() {
+        return directory;
     }
 }
