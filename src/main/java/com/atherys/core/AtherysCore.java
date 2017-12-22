@@ -39,11 +39,6 @@ public class AtherysCore {
     private static CoreConfig config;
 
     private void init() {
-        init = true;
-    }
-
-    private void start() {
-
         File workingDir = new File( directory + "/config.conf" );
         if ( !workingDir.exists() ) {
             try {
@@ -52,15 +47,22 @@ public class AtherysCore {
                     config.save();
                     config.load();
                 } else {
-                    logger.error("Failed to create config directory. ");
+                    logger.error("Failed to create config directory/file without exception. ");
+                    init = false;
                     return;
                 }
             } catch (IOException e) {
-                logger.error("Failed to create config directory. ");
+                logger.error("Failed to create config directory/file with exception: ");
                 e.printStackTrace();
+                init = false;
                 return;
             }
         }
+
+        init = true;
+    }
+
+    private void start() {
 
         PartyManager.getInstance().loadAll();
 
