@@ -19,7 +19,7 @@ public abstract class Config {
 
         File workingDir = new File( directory + "/config.conf" );
         if ( !workingDir.exists() ) {
-            if ( workingDir.mkdirs() && workingDir.createNewFile() ) {
+            if ( workingDir.getParentFile().mkdirs() && workingDir.createNewFile() ) {
                 this.loader = HoconConfigurationLoader.builder().setPath(workingDir.toPath()).build();
             } else {
                 throw new IOException("Failed to create config directory/file.");
