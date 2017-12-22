@@ -40,19 +40,28 @@ public final class PartyManager extends MongoDatabaseManager<Party> {
 
     @Override
     protected boolean fromDocument ( Document doc ) {
+        // get uuid of party
         UUID partyUUID = doc.get( "uuid", UUID.class );
+        // create new party from uuid, is not added to playerPartyMap
         Party party = new Party ( partyUUID );
 
+        // get leader UUID
         UUID leaderUUID = doc.get( "leader", UUID.class );
+        // get leader User from UUID
         Optional<? extends User> leader = UserUtils.getUser( leaderUUID );
-        if ( leader.isPresent() ) {
-            party.addPlayer( leader.get() );
-            party.setLeader( leader.get() );
-        } else return false;
+        // if leader User is not present, there is no point in proceeding, party will not be loaded and will effectively be removed.
+        if ( !leader.isPresent() ) return false;
 
+        // otherwise, set the leader of the party
+        party.setLeader( leader.get() );
+
+        // load the rest of the members
         List<UUID> members = doc.get( "members", List.class );
-        members.forEach( uuid -> UserUtils.getUser( uuid ).ifPresent(party::addPlayer) );
 
+        // add the party to the playerPartyMap
+        addParty( party, leaderUUID, members );
+
+        // if the members of the party are 1 or less ( 0 ), remove the party as there is no point in a 1-player party. Otherwise, count the party as properly loaded.
         if ( party.getMembers().size() <= 1 ) {
             party.remove();
             return false;
@@ -161,6 +170,13 @@ public final class PartyManager extends MongoDatabaseManager<Party> {
     public void addParty ( Party party, User... members ) {
         for ( User user : members ) {
             setPlayerParty ( user, party );
+        }
+    }
+
+    private void addParty ( Party party, UUID leader, List<UUID> members ) {
+        playerPartyMap.put( leader, party );
+        for ( UUID uuid : members ) {
+            playerPartyMap.put( uuid, party );
         }
     }
 
