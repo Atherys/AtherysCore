@@ -17,6 +17,12 @@ public abstract class Config {
 
     protected Config( String directory ) throws IOException {
 
+        try {
+            this.configMapper = ObjectMapper.forObject(this);
+        } catch (ObjectMappingException e) {
+            e.printStackTrace();
+        }
+
         File workingDir = new File( directory + "/config.conf" );
         if ( !workingDir.exists() ) {
             if ( workingDir.getParentFile().mkdirs() && workingDir.createNewFile() ) {
@@ -28,12 +34,6 @@ public abstract class Config {
             this.save();
         } else {
             this.loader = HoconConfigurationLoader.builder().setPath( workingDir.toPath() ).build();
-        }
-
-        try {
-            this.configMapper = ObjectMapper.forObject(this);
-        } catch (ObjectMappingException e) {
-            e.printStackTrace();
         }
 
         this.load();
