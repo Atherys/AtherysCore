@@ -45,18 +45,21 @@ public class AtherysCore {
     private void start() {
 
         File workingDir = new File( directory + "/config.conf" );
-        try {
-            if ( workingDir.mkdirs() && workingDir.createNewFile() ) {
-                config = new CoreConfig( HoconConfigurationLoader.builder().setPath( workingDir.toPath() ).build() );
-                config.load();
-            } else {
-                logger.error( "Failed to create config directory. ");
+        if ( !workingDir.exists() ) {
+            try {
+                if ( workingDir.mkdirs() && workingDir.createNewFile() ) {
+                    config = new CoreConfig(HoconConfigurationLoader.builder().setPath(workingDir.toPath()).build());
+                    config.save();
+                    config.load();
+                } else {
+                    logger.error("Failed to create config directory. ");
+                    return;
+                }
+            } catch (IOException e) {
+                logger.error("Failed to create config directory. ");
+                e.printStackTrace();
                 return;
             }
-        } catch (IOException e) {
-            logger.error( "Failed to create config directory. ");
-            e.printStackTrace();
-            return;
         }
 
         PartyManager.getInstance().loadAll();
