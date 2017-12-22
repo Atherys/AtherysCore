@@ -19,7 +19,7 @@ public final class CoreConfig extends Config {
     @Setting( value = "dbDatabase", comment = "The name of the database A'therys Core will use." )
     public String mongoDatabase = "core_Database";
 
-    @Setting( value = "dbUser_database", comment = "The name of the user database which A'therys Core will reference for authentication." )
+    @Setting( value = "dbUserDatabase", comment = "The name of the user database which A'therys Core will reference for authentication." )
     public String mongoUserDB = "user_Database";
 
     @Setting( value = "dbUsername", comment = "The username used for authentication." )
