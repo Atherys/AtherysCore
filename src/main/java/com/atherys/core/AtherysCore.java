@@ -45,11 +45,17 @@ public class AtherysCore {
             init = false;
             return;
         }
+
+        if ( config.defaultConfig ) {
+            logger.error( "AtherysCore config set to default. Plugin will halt. Please modify defaultConfig in config.conf to 'false' once non-default values have been inserted." );
+            init = false;
+            return;
+        }
+
         init = true;
     }
 
     private void start() {
-
         PartyManager.getInstance().loadAll();
 
         Sponge.getCommandManager().register( this, new PartyCommand().getCommandSpec(), "party" );
@@ -58,6 +64,8 @@ public class AtherysCore {
     private void stop() {
 
         PartyManager.getInstance().saveAll();
+
+        config.save();
 
     }
 

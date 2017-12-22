@@ -7,6 +7,9 @@ import java.io.IOException;
 
 public final class CoreConfig extends Config {
 
+    @Setting( value = "defaultConfig")
+    public boolean defaultConfig = true;
+
     @Setting( value = "database.host" )
     public String mongoHost = "localhost";
 

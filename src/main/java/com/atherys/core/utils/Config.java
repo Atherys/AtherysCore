@@ -34,6 +34,7 @@ public abstract class Config {
             e.printStackTrace();
         }
 
+        this.save();
         this.load();
     }
 
