@@ -47,7 +47,7 @@ public class AtherysCore {
             return;
         }
 
-        if ( config.isDefault() ) {
+        if ( config.isDefault() || config.defaultConfig ) {
             config.save();
             logger.error( "AtherysCore config set to default. Plugin will halt. Please modify defaultConfig in config.conf to 'false' once non-default values have been inserted." );
             init = false;
