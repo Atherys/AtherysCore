@@ -64,11 +64,7 @@ public class AtherysCore {
     }
 
     private void stop() {
-
         PartyManager.getInstance().saveAll();
-
-        config.save();
-
     }
 
     @Listener

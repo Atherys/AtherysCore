@@ -16,6 +16,7 @@ public final class CoreConfig extends Config {
 
     @ConfigSerializable
     public class Database {
+
         @Setting(value = "host", comment = "The host ip address of the MongoDB Database.")
         public String mongoHost = "localhost";
 
@@ -33,6 +34,7 @@ public final class CoreConfig extends Config {
 
         @Setting(value = "password", comment = "The password used for authentication.")
         public String mongoPassword = "password";
+
     }
 
     public CoreConfig() throws IOException {
