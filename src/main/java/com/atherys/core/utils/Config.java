@@ -24,6 +24,8 @@ public abstract class Config {
             } else {
                 throw new IOException("Failed to create config directory/file.");
             }
+
+            this.save();
         } else {
             this.loader = HoconConfigurationLoader.builder().setPath( workingDir.toPath() ).build();
         }
@@ -34,7 +36,6 @@ public abstract class Config {
             e.printStackTrace();
         }
 
-        this.save();
         this.load();
     }
 
