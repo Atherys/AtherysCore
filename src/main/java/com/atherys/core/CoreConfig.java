@@ -3,35 +3,13 @@ package com.atherys.core;
 import com.atherys.core.utils.PluginConfig;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public final class CoreConfig extends PluginConfig {
 
     @Setting( value = "defaultConfig", comment = "Whether or not this is the default config. If this is set to true, the plugin will not start.")
     public boolean DEFAULT = true;
-
-    @Setting( value = "catalogueListTest" )
-    public List<ItemType> test = new ArrayList<>();
-    {
-        test.add(ItemTypes.ACACIA_BOAT);
-        test.add(ItemTypes.APPLE);
-        test.add(ItemTypes.BLACK_SHULKER_BOX);
-    }
-
-    @Setting( value = "catalogueMapTest")
-    public Map<String, ItemType> mapTest = new HashMap<>();
-    {
-        mapTest.put( "test1", ItemTypes.ACTIVATOR_RAIL );
-        mapTest.put( "test2", ItemTypes.ARROW );
-        mapTest.put( "test3", ItemTypes.BIRCH_FENCE );
-    }
 
     @Setting( value = "database" )
     public DatabaseConfig DATABASE = new DatabaseConfig();
