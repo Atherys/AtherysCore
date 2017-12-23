@@ -47,9 +47,6 @@ public class AtherysCore {
             return;
         }
 
-        config.test.forEach( type -> logger.info( "ItemType List Test: " + type.getName() ));
-        config.mapTest.forEach( (k,v) -> logger.info( "ItemType Map Test: " + k + " - " + v ));
-
         if ( config.DEFAULT ) {
             logger.error( "AtherysCore config set to default. Plugin will halt. Please modify defaultConfig in config.conf to 'false' once non-default values have been inserted." );
             init = false;
