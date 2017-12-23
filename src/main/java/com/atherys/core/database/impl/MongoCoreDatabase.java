@@ -17,9 +17,9 @@ public class MongoCoreDatabase implements Database<MongoDatabase> {
     private MongoDatabase db;
 
     private MongoCoreDatabase() {
-        MongoCredential credential = MongoCredential.createCredential( AtherysCore.getConfig().database.mongoUsername, AtherysCore.getConfig().database.mongoUserDB, AtherysCore.getConfig().database.mongoPassword.toCharArray() );
-        client = new MongoClient( new ServerAddress( AtherysCore.getConfig().database.mongoHost, AtherysCore.getConfig().database.mongoPort ), Arrays.asList(credential) );
-        db = client.getDatabase( AtherysCore.getConfig().database.mongoDatabase );
+        MongoCredential credential = MongoCredential.createCredential( AtherysCore.getConfig().DATABASE.USERNAME, AtherysCore.getConfig().DATABASE.USER_DB, AtherysCore.getConfig().DATABASE.PASSWORD.toCharArray() );
+        client = new MongoClient( new ServerAddress( AtherysCore.getConfig().DATABASE.HOST, AtherysCore.getConfig().DATABASE.PORT ), Arrays.asList(credential) );
+        db = client.getDatabase( AtherysCore.getConfig().DATABASE.NAME );
     }
 
     @Override
