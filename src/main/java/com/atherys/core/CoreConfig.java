@@ -1,12 +1,12 @@
 package com.atherys.core;
 
-import com.atherys.core.utils.Config;
+import com.atherys.core.utils.PluginConfig;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
 import java.io.IOException;
 
-public final class CoreConfig extends Config {
+public final class CoreConfig extends PluginConfig {
 
     @Setting( value = "defaultConfig", comment = "Whether or not this is the default config. If this is set to true, the plugin will not start.")
     public boolean defaultConfig = true;
@@ -38,6 +38,6 @@ public final class CoreConfig extends Config {
     }
 
     public CoreConfig() throws IOException {
-        super( AtherysCore.getInstance().getWorkingDirectory() );
+        super( AtherysCore.getInstance().getWorkingDirectory(), "config.conf" );
     }
 }
