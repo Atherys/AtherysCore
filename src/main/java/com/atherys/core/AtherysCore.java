@@ -41,13 +41,14 @@ public class AtherysCore {
     private void init() {
         try {
             config = new CoreConfig();
+            config.init();
         } catch (IOException e) {
             e.printStackTrace();
             init = false;
             return;
         }
 
-        if ( config.defaultConfig ) {
+        if ( config.isDefault() ) {
             logger.error( "AtherysCore config set to default. Plugin will halt. Please modify defaultConfig in config.conf to 'false' once non-default values have been inserted." );
             init = false;
             return;
