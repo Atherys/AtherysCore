@@ -17,6 +17,8 @@ import java.io.IOException;
  */
 public abstract class PluginConfig {
 
+    private boolean useDefaults = false;
+
     private ObjectMapper<PluginConfig>.BoundInstance configMapper;
     protected ConfigurationLoader<CommentedConfigurationNode> loader;
 
@@ -37,17 +39,19 @@ public abstract class PluginConfig {
         }
 
         File configFile = new File( directory + "/" + filename );
+
         if ( !configFile.exists() ) {
             if ( configFile.getParentFile().mkdirs() && configFile.createNewFile() ) {
-                this.loader = HoconConfigurationLoader.builder().setPath( configFile.toPath() ).build();
-                this.save();
+                useDefaults = true;
             } else {
                 throw new IOException("Failed to create config directory/file.");
             }
-        } else {
-            this.loader = HoconConfigurationLoader.builder().setPath( configFile.toPath() ).build();
-            this.load();
-        }
+        } else useDefaults = false;
+
+        this.loader = HoconConfigurationLoader.builder().setPath( configFile.toPath() ).build();
+
+        if ( useDefaults ) this.save();
+        else this.load();
     }
 
     /**
