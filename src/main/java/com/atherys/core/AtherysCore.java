@@ -2,7 +2,6 @@ package com.atherys.core;
 
 import com.atherys.core.party.PartyManager;
 import com.atherys.core.party.commands.PartyCommand;
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
@@ -13,16 +12,17 @@ import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 
 import javax.inject.Inject;
-import java.io.File;
+
 import java.io.IOException;
 
 import static com.atherys.core.AtherysCore.*;
 
-@Plugin( id = ID, name = NAME, description = DESCRIPTION)
+@Plugin( id = ID, version = VERSION, name = NAME, description = DESCRIPTION)
 public class AtherysCore {
-    public static final String ID = "atherys-core";
+    public static final String ID = "atheryscore";
     public static final String NAME = "A'therys Core";
     public static final String DESCRIPTION = "The core utilities used on the A'therys Horizons server.";
+    public static final String VERSION = "1.0.0a";
 
     private static final AtherysCore instance = new AtherysCore();
 
@@ -39,40 +39,32 @@ public class AtherysCore {
     private static CoreConfig config;
 
     private void init() {
-        File workingDir = new File( directory + "/config.conf" );
-        if ( !workingDir.exists() ) {
-            try {
-                if ( workingDir.mkdirs() && workingDir.createNewFile() ) {
-                    config = new CoreConfig(HoconConfigurationLoader.builder().setPath(workingDir.toPath()).build());
-                    config.save();
-                    config.load();
-                } else {
-                    logger.error("Failed to create config directory/file without exception. ");
-                    init = false;
-                    return;
-                }
-            } catch (IOException e) {
-                logger.error("Failed to create config directory/file with exception: ");
-                e.printStackTrace();
-                init = false;
-                return;
-            }
+        try {
+            config = new CoreConfig();
+            config.init();
+        } catch (IOException e) {
+            e.printStackTrace();
+            init = false;
+            return;
+        }
+
+        if ( config.DEFAULT ) {
+            logger.error( "AtherysCore config set to default. Plugin will halt. Please modify defaultConfig in config.conf to 'false' once non-default values have been inserted." );
+            init = false;
+            return;
         }
 
         init = true;
     }
 
     private void start() {
-
         PartyManager.getInstance().loadAll();
 
         Sponge.getCommandManager().register( this, new PartyCommand().getCommandSpec(), "party" );
     }
 
     private void stop() {
-
         PartyManager.getInstance().saveAll();
-
     }
 
     @Listener
@@ -104,5 +96,9 @@ public class AtherysCore {
 
     public static CoreConfig getConfig() {
         return config;
+    }
+
+    public String getWorkingDirectory() {
+        return directory;
     }
 }

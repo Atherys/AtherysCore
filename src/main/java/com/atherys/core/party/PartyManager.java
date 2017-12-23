@@ -56,12 +56,12 @@ public final class PartyManager extends MongoDatabaseManager<Party> {
         party.setLeader( leader.get() );
 
         // load the rest of the members
-        List<UUID> members = doc.get( "members", List.class );
+        List members = doc.get( "members", List.class );
 
         // Set leader's party along with all members' parties.
         playerPartyMap.put( leaderUUID, party );
-        for ( UUID uuid : members ) {
-            playerPartyMap.put( uuid, party );
+        for ( Object uuid : members ) {
+            playerPartyMap.put( (UUID) uuid, party );
         }
 
         // if the members of the party are 1 or less ( 0 ), remove the party as there is no point in a 1-player party. Otherwise, count the party as properly loaded.

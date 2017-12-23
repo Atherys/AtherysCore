@@ -1,65 +1,43 @@
 package com.atherys.core;
 
-import ninja.leaping.configurate.SimpleConfigurationNode;
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import ninja.leaping.configurate.loader.ConfigurationLoader;
-import ninja.leaping.configurate.objectmapping.ObjectMapper;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import com.atherys.core.utils.PluginConfig;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
 import java.io.IOException;
 
-@ConfigSerializable
-public final class CoreConfig {
+public final class CoreConfig extends PluginConfig {
 
-    @Setting( value = "database.host" )
-    public String mongoHost = "localhost";
+    @Setting( value = "defaultConfig", comment = "Whether or not this is the default config. If this is set to true, the plugin will not start.")
+    public boolean DEFAULT = true;
 
-    @Setting( value = "database.port" )
-    public int mongoPort = 27017;
+    @Setting( value = "database" )
+    public DatabaseConfig DATABASE = new DatabaseConfig();
 
-    @Setting( value = "database.database" )
-    public String mongoDatabase = "core_Database";
+    @ConfigSerializable
+    public class DatabaseConfig {
 
-    @Setting( value = "database.user_database" )
-    public String mongoUserDB = "user_database";
+        @Setting(value = "host", comment = "The host ip address of the MongoDB Database.")
+        public String HOST = "localhost";
 
-    @Setting( value = "database.username" )
-    public String mongoUsername = "username";
+        @Setting(value = "port", comment = "The port on which the MongoDB Database is running.")
+        public int PORT = 27017;
 
-    @Setting( value = "database.password" )
-    public String mongoPassword = "password";
+        @Setting(value = "name", comment = "The name of the database A'therys Core will use.")
+        public String NAME = "core_Database";
 
-    private ObjectMapper<CoreConfig>.BoundInstance configMapper;
-    private ConfigurationLoader<CommentedConfigurationNode> loader;
+        @Setting(value = "userDb", comment = "The name of the user database which A'therys Core will reference for authentication.")
+        public String USER_DB = "user_Database";
 
-    public CoreConfig( ConfigurationLoader<CommentedConfigurationNode> loader ) {
-        this.loader = loader;
-        try {
-            this.configMapper = ObjectMapper.forObject(this);
-        } catch (ObjectMappingException e) {
-            e.printStackTrace();
-        }
+        @Setting(value = "username", comment = "The username used for authentication.")
+        public String USERNAME = "username";
 
-        this.load();
+        @Setting(value = "password", comment = "The password used for authentication.")
+        public String PASSWORD = "password";
+
     }
 
-    public void save() {
-        try {
-            SimpleConfigurationNode out = SimpleConfigurationNode.root();
-            this.configMapper.serialize(out);
-            this.loader.save(out);
-        } catch (ObjectMappingException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void load() {
-        try {
-            this.configMapper.populate( this.loader.load() );
-        } catch (ObjectMappingException | IOException e) {
-            e.printStackTrace();
-        }
+    public CoreConfig() throws IOException {
+        super( AtherysCore.getInstance().getWorkingDirectory(), "config.conf" );
     }
 }
