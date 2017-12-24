@@ -2,8 +2,22 @@ group 'com.atherys'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'com.bmuschko.nexus'
 
 sourceCompatibility = 1.8
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter {
+            url "http://jcenter.bintray.com/"
+        }
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3'
+    }
+}
 
 sourceSets {
     main {
@@ -16,11 +30,24 @@ sourceSets {
 
 repositories {
     mavenCentral()
-    maven { url = 'http://repo.spongepowered.org/maven' }
+    maven {
+        name = 'atherys'
+        url = 'https://nexus.atherys.com/'
+    }
+    maven {
+        name = 'sponge'
+        url = 'http://repo.spongepowered.org/maven'
+    }
 }
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT',
             'org.mongodb:mongodb-driver:3.5.0'
+}
+
+nexus {
+    sign = false
+    repositoryUrl = 'https://nexus.atherys.com/repository/maven-releases/'
+    snapshotRepositoryUrl = 'https://nexus.atherys.com/repository/maven-snapshots/'
 }
