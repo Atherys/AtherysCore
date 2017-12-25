@@ -25,7 +25,7 @@ public abstract class PluginConfig {
     /**
      * This constructor will load all serializable fields ( the ones marked with {@link Setting} and {@link ConfigSerializable}, then
      * attempt to create a HOCON file in the given directory with the given name and a {@link HoconConfigurationLoader} from that file.
-     * @param directory The directory where the config fille will be saved.
+     * @param directory The directory where the config file will be saved.
      * @param filename The name of the config file.
      * @throws IOException when either the file or the directory could not be created.
      */

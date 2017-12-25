@@ -17,6 +17,8 @@ public final class CoreConfig extends PluginConfig {
     @ConfigSerializable
     public class DatabaseConfig {
 
+        public DatabaseConfig() {}
+
         @Setting(value = "host", comment = "The host ip address of the MongoDB Database.")
         public String HOST = "localhost";
 

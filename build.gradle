@@ -31,10 +31,6 @@ sourceSets {
 repositories {
     mavenCentral()
     maven {
-        name = 'atherys'
-        url = 'https://nexus.atherys.com/'
-    }
-    maven {
         name = 'sponge'
         url = 'http://repo.spongepowered.org/maven'
     }
