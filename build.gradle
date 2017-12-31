@@ -2,21 +2,8 @@ group 'com.atherys'
 
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'com.bmuschko.nexus'
 
 sourceCompatibility = 1.8
-
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter {
-            url "http://jcenter.bintray.com/"
-        }
-    }
-    dependencies {
-        classpath 'com.bmuschko:gradle-nexus-plugin:2.3'
-    }
-}
 
 sourceSets {
     main {
@@ -41,8 +28,15 @@ dependencies {
             'org.mongodb:mongodb-driver:3.5.0'
 }
 
-nexus {
-    sign = false
-    repositoryUrl = 'https://nexus.atherys.com/repository/maven-releases/'
-    snapshotRepositoryUrl = 'https://nexus.atherys.com/repository/maven-snapshots/'
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository( url: "https://nexus.atherys.com/repository/maven-snapshots/" ) {
+                authentication( userName: "headhunter", password: "teyyTYS3nz5pfAps" )
+            }
+            pom.version = "1.0-SNAPSHOT"
+            pom.artifactId = "${rootProject.name}"
+            pom.groupId = "com.atherys"
+        }
+    }
 }
