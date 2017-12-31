@@ -34,7 +34,7 @@ uploadArchives {
             repository( url: "https://nexus.atherys.com/repository/maven-snapshots/" ) {
                 authentication( userName: "headhunter", password: "teyyTYS3nz5pfAps" )
             }
-            pom.version = "1.0-SNAPSHOT"
+            pom.version = "1.0"
             pom.artifactId = "${rootProject.name}"
             pom.groupId = "com.atherys"
         }
