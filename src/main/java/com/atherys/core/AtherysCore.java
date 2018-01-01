@@ -58,7 +58,6 @@ public class AtherysCore {
 
     private void start() {
         PartyManager.getInstance().loadAll();
-
         Sponge.getCommandManager().register( this, new PartyCommand().getCommandSpec(), "party" );
     }
 

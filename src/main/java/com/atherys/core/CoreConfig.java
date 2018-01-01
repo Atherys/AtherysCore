@@ -15,9 +15,7 @@ public final class CoreConfig extends PluginConfig {
     public DatabaseConfig DATABASE = new DatabaseConfig();
 
     @ConfigSerializable
-    public static class DatabaseConfig {
-
-        DatabaseConfig() {}
+    private static class DatabaseConfig {
 
         @Setting(value = "host", comment = "The host ip address of the MongoDB Database.")
         public String HOST = "localhost";
@@ -39,7 +37,7 @@ public final class CoreConfig extends PluginConfig {
 
     }
 
-    public CoreConfig() throws IOException {
+    CoreConfig() throws IOException {
         super( AtherysCore.getInstance().getWorkingDirectory(), "config.conf" );
     }
 }

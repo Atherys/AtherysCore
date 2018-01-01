@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT',
+    compile 'org.spongepowered:spongeapi:7.0.0',
             'org.mongodb:mongodb-driver:3.5.0'
 }
 

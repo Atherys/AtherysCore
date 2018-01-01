@@ -38,7 +38,6 @@ public class Question {
          * @return The builder for chaining.
          */
         public Builder addAnswer ( Answer answer ) {
-
             question.addAnswer( answer );
             return this;
         }
