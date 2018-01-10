@@ -23,7 +23,7 @@ public class AtherysCore {
     public static final String DESCRIPTION = "The core utilities used on the A'therys Horizons server.";
     public static final String VERSION = "1.0.1";
 
-    private static final AtherysCore instance = new AtherysCore();
+    private static AtherysCore instance;
 
     private static boolean init = false;
 
@@ -38,6 +38,8 @@ public class AtherysCore {
     private static CoreConfig config;
 
     private void init() {
+        instance = this;
+
         try {
             config = new CoreConfig();
             config.init();
