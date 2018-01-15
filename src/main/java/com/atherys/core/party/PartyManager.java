@@ -1,9 +1,8 @@
 package com.atherys.core.party;
 
-import com.atherys.core.database.impl.MongoCoreDatabase;
-import com.atherys.core.database.impl.MongoDatabaseManager;
+import com.atherys.core.database.MongoCoreDatabase;
+import com.atherys.core.database.mongo.AbstractMongoDatabaseManager;
 import com.atherys.core.utils.UserUtils;
-import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.spongepowered.api.entity.living.player.User;
 
@@ -13,21 +12,18 @@ import java.util.*;
  * The primary class responsible for tracking all parties and their members.
  * Is also responsible for saving/loading parties and their members to/from the database.
  */
-public final class PartyManager extends MongoDatabaseManager<Party> {
+public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
 
     private static final PartyManager instance = new PartyManager();
 
     private Map<UUID,Party> playerPartyMap = new HashMap<>();
 
-    private PartyManager() {}
-
-    @Override
-    protected MongoCollection<Document> collection() {
-        return MongoCoreDatabase.getInstance().getDatabase().getCollection("parties");
+    private PartyManager() {
+        super( MongoCoreDatabase.getInstance(), "parties" );
     }
 
     @Override
-    protected Document toDocument ( Party object ) {
+    protected Optional<Document> toDocument ( Party object ) {
         Document doc = new Document( "uuid", object.getUUID() );
 
         doc.append( "leader", object.getLeader().getUniqueId() );
@@ -35,11 +31,11 @@ public final class PartyManager extends MongoDatabaseManager<Party> {
         List<UUID> members = getPartyMemberUUIDs( object );
         doc.append( "members", members );
 
-        return doc;
+        return Optional.of(doc);
     }
 
     @Override
-    protected boolean fromDocument ( Document doc ) {
+    protected Optional<Party> fromDocument ( Document doc ) {
         // get uuid of party
         UUID partyUUID = doc.get( "uuid", UUID.class );
         // create new party from uuid, is not added to playerPartyMap
@@ -50,7 +46,7 @@ public final class PartyManager extends MongoDatabaseManager<Party> {
         // get leader User from UUID
         Optional<? extends User> leader = UserUtils.getUser( leaderUUID );
         // if leader User is not present, there is no point in proceeding, party will not be loaded and will effectively be removed.
-        if ( !leader.isPresent() ) return false;
+        if ( !leader.isPresent() ) return Optional.empty();
 
         // otherwise, set the leader of the party
         party.setLeader( leader.get() );
@@ -67,15 +63,14 @@ public final class PartyManager extends MongoDatabaseManager<Party> {
         // if the members of the party are 1 or less ( 0 ), remove the party as there is no point in a 1-player party. Otherwise, count the party as properly loaded.
         if ( party.getMembers().size() <= 1 ) {
             party.remove();
-            return false;
+            return Optional.empty();
         }
-        else return true;
+        else return Optional.of( party );
     }
 
     /**
      * Save all parties and their members to the database.
      */
-    @Override
     public void saveAll() {
         saveAll( getParties() );
     }
