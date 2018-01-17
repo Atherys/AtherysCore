@@ -1,5 +1,6 @@
 package com.atherys.core.party;
 
+import com.atherys.core.AtherysCore;
 import com.atherys.core.database.MongoCoreDatabase;
 import com.atherys.core.database.mongo.AbstractMongoDatabaseManager;
 import com.atherys.core.utils.UserUtils;
@@ -19,7 +20,7 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
     private Map<UUID,Party> playerPartyMap = new HashMap<>();
 
     private PartyManager() {
-        super( MongoCoreDatabase.getInstance(), "parties" );
+        super( AtherysCore.getInstance().getLogger(), MongoCoreDatabase.getInstance(), "parties" );
     }
 
     @Override
