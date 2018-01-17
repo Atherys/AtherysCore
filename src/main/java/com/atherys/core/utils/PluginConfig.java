@@ -19,7 +19,7 @@ public abstract class PluginConfig {
 
     private boolean newFile = false;
 
-    private ObjectMapper<PluginConfig>.BoundInstance configMapper;
+    protected ObjectMapper<PluginConfig>.BoundInstance configMapper;
     protected ConfigurationLoader<CommentedConfigurationNode> loader;
 
     /**
@@ -40,11 +40,11 @@ public abstract class PluginConfig {
         File configFile = new File( directory + "/" + filename );
 
         if ( !configFile.exists() ) {
-            if ( configFile.getParentFile().mkdirs() && configFile.createNewFile() ) {
-                newFile = true;
-            } else {
-                throw new IOException("Failed to create config directory/file.");
-            }
+            if ( configFile.getParentFile().mkdirs() ) {
+                if (configFile.createNewFile()) {
+                    newFile = true;
+                } else throw new IOException("Failed to create " + filename);
+            } else throw new IOException("Failed to create config directory " + directory);
         }
 
         this.loader = HoconConfigurationLoader.builder().setPath( configFile.toPath() ).build();
