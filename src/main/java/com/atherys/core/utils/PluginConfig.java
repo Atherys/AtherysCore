@@ -40,7 +40,7 @@ public abstract class PluginConfig {
         File configFile = new File( directory + "/" + filename );
 
         if ( !configFile.exists() ) {
-            if ( configFile.getParentFile().mkdirs() ) {
+            if ( configFile.getParentFile().exists() || configFile.getParentFile().mkdirs() ) {
                 if (configFile.createNewFile()) {
                     newFile = true;
                 } else throw new IOException("Failed to create " + filename);

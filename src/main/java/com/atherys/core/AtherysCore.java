@@ -79,7 +79,7 @@ public class AtherysCore {
 
     @Listener
     public void onStop (GameStoppingServerEvent event) {
-        stop();
+        if ( init ) stop();
     }
 
     public static AtherysCore getInstance() {
