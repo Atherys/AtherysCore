@@ -1,14 +1,17 @@
 package com.atherys.core.database.mongo;
 
-import com.atherys.core.AtherysCore;
 import com.atherys.core.database.api.DBObject;
 import com.atherys.core.database.api.DatabaseManager;
 import com.mongodb.bulk.BulkWriteResult;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.*;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOneModel;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.WriteModel;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.slf4j.Logger;
 
 import java.util.*;
 
@@ -18,14 +21,17 @@ import java.util.*;
  */
 public abstract class AbstractMongoDatabaseManager<T extends DBObject> implements DatabaseManager<T> {
 
+    private final Logger logger;
+
     private String collection;
     private AbstractMongoDatabase mongo;
 
     private Map<UUID,T> cache = new HashMap<>();
 
-    protected AbstractMongoDatabaseManager( AbstractMongoDatabase mongoDatabase, String collectionName ) {
+    protected AbstractMongoDatabaseManager( Logger logger, AbstractMongoDatabase mongoDatabase, String collectionName ) {
         this.collection = collectionName;
         this.mongo = mongoDatabase;
+        this.logger = logger;
     }
 
     protected Map<UUID,T> getCache() {
@@ -93,7 +99,7 @@ public abstract class AbstractMongoDatabaseManager<T extends DBObject> implement
                 int deletes = bulkWriteResult.getDeletedCount();
                 int matched = bulkWriteResult.getMatchedCount();
 
-                AtherysCore.getInstance().getLogger().info(
+                logger.info(
                         "[MongoDB] " + this.getClass().getSimpleName() + " updated " + updates.size() + " objects, " +
                                 "where " + mods + " were modified, "
                                 + inserts + " were added, "
@@ -120,7 +126,7 @@ public abstract class AbstractMongoDatabaseManager<T extends DBObject> implement
             }
         }
 
-        AtherysCore.getInstance().getLogger().info( "[MongoDB] " + this.getClass().getSimpleName() + " Loaded " + loaded + "/" + found );
+        logger.info( "[MongoDB] " + this.getClass().getSimpleName() + " Loaded " + loaded + "/" + found );
     }
 
     @Override

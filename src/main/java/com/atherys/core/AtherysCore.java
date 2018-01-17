@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
@@ -16,12 +17,12 @@ import java.io.IOException;
 
 import static com.atherys.core.AtherysCore.*;
 
-@Plugin( id = ID, version = VERSION, name = NAME, description = DESCRIPTION)
+@Plugin( id = ID, version = VERSION, name = NAME, description = DESCRIPTION )
 public class AtherysCore {
     public static final String ID = "atheryscore";
     public static final String NAME = "A'therys Core";
     public static final String DESCRIPTION = "The core utilities used on the A'therys Horizons server.";
-    public static final String VERSION = "1.0.1";
+    public static final String VERSION = "1.0.2";
 
     private static AtherysCore instance;
 
@@ -67,7 +68,7 @@ public class AtherysCore {
         PartyManager.getInstance().saveAll();
     }
 
-    @Listener
+    @Listener( order = Order.EARLY )
     public void onInit (GameInitializationEvent event) {
         init();
     }
