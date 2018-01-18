@@ -20,7 +20,7 @@ public class TempAtherysDamageCommand implements CommandExecutor {
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-        if ( !(src instanceof Player) ) {
+        if ( src instanceof Player ) {
             Optional<Player> player = args.getOne( "player" );
             Optional<AtherysDamageType> damageType = args.getOne( "type" );
             Optional<Double> amount = args.getOne( "amount" );
