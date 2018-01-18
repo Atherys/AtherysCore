@@ -1,5 +1,8 @@
 package com.atherys.core;
 
+import com.atherys.core.commands.TempAtherysDamageCommand;
+import com.atherys.core.damage.AtherysDamageType;
+import com.atherys.core.damage.AtherysDamageTypeRegistry;
 import com.atherys.core.party.PartyManager;
 import com.atherys.core.party.commands.PartyCommand;
 import org.slf4j.Logger;
@@ -56,11 +59,15 @@ public class AtherysCore {
             return;
         }
 
+        game.getRegistry().registerModule( AtherysDamageType.class, AtherysDamageTypeRegistry.getInstance() );
+
         init = true;
     }
 
     private void start() {
         PartyManager.getInstance().loadAll();
+
+        Sponge.getCommandManager().register( this, new TempAtherysDamageCommand().getSpec(), "atherysdmg" );
         Sponge.getCommandManager().register( this, new PartyCommand().getCommandSpec(), "party" );
     }
 
