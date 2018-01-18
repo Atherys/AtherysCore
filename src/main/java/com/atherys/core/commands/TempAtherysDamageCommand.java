@@ -20,9 +20,9 @@ public class TempAtherysDamageCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         if ( !(src instanceof Player) ) {
-            Optional<Player> player = args.getOne( Text.of( "player" ) );
-            Optional<AtherysDamageType> damageType = args.getOne( Text.of( "type" ) );
-            Optional<Double> amount = args.getOne( Text.of( "amount" ) );
+            Optional<Player> player = args.getOne( "player" );
+            Optional<AtherysDamageType> damageType = args.getOne( "type" );
+            Optional<Double> amount = args.getOne( "amount" );
 
             if ( !player.isPresent() || !damageType.isPresent() ) return CommandResult.empty();
 
