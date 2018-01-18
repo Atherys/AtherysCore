@@ -2,14 +2,21 @@ package com.atherys.core.damage;
 
 public final class AtherysDamageTypes {
 
+    private AtherysDamageTypes() {}
+
     // Melee
     public static final AtherysDamageType BLUNT = new AtherysDamageType( "atherys:blunt", "Blunt" );
 
-    public static final  AtherysDamageType STAB = new AtherysDamageType( "atherys:stab", "Stabbing" );
+    public static final AtherysDamageType STAB = new AtherysDamageType( "atherys:stab", "Stabbing" );
 
-    public static final  AtherysDamageType SLASH = new AtherysDamageType( "atherys:slash", "Slashing" );
+    public static final AtherysDamageType SLASH = new AtherysDamageType( "atherys:slash", "Slashing" );
 
-    public static final  AtherysDamageType UNARMED = new AtherysDamageType( "atherys:unarmed", "Unarmed" );
+    public static final AtherysDamageType UNARMED = new AtherysDamageType( "atherys:unarmed", "Unarmed" );
+
+    // Ranged
+    public static final AtherysDamageType PIERCE = new AtherysDamageType( "atherys:pierce", "Ranged" );
+
+    public static final AtherysDamageType BALLISTIC = new AtherysDamageType( "atherys:ballistic", "Ballistic" );
 
     // Magic
     public static final AtherysDamageType FIRE = new AtherysDamageType( "atherys:fire", "Fire" );
