@@ -3,6 +3,7 @@ package com.atherys.core;
 import com.atherys.core.commands.TempAtherysDamageCommand;
 import com.atherys.core.damage.AtherysDamageType;
 import com.atherys.core.damage.AtherysDamageTypeRegistry;
+import com.atherys.core.damage.AtherysDamageTypes;
 import com.atherys.core.party.PartyManager;
 import com.atherys.core.party.commands.PartyCommand;
 import org.slf4j.Logger;
@@ -59,6 +60,7 @@ public class AtherysCore {
             return;
         }
 
+        AtherysDamageType test = AtherysDamageTypes.ARCANE;
         game.getRegistry().registerModule( AtherysDamageType.class, AtherysDamageTypeRegistry.getInstance() );
 
         init = true;

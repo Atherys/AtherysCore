@@ -2,7 +2,6 @@ package com.atherys.core.damage;
 
 public final class AtherysDamageTypes {
 
-
     // Melee
     public static final AtherysDamageType BLUNT = new AtherysDamageType( "atherys:blunt", "Blunt" );
 
