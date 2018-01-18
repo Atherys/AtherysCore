@@ -2,6 +2,7 @@ package com.atherys.core.commands;
 
 import com.atherys.core.AtherysCore;
 import com.atherys.core.damage.AtherysDamageType;
+import com.atherys.core.damage.AtherysDamageTypes;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -24,11 +25,18 @@ public class TempAtherysDamageCommand implements CommandExecutor {
             Optional<AtherysDamageType> damageType = args.getOne( "type" );
             Optional<Double> amount = args.getOne( "amount" );
 
-            if ( !player.isPresent() || !damageType.isPresent() ) return CommandResult.empty();
+            if ( !damageType.isPresent() ) {
+                src.sendMessage( Text.of( "Couldn't find damage type." ) );
+            }
+
+            if ( !player.isPresent() ) {
+                src.sendMessage( Text.of( "Couldn't find target." ) );
+                return CommandResult.empty();
+            }
 
             AtherysCore.getInstance().getLogger().info( "Will do " + amount.orElse(0.0) + " of " + damageType.get().getName() + " Damage to " + player.get().getName() );
 
-            player.get().damage( amount.orElse(0.0d), DamageSource.builder().type( damageType.get() ).build() );
+            player.get().damage( amount.orElse(0.0d), DamageSource.builder().type( damageType.orElse(AtherysDamageTypes.UNARMED) ).build() );
         }
         return CommandResult.empty();
     }
