@@ -12,6 +12,7 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
 import org.spongepowered.api.text.Text;
 
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class TempAtherysDamageCommand implements CommandExecutor {
 
             AtherysCore.getInstance().getLogger().info( "Will do " + amount.orElse(0.0) + " of " + damageType.get().getName() + " Damage to " + player.get().getName() );
 
-            player.get().damage( amount.orElse(0.0d), AtherysDamageSources.multipleDirectBuilder( (Player) src ).addType( damageType.orElse( AtherysDamageTypes.FIRE ), 1.0f ).magical().build() );
+            player.get().damage( amount.orElse(0.0d), AtherysDamageSources.multipleDirectBuilder( (Player) src ).type( DamageTypes.CUSTOM ).addType( damageType.orElse( AtherysDamageTypes.FIRE ), 1.0f ).magical().build() );
         }
         return CommandResult.empty();
     }
