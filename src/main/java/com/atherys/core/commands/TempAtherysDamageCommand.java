@@ -51,7 +51,7 @@ public class TempAtherysDamageCommand implements CommandExecutor {
                             .addType(
                                     AtherysDamageSources.singleDirectMagic(
                                             (Player) src,
-                                            damageType.orElse( AtherysDamageTypes.FIRE )
+                                            AtherysDamageTypes.FIRE
                                     ),
                                     0.5f
                             )
