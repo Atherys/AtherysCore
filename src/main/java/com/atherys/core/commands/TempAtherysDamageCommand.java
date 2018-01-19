@@ -43,10 +43,17 @@ public class TempAtherysDamageCommand implements CommandExecutor {
                             .type( DamageTypes.CUSTOM )
                             .addType(
                                     AtherysDamageSources.singleDirectMagic(
-                                        (Player) src,
-                                        damageType.orElse( AtherysDamageTypes.FIRE )
+                                            (Player) src,
+                                            damageType.orElse( AtherysDamageTypes.FIRE )
                                     ),
-                                    1.0f
+                                    0.5f
+                            )
+                            .addType(
+                                    AtherysDamageSources.singleDirectMagic(
+                                            (Player) src,
+                                            damageType.orElse( AtherysDamageTypes.FIRE )
+                                    ),
+                                    0.5f
                             )
                             .magical()
                             .build()
@@ -59,8 +66,8 @@ public class TempAtherysDamageCommand implements CommandExecutor {
         return CommandSpec.builder()
                 .arguments(
                         GenericArguments.playerOrSource( Text.of("player") ),
-                        GenericArguments.catalogedElement( Text.of("type"), AtherysDamageType.class ),
-                        GenericArguments.doubleNum( Text.of("amount") )
+                        GenericArguments.doubleNum( Text.of("amount") ),
+                        GenericArguments.catalogedElement( Text.of("type"), AtherysDamageType.class )
                 )
                 .executor( this )
                 .build();
