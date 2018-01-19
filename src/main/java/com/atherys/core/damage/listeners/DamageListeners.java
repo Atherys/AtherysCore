@@ -12,8 +12,8 @@ public class DamageListeners {
 
     @Listener ( order = Order.FIRST )
     public void onDirectMultiDamage ( DamageEntityEvent event, @First AtherysEntityMultiDamageSource source ) {
-        event.setCancelled(true);
         if ( event.getCause().containsType(AtherysEntitySingleDamageSource.class) ) return;
+        event.setCancelled(true);
         AtherysCore.getInstance().getLogger().info( "Multi Damage Source Detected" );
         source.getDamageDistribution().forEach( (k,v) -> event.getTargetEntity().damage( event.getBaseDamage() * v, k )  );
     }
