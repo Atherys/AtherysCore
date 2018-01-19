@@ -1,5 +1,6 @@
 package com.atherys.core.damage.listeners;
 
+import com.atherys.core.AtherysCore;
 import com.atherys.core.damage.sources.AtherysEntityMultiDamageSource;
 import com.atherys.core.damage.sources.AtherysEntitySingleDamageSource;
 import com.atherys.core.damage.sources.AtherysIndirectEntityDamageSource;
@@ -12,6 +13,7 @@ public class DamageListeners {
 
     @Listener ( order = Order.FIRST )
     public void onDirectMultiDamage ( DamageEntityEvent event, @First AtherysEntityMultiDamageSource source ) {
+        AtherysCore.getInstance().getLogger().info( "Multi Damage Source Detected" );
         event.setCancelled( true );
         source.getDamageDistribution().forEach( (k,v) -> event.getTargetEntity().damage( event.getBaseDamage() * v, k )  );
     }
