@@ -37,7 +37,20 @@ public class TempAtherysDamageCommand implements CommandExecutor {
 
             AtherysCore.getInstance().getLogger().info( "Will do " + amount.orElse(0.0) + " of " + damageType.get().getName() + " Damage to " + player.get().getName() );
 
-            player.get().damage( amount.orElse(0.0d), AtherysDamageSources.multipleDirectBuilder( (Player) src ).type( DamageTypes.CUSTOM ).addType( damageType.orElse( AtherysDamageTypes.FIRE ), 1.0f ).magical().build() );
+            player.get().damage(
+                    amount.orElse(0.0d),
+                    AtherysDamageSources.multipleDirectBuilder( (Player) src )
+                            .type( DamageTypes.CUSTOM )
+                            .addType(
+                                    AtherysDamageSources.singleDirectMagic(
+                                        (Player) src,
+                                        damageType.orElse( AtherysDamageTypes.FIRE )
+                                    ),
+                                    1.0f
+                            )
+                            .magical()
+                            .build()
+            );
         }
         return CommandResult.empty();
     }

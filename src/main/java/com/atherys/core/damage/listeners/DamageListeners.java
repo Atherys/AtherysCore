@@ -13,7 +13,7 @@ public class DamageListeners {
     @Listener ( order = Order.FIRST )
     public void onDirectMultiDamage ( DamageEntityEvent event, @First AtherysEntityMultiDamageSource source ) {
         event.setCancelled( true );
-        source.getDamageDistribution().forEach( (k,v) -> event.getTargetEntity().damage( event.getBaseDamage() * v, k.asSource( source.getSource() ) ));
+        source.getDamageDistribution().forEach( (k,v) -> event.getTargetEntity().damage( event.getBaseDamage() * v, k )  );
     }
 
     @Listener ( order = Order.FIRST )
