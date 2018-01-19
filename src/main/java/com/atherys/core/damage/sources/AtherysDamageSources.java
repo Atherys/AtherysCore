@@ -6,45 +6,48 @@ import org.spongepowered.api.entity.Entity;
 
 public final class AtherysDamageSources {
 
-    public static AtherysEntityDamageSource.Builder directBuilder ( Entity source ) {
-        return new AtherysEntityDamageSource.Builder().entity( source );
+
+    public static AtherysEntitySingleDamageSource.Builder singleDirectBuilder ( Entity source ) {
+        return new AtherysEntitySingleDamageSource.Builder().entity( source );
     }
 
-    public static AtherysIndirectEntityDamageSource.Builder indirectBuilder ( Entity source ) {
+    public static AtherysEntityMultiDamageSource.Builder multipleDirectBuilder ( Entity source ) {
+        return new AtherysEntityMultiDamageSource.Builder().entity( source );
+    }
+
+    public static AtherysIndirectEntityDamageSource.Builder singleIndirectBuilder ( Entity source ) {
         return new AtherysIndirectEntityDamageSource.Builder().entity( source );
     }
 
-    public static AtherysEntityDamageSource direct (Entity source, AtherysDamageType type) {
-        return directBuilder( source ).type( type ).build();
+    public static AtherysEntitySingleDamageSource singleDirect (Entity source, AtherysDamageType type) {
+        return singleDirectBuilder( source ).type( type ).build();
     }
 
-    public static AtherysEntityDamageSource directMagic ( Entity source, AtherysDamageType type ) {
-        return directBuilder( source ).type( type ).magical().build();
+    public static AtherysEntitySingleDamageSource singleDirectMagic ( Entity source, AtherysDamageType type ) {
+        return singleDirectBuilder( source ).type( type ).magical().build();
     }
 
     public static AtherysIndirectEntityDamageSource indirect (Entity source, AtherysDamageType type) {
-        return indirectBuilder( source ).type( type ).build();
+        return singleIndirectBuilder( source ).type( type ).build();
     }
 
-    public static AtherysIndirectEntityDamageSource indirectMagic ( Entity source, AtherysDamageType type ) {
-        return indirectBuilder( source ).type( type ).magical().build();
-    }
+
 
     // Melee
-    public static AtherysEntityDamageSource bluntDamage ( Entity source ) {
-        return direct( source, AtherysDamageTypes.BLUNT );
+    public static AtherysEntitySingleDamageSource bluntDamage ( Entity source ) {
+        return singleDirect( source, AtherysDamageTypes.BLUNT );
     }
 
-    public static AtherysEntityDamageSource slashDamage ( Entity source ) {
-        return direct( source, AtherysDamageTypes.SLASH );
+    public static AtherysEntitySingleDamageSource slashDamage ( Entity source ) {
+        return singleDirect( source, AtherysDamageTypes.SLASH );
     }
 
-    public static AtherysEntityDamageSource stabDamage ( Entity source ) {
-        return direct( source, AtherysDamageTypes.STAB );
+    public static AtherysEntitySingleDamageSource stabDamage ( Entity source ) {
+        return singleDirect( source, AtherysDamageTypes.STAB );
     }
 
-    public static AtherysEntityDamageSource unarmedDamage ( Entity source ) {
-        return direct( source, AtherysDamageTypes.UNARMED );
+    public static AtherysEntitySingleDamageSource unarmedDamage ( Entity source ) {
+        return singleDirect( source, AtherysDamageTypes.UNARMED );
     }
 
     // Ranged
@@ -57,31 +60,39 @@ public final class AtherysDamageSources {
     }
 
     // Magic
-    public static AtherysEntityDamageSource fireDamage ( Entity source ) {
-        return directMagic( source, AtherysDamageTypes.FIRE );
+    public static AtherysEntitySingleDamageSource fireDamage ( Entity source ) {
+        return singleDirectMagic( source, AtherysDamageTypes.FIRE );
     }
 
-    public static AtherysEntityDamageSource iceDamage ( Entity source ) {
-        return directMagic( source, AtherysDamageTypes.ICE );
+    public static AtherysEntitySingleDamageSource iceDamage ( Entity source ) {
+        return singleDirectMagic( source, AtherysDamageTypes.ICE );
     }
 
-    public static AtherysEntityDamageSource shockDamage ( Entity source ) {
-        return directMagic( source, AtherysDamageTypes.SHOCK );
+    public static AtherysEntitySingleDamageSource arcaneDamage ( Entity source ) {
+        return singleDirectMagic( source, AtherysDamageTypes.ARCANE );
     }
 
-    public static AtherysEntityDamageSource natureDamage ( Entity source ) {
-        return directMagic( source, AtherysDamageTypes.NATURE );
+    public static AtherysEntitySingleDamageSource shockDamage ( Entity source ) {
+        return singleDirectMagic( source, AtherysDamageTypes.SHOCK );
     }
 
-    public static AtherysEntityDamageSource mentalDamage ( Entity source ) {
-        return directMagic( source, AtherysDamageTypes.MENTAL );
+    public static AtherysEntitySingleDamageSource natureDamage ( Entity source ) {
+        return singleDirectMagic( source, AtherysDamageTypes.NATURE );
     }
 
-    public static AtherysEntityDamageSource necroticDamage ( Entity source ) {
-        return directMagic( source, AtherysDamageTypes.NECROTIC );
+    public static AtherysEntitySingleDamageSource mentalDamage ( Entity source ) {
+        return singleDirectMagic( source, AtherysDamageTypes.MENTAL );
     }
 
-    public static AtherysEntityDamageSource bloodDamage ( Entity source ) {
-        return directMagic( source, AtherysDamageTypes.BLOOD );
+    public static AtherysEntitySingleDamageSource radiantDamage ( Entity source ) {
+        return singleDirectMagic( source, AtherysDamageTypes.RADIANT );
+    }
+
+    public static AtherysEntitySingleDamageSource necroticDamage ( Entity source ) {
+        return singleDirectMagic( source, AtherysDamageTypes.NECROTIC );
+    }
+
+    public static AtherysEntitySingleDamageSource bloodDamage ( Entity source ) {
+        return singleDirectMagic( source, AtherysDamageTypes.BLOOD );
     }
 }

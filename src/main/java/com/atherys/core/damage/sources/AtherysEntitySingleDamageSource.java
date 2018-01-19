@@ -4,13 +4,13 @@ import com.atherys.core.damage.AtherysDamageType;
 import org.spongepowered.api.event.cause.entity.damage.DamageType;
 import org.spongepowered.api.event.cause.entity.damage.source.common.AbstractEntityDamageSource;
 
-public final class AtherysEntityDamageSource extends AbstractEntityDamageSource {
-
-    public static class Builder extends AbstractEntityDamageSourceBuilder<AtherysEntityDamageSource, Builder> {
+public final class AtherysEntitySingleDamageSource extends AbstractEntityDamageSource {
+    public static class Builder extends AbstractEntityDamageSourceBuilder<AtherysEntitySingleDamageSource, Builder> {
 
         @Override
         @Deprecated
         public Builder type ( DamageType type ) {
+            super.type( type );
             return this;
         }
 
@@ -20,12 +20,12 @@ public final class AtherysEntityDamageSource extends AbstractEntityDamageSource 
         }
 
         @Override
-        public AtherysEntityDamageSource build() throws IllegalStateException {
-            return new AtherysEntityDamageSource( this );
+        public AtherysEntitySingleDamageSource build() throws IllegalStateException {
+            return new AtherysEntitySingleDamageSource( this );
         }
     }
 
-    protected AtherysEntityDamageSource(Builder builder) {
+    protected AtherysEntitySingleDamageSource(Builder builder) {
         super(builder);
     }
 }
