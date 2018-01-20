@@ -1,0 +1,17 @@
+death.entity.atherys:blunt=%1 was bashed into a pulp by %2 using %3
+death.entity.atherys:slash=%1 was cut to shreds by %2 using %3
+death.entity.atherys:stab=%1 was turned into swiss cheese by %2 using %3
+death.entity.atherys:unarmed=%1 was knocked out by %2
+
+death.entity.atherys:pierce=%1 was turned into swiss cheese by %2 using %3
+death.entity.atherys:ballistic=%1 was gunned down by %2 using %3
+
+death.entity.atherys:fire=%1 was burnt to a crisp by %2
+death.entity.atherys:ice=%1 was frozen solid by %2
+death.entity.atherys:arcane=%1 was punished by the arcane powers of %2
+death.entity.atherys:shock=%1 was shocked into non-existence by %2
+death.entity.atherys:nature=%1 has returned to the ground thanks to %2
+death.entity.atherys:mental=%1 was driven insane by %2
+death.entity.atherys:radiant=%1 was blinded by %2's brilliant light
+death.entity.atherys:necrotic=%1 has rotted away thanks to %2
+death.entity.atherys:blood=%1 was drained into nothingness by %2
