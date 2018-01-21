@@ -10,11 +10,11 @@ import java.util.Map;
 
 public final class AtherysEntityMultiDamageSource extends AbstractEntityDamageSource implements AtherysDamageSource {
 
-    private Map<AtherysEntitySingleDamageSource,Float> distro;
+    private Map<AtherysDamageSource,Float> distro;
 
     public static class Builder extends AbstractEntityDamageSourceBuilder<AtherysEntityMultiDamageSource, Builder> {
 
-        private Map<AtherysEntitySingleDamageSource,Float> distro = new HashMap<>();
+        private Map<AtherysDamageSource,Float> distro = new HashMap<>();
 
         @Override
         @Deprecated
@@ -23,12 +23,18 @@ public final class AtherysEntityMultiDamageSource extends AbstractEntityDamageSo
             return this;
         }
 
-        public Builder addType ( AtherysEntitySingleDamageSource source, Float percentage ) {
+        /**
+         * Adds another type of damage to be inflicted, along with the percentage amount of damage it should inflict based on original base damage.
+         * @param source the damage source
+         * @param percentage the percentage
+         * @return the builder instance
+         */
+        public Builder addType ( AtherysDamageSource source, Float percentage ) {
             distro.put( source, MathUtils.clamp( percentage, 0.0f, 1.0f ) );
             return this;
         }
 
-        public Builder distribution ( Map<AtherysEntitySingleDamageSource,Float> damageDistro ) {
+        public Builder distribution ( Map<AtherysDamageSource,Float> damageDistro ) {
             super.type(AtherysDamageTypes.UNARMED);
             this.distro = damageDistro;
             return this;
@@ -45,7 +51,7 @@ public final class AtherysEntityMultiDamageSource extends AbstractEntityDamageSo
         this.distro = builder.distro;
     }
 
-    public Map<AtherysEntitySingleDamageSource, Float> getDamageDistribution() {
+    public Map<AtherysDamageSource, Float> getDamageDistribution() {
         return distro;
     }
 

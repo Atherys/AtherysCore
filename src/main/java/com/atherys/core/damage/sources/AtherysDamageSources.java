@@ -3,20 +3,45 @@ package com.atherys.core.damage.sources;
 import com.atherys.core.damage.AtherysDamageType;
 import com.atherys.core.damage.AtherysDamageTypes;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
 
 public final class AtherysDamageSources {
 
-
-    public static AtherysEntitySingleDamageSource.Builder singleDirectBuilder ( Entity source ) {
-        return new AtherysEntitySingleDamageSource.Builder().entity( source );
+    /**
+     * Creates a multi damage source builder which distributes the damage amount uniformly across all sources provided
+     * @param source The entity source of this damage
+     * @param sources The damage source(s)
+     * @return the builder
+     */
+    public static AtherysEntityMultiDamageSource.Builder of ( Entity source, AtherysDamageSource... sources ) {
+        AtherysEntityMultiDamageSource.Builder builder = multipleDirectBuilder( source );
+        float uniform = 1.0f / sources.length;
+        for ( AtherysDamageSource src : sources ) {
+            builder.addType( src, uniform );
+        }
+        return builder;
     }
 
+    /**
+     * Creates a single direct damage source builder
+     * @param source the entity source of this damage
+     * @return the builder
+     */
+    public static AtherysEntitySingleDamageSource.Builder singleDirectBuilder ( Entity source ) {
+        return new AtherysEntitySingleDamageSource.Builder().type( DamageTypes.CUSTOM ).entity( source );
+    }
+
+    /**
+     * Create a multi direct damage source builder
+     * @param source the entity source of this damage
+     * @return the builder
+     */
     public static AtherysEntityMultiDamageSource.Builder multipleDirectBuilder ( Entity source ) {
-        return new AtherysEntityMultiDamageSource.Builder().entity( source );
+        return new AtherysEntityMultiDamageSource.Builder().type( DamageTypes.CUSTOM ).entity( source );
     }
 
     public static AtherysIndirectEntityDamageSource.Builder singleIndirectBuilder ( Entity source ) {
-        return new AtherysIndirectEntityDamageSource.Builder().entity( source );
+        return new AtherysIndirectEntityDamageSource.Builder().type( DamageTypes.CUSTOM ).entity( source );
     }
 
     public static AtherysEntitySingleDamageSource singleDirect (Entity source, AtherysDamageType type) {
