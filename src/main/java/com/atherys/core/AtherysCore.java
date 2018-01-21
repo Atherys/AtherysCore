@@ -39,7 +39,7 @@ public class AtherysCore {
     @Inject
     private Game game;
 
-    private String directory = "config/" + ID;
+    private String configDirectory = "config/" + ID;
 
     private static CoreConfig config;
 
@@ -61,7 +61,7 @@ public class AtherysCore {
             return;
         }
 
-        AtherysDamageType test = AtherysDamageTypes.ARCANE;
+        getLogger().info( AtherysDamageTypes.ARCANE.getName() );
         game.getRegistry().registerModule( AtherysDamageType.class, AtherysDamageTypeRegistry.getInstance() );
 
         init = true;
@@ -112,6 +112,6 @@ public class AtherysCore {
     }
 
     public String getWorkingDirectory() {
-        return directory;
+        return configDirectory;
     }
 }
