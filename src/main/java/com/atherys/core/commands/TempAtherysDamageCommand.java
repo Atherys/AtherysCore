@@ -31,10 +31,10 @@ public class TempAtherysDamageCommand implements CommandExecutor {
             player.get().damage(
                     amount.orElse(0.0d),
                     AtherysDamageSources.of( entity,
-                            AtherysDamageSources.arcaneDamage( entity ),
-                            AtherysDamageSources.fireDamage( entity ),
-                            AtherysDamageSources.ballisticDamage( entity ),
-                            AtherysDamageSources.unarmedDamage( entity )
+                            AtherysDamageSources.arcane( entity ),
+                            AtherysDamageSources.fire( entity ),
+                            AtherysDamageSources.ballistic( entity ),
+                            AtherysDamageSources.unarmed( entity )
                     ).build()
             );
         }
