@@ -8,7 +8,7 @@ import org.spongepowered.api.event.cause.entity.damage.source.common.AbstractEnt
 import java.util.HashMap;
 import java.util.Map;
 
-public final class AtherysEntityMultiDamageSource extends AbstractEntityDamageSource {
+public final class AtherysEntityMultiDamageSource extends AbstractEntityDamageSource implements AtherysDamageSource {
 
     private Map<AtherysEntitySingleDamageSource,Float> distro;
 
@@ -48,4 +48,5 @@ public final class AtherysEntityMultiDamageSource extends AbstractEntityDamageSo
     public Map<AtherysEntitySingleDamageSource, Float> getDamageDistribution() {
         return distro;
     }
+
 }
