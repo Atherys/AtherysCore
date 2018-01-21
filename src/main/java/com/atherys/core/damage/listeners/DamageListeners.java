@@ -1,6 +1,8 @@
 package com.atherys.core.damage.listeners;
 
 import com.atherys.core.damage.sources.AtherysEntityMultiDamageSource;
+import com.atherys.core.damage.sources.AtherysEntitySingleDamageSource;
+import com.atherys.core.damage.sources.AtherysIndirectEntityDamageSource;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
@@ -10,8 +12,10 @@ public class DamageListeners {
 
     @Listener ( order = Order.FIRST )
     public void onDirectMultiDamage ( DamageEntityEvent event, @Last AtherysEntityMultiDamageSource source ) {
+        if ( event.getCause().containsType( AtherysEntitySingleDamageSource.class  ) ||
+             event.getCause().containsType( AtherysIndirectEntityDamageSource.class) ) return;
         event.setCancelled(true);
-        source.getDamageDistribution().forEach((k, v) -> event.getTargetEntity().damage( event.getBaseDamage() * v, k));
+        source.getDamageDistribution().forEach( (k, v) -> event.getTargetEntity().damage( event.getBaseDamage() * v, k) );
     }
 
 }
