@@ -52,8 +52,8 @@ public final class AtherysDamageSources {
         return singleDirectBuilder( source ).type( type ).magical().build();
     }
 
-    public static AtherysIndirectEntityDamageSource indirect (Entity source, AtherysDamageType type) {
-        return singleIndirectBuilder( source ).type( type ).build();
+    public static AtherysIndirectEntityDamageSource indirect ( Entity source, Entity projectile, AtherysDamageType type) {
+        return singleIndirectBuilder( source ).proxySource(projectile).type( type ).build();
     }
 
 
@@ -76,12 +76,12 @@ public final class AtherysDamageSources {
     }
 
     // Ranged
-    public static AtherysIndirectEntityDamageSource ballistic ( Entity source ) {
-        return indirect( source, AtherysDamageTypes.BALLISTIC );
+    public static AtherysIndirectEntityDamageSource ballistic ( Entity source, Entity projectile ) {
+        return indirect( source, projectile, AtherysDamageTypes.BALLISTIC );
     }
 
-    public static AtherysIndirectEntityDamageSource piercing ( Entity source ) {
-        return indirect( source, AtherysDamageTypes.PIERCE );
+    public static AtherysIndirectEntityDamageSource piercing ( Entity source, Entity projectile ) {
+        return indirect( source, projectile, AtherysDamageTypes.PIERCE );
     }
 
     // Magic

@@ -5,6 +5,7 @@ import com.atherys.core.damage.sources.AtherysEntitySingleDamageSource;
 import com.atherys.core.damage.sources.AtherysIndirectEntityDamageSource;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.filter.cause.Last;
 
@@ -16,6 +17,11 @@ public class DamageListeners {
              event.getCause().containsType( AtherysIndirectEntityDamageSource.class) ) return;
         event.setCancelled(true);
         source.getDamageDistribution().forEach( (k, v) -> event.getTargetEntity().damage( event.getBaseDamage() * v, k) );
+    }
+
+    @Listener ( order = Order.FIRST )
+    public void test ( DamageEntityEvent event, @Last DamageSource source ) {
+        
     }
 
 }

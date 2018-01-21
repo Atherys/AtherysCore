@@ -33,8 +33,8 @@ public class TempAtherysDamageCommand implements CommandExecutor {
                     AtherysDamageSources.of( entity,
                             AtherysDamageSources.arcane( entity ),
                             AtherysDamageSources.fire( entity ),
-                            AtherysDamageSources.ballistic( entity ),
-                            AtherysDamageSources.unarmed( entity )
+                            AtherysDamageSources.unarmed( entity ),
+                            AtherysDamageSources.blunt( entity )
                     ).build()
             );
         }
