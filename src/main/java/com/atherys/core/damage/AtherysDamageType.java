@@ -9,12 +9,9 @@ public class AtherysDamageType implements DamageType {
     private final String id;
     private final String name;
 
-    private final String deathMsg;
-
-    AtherysDamageType (String id, String name, String deathMessage ) {
+    AtherysDamageType ( String id, String name ) {
         this.id = id;
         this.name = name;
-        this.deathMsg = deathMessage;
         AtherysDamageTypeRegistry.getInstance().flags.put( id, this );
     }
 
@@ -26,9 +23,5 @@ public class AtherysDamageType implements DamageType {
     @Override
     public String getName() {
         return name;
-    }
-
-    public String getDeathMessage () {
-        return deathMsg;
     }
 }
