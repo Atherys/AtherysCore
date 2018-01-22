@@ -1,6 +1,5 @@
 package com.atherys.core.commands;
 
-import com.atherys.core.damage.sources.AtherysDamageSources;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -9,6 +8,7 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.entity.damage.source.DamageSources;
 import org.spongepowered.api.text.Text;
 
 import java.util.Optional;
@@ -28,15 +28,19 @@ public class TempAtherysDamageCommand implements CommandExecutor {
 
             Player entity = (Player) src;
 
-            player.get().damage(
-                    amount.orElse(0.0d),
-                    AtherysDamageSources.of( entity,
-                            AtherysDamageSources.arcane( entity ),
-                            AtherysDamageSources.fire( entity ),
-                            AtherysDamageSources.unarmed( entity ),
-                            AtherysDamageSources.blunt( entity )
-                    ).build()
-            );
+            for ( int i = 0; i < 5; i++ ) {
+                player.get().damage(amount.orElse(0.0d), DamageSources.MAGIC);
+            }
+
+            //player.get().damage(
+            //        amount.orElse(0.0d),
+            //        AtherysDamageSources.of( entity,
+            //                AtherysDamageSources.arcane( entity ),
+            //                AtherysDamageSources.fire( entity ),
+            //                AtherysDamageSources.unarmed( entity ),
+            //                AtherysDamageSources.blunt( entity )
+            //        ).build()
+            //);
         }
         return CommandResult.empty();
     }
