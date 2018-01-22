@@ -2,7 +2,7 @@ package com.atherys.core.damage.sources;
 
 import org.spongepowered.api.event.cause.entity.damage.source.common.AbstractIndirectEntityDamageSource;
 
-public final class AtherysIndirectEntityDamageSource extends AbstractIndirectEntityDamageSource implements AtherysDamageSource {
+public final class AtherysIndirectEntityDamageSource extends AbstractIndirectEntityDamageSource implements AtherysEntityDamageSource {
 
     public static class Builder extends AbstractIndirectEntityDamageSourceBuilder<AbstractIndirectEntityDamageSource, Builder> {
 

@@ -4,7 +4,7 @@ import com.atherys.core.damage.AtherysDamageType;
 import org.spongepowered.api.event.cause.entity.damage.DamageType;
 import org.spongepowered.api.event.cause.entity.damage.source.common.AbstractEntityDamageSource;
 
-public final class AtherysEntitySingleDamageSource extends AbstractEntityDamageSource implements AtherysDamageSource {
+public final class AtherysEntitySingleDamageSource extends AbstractEntityDamageSource implements AtherysEntityDamageSource {
 
     public static class Builder extends AbstractEntityDamageSourceBuilder<AtherysEntitySingleDamageSource, Builder> {
 
