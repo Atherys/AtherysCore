@@ -36,7 +36,7 @@ public class TempAtherysDamageCommand implements CommandExecutor {
 
             player.get().damage(
                     amount.orElse(0.0d),
-                    new AtherysDirectEntityDamageSource.Builder().entity((Player) src).type( source.orElse( AtherysDamageTypes.UNARMED ) ).build()
+                    new AtherysDirectEntityDamageSource.Builder().entity( (Player) src).type( source.orElse( AtherysDamageTypes.UNARMED ).getPrimitive() ).atherysType( source.orElse( AtherysDamageTypes.UNARMED ) ).build()
             );
         }
         return CommandResult.empty();

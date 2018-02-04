@@ -1,5 +1,6 @@
 package com.atherys.core;
 
+import com.atherys.core.damage.DamageConfig;
 import com.atherys.core.database.mongo.MongoDatabaseConfig;
 import com.atherys.core.utils.PluginConfig;
 import ninja.leaping.configurate.objectmapping.Setting;
@@ -13,6 +14,9 @@ public final class CoreConfig extends PluginConfig {
 
     @Setting( "database" )
     public MongoDatabaseConfig DATABASE = new MongoDatabaseConfig();
+
+    @Setting( "damage" )
+    public DamageConfig DAMAGE = new DamageConfig();
 
     CoreConfig() throws IOException {
         super( AtherysCore.getInstance().getWorkingDirectory(), "config.conf" );

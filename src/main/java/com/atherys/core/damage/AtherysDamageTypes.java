@@ -1,40 +1,42 @@
 package com.atherys.core.damage;
 
+import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
+
 public final class AtherysDamageTypes {
 
     private AtherysDamageTypes() {}
 
     // Melee
-    public static final AtherysDamageType BLUNT = new AtherysDamageType( "atherys:blunt", "Blunt" );
+    public static final AtherysDamageType BLUNT = new AtherysDamageType( "atherys:blunt", "Blunt", DamageTypes.ATTACK );
 
-    public static final AtherysDamageType STAB = new AtherysDamageType( "atherys:stab", "Stabbing" );
+    public static final AtherysDamageType STAB = new AtherysDamageType( "atherys:stab", "Stabbing", DamageTypes.ATTACK );
 
-    public static final AtherysDamageType SLASH = new AtherysDamageType( "atherys:slash", "Slashing" );
+    public static final AtherysDamageType SLASH = new AtherysDamageType( "atherys:slash", "Slashing", DamageTypes.ATTACK );
 
-    public static final AtherysDamageType UNARMED = new AtherysDamageType( "atherys:unarmed", "Unarmed" );
+    public static final AtherysDamageType UNARMED = new AtherysDamageType( "atherys:unarmed", "Unarmed", DamageTypes.ATTACK );
 
     // Ranged
-    public static final AtherysDamageType PIERCE = new AtherysDamageType( "atherys:pierce", "Piercing" );
+    public static final AtherysDamageType PIERCE = new AtherysDamageType( "atherys:pierce", "Piercing", DamageTypes.PROJECTILE );
 
-    public static final AtherysDamageType BALLISTIC = new AtherysDamageType( "atherys:ballistic", "Ballistic" );
+    public static final AtherysDamageType BALLISTIC = new AtherysDamageType( "atherys:ballistic", "Ballistic", DamageTypes.PROJECTILE );
 
     // Magic
-    public static final AtherysDamageType FIRE = new AtherysDamageType( "atherys:fire", "Fire" );
+    public static final AtherysDamageType FIRE = new AtherysDamageType( "atherys:fire", "Fire", DamageTypes.MAGIC );
 
-    public static final AtherysDamageType ICE = new AtherysDamageType( "atherys:ice", "Ice" );
+    public static final AtherysDamageType ICE = new AtherysDamageType( "atherys:ice", "Ice", DamageTypes.MAGIC );
 
-    public static final AtherysDamageType ARCANE = new AtherysDamageType( "atherys:arcane", "Arcane" );
+    public static final AtherysDamageType ARCANE = new AtherysDamageType( "atherys:arcane", "Arcane", DamageTypes.MAGIC );
 
-    public static final AtherysDamageType SHOCK = new AtherysDamageType ( "atherys:shock", "Shock" );
+    public static final AtherysDamageType SHOCK = new AtherysDamageType ( "atherys:shock", "Shock", DamageTypes.MAGIC );
 
-    public static final AtherysDamageType NATURE = new AtherysDamageType( "atherys:nature", "Nature" );
+    public static final AtherysDamageType NATURE = new AtherysDamageType( "atherys:nature", "Nature", DamageTypes.MAGIC );
 
-    public static final AtherysDamageType MENTAL = new AtherysDamageType( "atherys:mental", "Mental" );
+    public static final AtherysDamageType MENTAL = new AtherysDamageType( "atherys:mental", "Mental", DamageTypes.MAGIC );
 
-    public static final AtherysDamageType RADIANT = new AtherysDamageType( "atherys:radiant", "Radiant" );
+    public static final AtherysDamageType RADIANT = new AtherysDamageType( "atherys:radiant", "Radiant", DamageTypes.MAGIC );
 
-    public static final AtherysDamageType NECROTIC = new AtherysDamageType( "atherys:necrotic", "Necrotic" );
+    public static final AtherysDamageType NECROTIC = new AtherysDamageType( "atherys:necrotic", "Necrotic", DamageTypes.MAGIC );
 
-    public static final AtherysDamageType BLOOD = new AtherysDamageType( "atherys:blood", "Blood" );
+    public static final AtherysDamageType BLOOD = new AtherysDamageType( "atherys:blood", "Blood", DamageTypes.MAGIC );
 
 }

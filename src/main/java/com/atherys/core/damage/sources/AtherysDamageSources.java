@@ -11,41 +11,41 @@ public final class AtherysDamageSources {
      * @param source the entity source of this damage
      * @return the builder
      */
-    private static AtherysDirectEntityDamageSource.Builder singleDirectBuilder (Entity source ) {
+    public static AtherysDirectEntityDamageSource.Builder directBuilder ( Entity source ) {
         return new AtherysDirectEntityDamageSource.Builder().type( DamageTypes.CUSTOM ).entity( source );
     }
 
-    private static AtherysIndirectEntityDamageSource.Builder singleIndirectBuilder ( Entity source ) {
-        return new AtherysIndirectEntityDamageSource.Builder().type( DamageTypes.CUSTOM ).entity( source );
+    public static AtherysIndirectEntityDamageSource.Builder indirectBuilder ( Entity source, Entity proxy ) {
+        return new AtherysIndirectEntityDamageSource.Builder().type( DamageTypes.CUSTOM ).entity( source ).proxySource( proxy );
     }
 
-    private static AtherysDirectEntityDamageSource singleDirect (Entity source, AtherysDamageType type) {
-        return singleDirectBuilder( source ).type( type ).build();
+    public static AtherysDirectEntityDamageSource direct ( Entity source, AtherysDamageType type) {
+        return directBuilder( source ).type( type.getPrimitive() ).atherysType( type ).build();
     }
 
-    private static AtherysDirectEntityDamageSource singleDirectMagic (Entity source, AtherysDamageType type ) {
-        return singleDirectBuilder( source ).type( type ).magical().build();
+    public static AtherysDirectEntityDamageSource directMagic ( Entity source, AtherysDamageType type ) {
+        return directBuilder( source ).type( type.getPrimitive() ).atherysType( type ).magical().build();
     }
 
-    private static AtherysIndirectEntityDamageSource indirect ( Entity source, Entity projectile, AtherysDamageType type) {
-        return singleIndirectBuilder( source ).proxySource(projectile).type( type ).build();
+    public static AtherysIndirectEntityDamageSource indirect ( Entity source, Entity projectile, AtherysDamageType type) {
+        return indirectBuilder( source, projectile ).type( type.getPrimitive() ).atherysType( type ).build();
     }
 
     // Melee
-    public static AtherysDirectEntityDamageSource blunt (Entity source ) {
-        return singleDirect( source, AtherysDamageTypes.BLUNT );
+    public static AtherysDirectEntityDamageSource blunt ( Entity source ) {
+        return direct( source, AtherysDamageTypes.BLUNT );
     }
 
-    public static AtherysDirectEntityDamageSource slash (Entity source ) {
-        return singleDirect( source, AtherysDamageTypes.SLASH );
+    public static AtherysDirectEntityDamageSource slash ( Entity source ) {
+        return direct( source, AtherysDamageTypes.SLASH );
     }
 
-    public static AtherysDirectEntityDamageSource stab (Entity source ) {
-        return singleDirect( source, AtherysDamageTypes.STAB );
+    public static AtherysDirectEntityDamageSource stab ( Entity source ) {
+        return direct( source, AtherysDamageTypes.STAB );
     }
 
-    public static AtherysDirectEntityDamageSource unarmed (Entity source ) {
-        return singleDirect( source, AtherysDamageTypes.UNARMED );
+    public static AtherysDirectEntityDamageSource unarmed ( Entity source ) {
+        return direct( source, AtherysDamageTypes.UNARMED );
     }
 
     // Ranged
@@ -58,39 +58,39 @@ public final class AtherysDamageSources {
     }
 
     // Magic
-    public static AtherysDirectEntityDamageSource fire (Entity source ) {
-        return singleDirectMagic( source, AtherysDamageTypes.FIRE );
+    public static AtherysDirectEntityDamageSource fire ( Entity source ) {
+        return directMagic( source, AtherysDamageTypes.FIRE );
     }
 
-    public static AtherysDirectEntityDamageSource ice (Entity source ) {
-        return singleDirectMagic( source, AtherysDamageTypes.ICE );
+    public static AtherysDirectEntityDamageSource ice ( Entity source ) {
+        return directMagic( source, AtherysDamageTypes.ICE );
     }
 
-    public static AtherysDirectEntityDamageSource arcane (Entity source ) {
-        return singleDirectMagic( source, AtherysDamageTypes.ARCANE );
+    public static AtherysDirectEntityDamageSource arcane ( Entity source ) {
+        return directMagic( source, AtherysDamageTypes.ARCANE );
     }
 
-    public static AtherysDirectEntityDamageSource shock (Entity source ) {
-        return singleDirectMagic( source, AtherysDamageTypes.SHOCK );
+    public static AtherysDirectEntityDamageSource shock ( Entity source ) {
+        return directMagic( source, AtherysDamageTypes.SHOCK );
     }
 
-    public static AtherysDirectEntityDamageSource nature (Entity source ) {
-        return singleDirectMagic( source, AtherysDamageTypes.NATURE );
+    public static AtherysDirectEntityDamageSource nature ( Entity source ) {
+        return directMagic( source, AtherysDamageTypes.NATURE );
     }
 
-    public static AtherysDirectEntityDamageSource mental (Entity source ) {
-        return singleDirectMagic( source, AtherysDamageTypes.MENTAL );
+    public static AtherysDirectEntityDamageSource mental ( Entity source ) {
+        return directMagic( source, AtherysDamageTypes.MENTAL );
     }
 
-    public static AtherysDirectEntityDamageSource radiant (Entity source ) {
-        return singleDirectMagic( source, AtherysDamageTypes.RADIANT );
+    public static AtherysDirectEntityDamageSource radiant ( Entity source ) {
+        return directMagic( source, AtherysDamageTypes.RADIANT );
     }
 
-    public static AtherysDirectEntityDamageSource necrotic (Entity source ) {
-        return singleDirectMagic( source, AtherysDamageTypes.NECROTIC );
+    public static AtherysDirectEntityDamageSource necrotic ( Entity source ) {
+        return directMagic( source, AtherysDamageTypes.NECROTIC );
     }
 
-    public static AtherysDirectEntityDamageSource blood (Entity source ) {
-        return singleDirectMagic( source, AtherysDamageTypes.BLOOD );
+    public static AtherysDirectEntityDamageSource blood ( Entity source ) {
+        return directMagic( source, AtherysDamageTypes.BLOOD );
     }
 }

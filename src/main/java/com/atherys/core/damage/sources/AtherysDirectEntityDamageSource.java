@@ -1,22 +1,16 @@
 package com.atherys.core.damage.sources;
 
 import com.atherys.core.damage.AtherysDamageType;
-import org.spongepowered.api.event.cause.entity.damage.DamageType;
 import org.spongepowered.api.event.cause.entity.damage.source.common.AbstractEntityDamageSource;
 
 public final class AtherysDirectEntityDamageSource extends AbstractEntityDamageSource implements AtherysEntityDamageSource {
 
     public static class Builder extends AbstractEntityDamageSourceBuilder<AtherysDirectEntityDamageSource, Builder> {
 
-        @Override
-        @Deprecated
-        public Builder type ( DamageType type ) {
-            super.type( type );
-            return this;
-        }
+        private AtherysDamageType type;
 
-        public Builder type ( AtherysDamageType type ) {
-            super.type( type );
+        public Builder atherysType ( AtherysDamageType type ) {
+            this.type = type;
             return this;
         }
 
@@ -26,7 +20,15 @@ public final class AtherysDirectEntityDamageSource extends AbstractEntityDamageS
         }
     }
 
+    private AtherysDamageType type;
+
+    @Override
+    public AtherysDamageType getAltType() {
+        return type;
+    }
+
     protected AtherysDirectEntityDamageSource(Builder builder) {
         super(builder);
+        this.type = builder.type;
     }
 }
