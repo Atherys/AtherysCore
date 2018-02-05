@@ -28,9 +28,9 @@ public class DamageConfig {
     public AtherysDamageSource getSource ( EntityDamageSource originalSource ) {
 
         if ( originalSource instanceof IndirectEntityDamageSource ) {
-            Entity projectile = ((IndirectEntityDamageSource) originalSource).getIndirectSource();
+            Entity source = ((IndirectEntityDamageSource) originalSource).getIndirectSource();
 
-            Entity source = originalSource.getSource();
+            Entity projectile = originalSource.getSource();
 
             Optional<ItemStack> stack = InventoryUtils.getMainHand( source );
             if ( stack.isPresent() ) {
