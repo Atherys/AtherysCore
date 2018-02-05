@@ -9,6 +9,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.IndirectEntityDamageSource;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -20,6 +21,9 @@ public class DamageConfig {
 
     @Setting( "damage_per_type" )
     public Map<ItemType,AtherysDamageType> damageMap = new HashMap<>();
+    {
+        damageMap.put(ItemTypes.WOODEN_SWORD, AtherysDamageTypes.SLASH);
+    }
 
     public AtherysDamageSource getSource ( EntityDamageSource originalSource ) {
 
