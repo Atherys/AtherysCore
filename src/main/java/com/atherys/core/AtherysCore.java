@@ -46,6 +46,7 @@ public class AtherysCore {
     private void init() {
         instance = this;
         getLogger().info( AtherysDamageTypes.ARCANE.getName() );
+        game.getRegistry().registerModule( AtherysDamageType.class, AtherysDamageTypeRegistry.getInstance() );
 
         try {
             config = new CoreConfig();
@@ -61,8 +62,6 @@ public class AtherysCore {
             init = false;
             return;
         }
-
-        game.getRegistry().registerModule( AtherysDamageType.class, AtherysDamageTypeRegistry.getInstance() );
 
         init = true;
     }
