@@ -1,6 +1,5 @@
 package com.atherys.core;
 
-import com.atherys.core.commands.TempAtherysDamageCommand;
 import com.atherys.core.damage.AtherysDamageType;
 import com.atherys.core.damage.AtherysDamageTypeRegistry;
 import com.atherys.core.damage.AtherysDamageTypes;
@@ -27,7 +26,7 @@ public class AtherysCore {
     public static final String ID = "atheryscore";
     public static final String NAME = "A'therys Core";
     public static final String DESCRIPTION = "The core utilities used on the A'therys Horizons server.";
-    public static final String VERSION = "1.2.0";
+    public static final String VERSION = "1.2.1";
 
     private static AtherysCore instance;
 
@@ -69,7 +68,6 @@ public class AtherysCore {
     private void start() {
         PartyManager.getInstance().loadAll();
 
-        Sponge.getCommandManager().register( this, new TempAtherysDamageCommand().getSpec(), "atherysdmg" );
         Sponge.getCommandManager().register( this, new PartyCommand().getCommandSpec(), "party" );
 
         Sponge.getEventManager().registerListeners( this, new DamageListeners() );

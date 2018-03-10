@@ -3,6 +3,9 @@ package com.atherys.core.damage;
 import org.spongepowered.api.event.cause.entity.damage.DamageType;
 import org.spongepowered.api.util.annotation.CatalogedBy;
 
+/**
+ * A CatalogType extending {@link DamageType} for adding custom A'therys-related damage types.
+ */
 @CatalogedBy( AtherysDamageTypes.class )
 public class AtherysDamageType implements DamageType {
 

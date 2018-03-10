@@ -3,6 +3,9 @@ package com.atherys.core.damage.sources;
 import com.atherys.core.damage.AtherysDamageType;
 import org.spongepowered.api.event.cause.entity.damage.source.common.AbstractEntityDamageSource;
 
+/**
+ * The A'therys custom implementation of Sponge's {@link AbstractEntityDamageSource}
+ */
 public final class AtherysDirectEntityDamageSource extends AbstractEntityDamageSource implements AtherysEntityDamageSource {
 
     public static class Builder extends AbstractEntityDamageSourceBuilder<AtherysDirectEntityDamageSource, Builder> {

@@ -2,6 +2,9 @@ package com.atherys.core.damage;
 
 import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
 
+/**
+ * The Cataloguing class for {@link AtherysDamageType}
+ */
 public final class AtherysDamageTypes {
 
     private AtherysDamageTypes() {}

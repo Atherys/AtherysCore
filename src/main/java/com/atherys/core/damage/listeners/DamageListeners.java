@@ -17,7 +17,8 @@ public class DamageListeners {
         event.setCancelled( true );
         AtherysDamageSource newSource = AtherysCore.getConfig().DAMAGE.getSource ( source );
         event.getTargetEntity().damage( event.getBaseDamage(), newSource );
-        AtherysCore.getInstance().getLogger().info("Dealing " + event.getFinalDamage() + " " + newSource.getAltType().getName() + " damage");
+
+        //AtherysCore.getInstance().getLogger().info("Dealing " + event.getFinalDamage() + " " + newSource.getAltType().getName() + " damage");
     }
 
 }

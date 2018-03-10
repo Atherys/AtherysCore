@@ -9,6 +9,10 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.io.IOException;
 
+/**
+ * *DEPRECATED* A Gson {@link TypeAdapter} for Sponge's {@link Text}
+ */
+@Deprecated
 public class TextTypeAdapter extends TypeAdapter<Text> {
 
     static JsonParser parser = new JsonParser();

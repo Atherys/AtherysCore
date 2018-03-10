@@ -3,6 +3,9 @@ package com.atherys.core.database.mongo;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
+/**
+ * A configuration class to be used in conjunction with {@link com.atherys.core.utils.PluginConfig} for easily setting up a MongoDB configuration.
+ */
 @ConfigSerializable
 public class MongoDatabaseConfig {
 

@@ -16,6 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * This class is responsible for retrieving what sort of damage type different item types ought to be doing.
+ * The map itself is saved in a file config. See: {@link com.atherys.core.utils.PluginConfig}
+ */
 @ConfigSerializable
 public class DamageConfig {
 

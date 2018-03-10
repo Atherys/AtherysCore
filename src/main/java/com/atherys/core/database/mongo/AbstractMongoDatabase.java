@@ -8,6 +8,9 @@ import com.mongodb.client.MongoDatabase;
 
 import java.util.Arrays;
 
+/**
+ * An abstract implementation of {@link Database} using the MongoDB Java Driver
+ */
 public abstract class AbstractMongoDatabase implements Database<MongoDatabase> {
 
     private MongoDatabase db;

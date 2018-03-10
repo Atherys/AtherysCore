@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * The {@link CatalogRegistryModule} for {@link AtherysDamageType}
+ */
 public final class AtherysDamageTypeRegistry implements CatalogRegistryModule<AtherysDamageType> {
     private static final AtherysDamageTypeRegistry instance = new AtherysDamageTypeRegistry();
 
