@@ -18,7 +18,7 @@ public final class AtherysDirectEntityDamageSource extends AbstractEntityDamageS
         }
 
         @Override
-        public AtherysDirectEntityDamageSource build() throws IllegalStateException {
+        public AtherysDirectEntityDamageSource build () throws IllegalStateException {
             return new AtherysDirectEntityDamageSource( this );
         }
     }
@@ -26,12 +26,12 @@ public final class AtherysDirectEntityDamageSource extends AbstractEntityDamageS
     private AtherysDamageType type;
 
     @Override
-    public AtherysDamageType getAltType() {
+    public AtherysDamageType getAltType () {
         return type;
     }
 
-    protected AtherysDirectEntityDamageSource(Builder builder) {
-        super(builder);
+    protected AtherysDirectEntityDamageSource ( Builder builder ) {
+        super( builder );
         this.type = builder.type;
     }
 }

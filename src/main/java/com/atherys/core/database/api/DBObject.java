@@ -9,8 +9,9 @@ public interface DBObject {
 
     /**
      * The UUID of this object. All UUIDs must be unique to the object itself. No shared UUIDs between objects.
+     *
      * @return The UUID.
      */
-    UUID getUUID();
+    UUID getUUID ();
 
 }

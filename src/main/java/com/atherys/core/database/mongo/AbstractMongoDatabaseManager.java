@@ -17,6 +17,7 @@ import java.util.*;
 
 /**
  * An abstract implementation of {@link DatabaseManager} using the MongoDB Java Driver.
+ *
  * @param <T> the type of object which will be managed
  */
 public abstract class AbstractMongoDatabaseManager<T extends DBObject> implements DatabaseManager<T> {
@@ -26,35 +27,35 @@ public abstract class AbstractMongoDatabaseManager<T extends DBObject> implement
     private String collection;
     private AbstractMongoDatabase mongo;
 
-    private Map<UUID,T> cache = new HashMap<>();
+    private Map<UUID, T> cache = new HashMap<>();
 
-    protected AbstractMongoDatabaseManager( Logger logger, AbstractMongoDatabase mongoDatabase, String collectionName ) {
+    protected AbstractMongoDatabaseManager ( Logger logger, AbstractMongoDatabase mongoDatabase, String collectionName ) {
         this.collection = collectionName;
         this.mongo = mongoDatabase;
         this.logger = logger;
     }
 
-    protected Map<UUID,T> getCache() {
+    protected Map<UUID, T> getCache () {
         return cache;
     }
 
-    protected MongoCollection<Document> getCollection() {
+    protected MongoCollection<Document> getCollection () {
         return mongo.getDatabase().getCollection( collection );
     }
 
     @Override
     public void save ( T object ) {
         this.getCache().put( object.getUUID(), object );
-        toDocument(object).ifPresent( doc -> {
-            Bson update = new Document ( "$set", doc );
-            UpdateOptions options = new UpdateOptions().upsert(true);
+        toDocument( object ).ifPresent( doc -> {
+            Bson update = new Document( "$set", doc );
+            UpdateOptions options = new UpdateOptions().upsert( true );
 
             getCollection().updateOne(
                     Filters.eq( "_id", object.getUUID().toString() ),
                     update,
                     options
             );
-        });
+        } );
     }
 
     @Override
@@ -77,23 +78,23 @@ public abstract class AbstractMongoDatabaseManager<T extends DBObject> implement
         List<WriteModel<Document>> updates = new ArrayList<>();
 
         for ( T object : objects ) {
-            Optional<Document> doc = toDocument(object);
+            Optional<Document> doc = toDocument( object );
             if ( !doc.isPresent() ) continue;
 
             updates.add(
                     new UpdateOneModel<>(
                             new Document( "uuid", object.getUUID() ),
                             new Document( "$set", doc.get() ),
-                            new UpdateOptions().upsert(true)
+                            new UpdateOptions().upsert( true )
                     )
             );
         }
 
         if ( !updates.isEmpty() ) {
-            BulkWriteResult bulkWriteResult = getCollection().bulkWrite(updates);
+            BulkWriteResult bulkWriteResult = getCollection().bulkWrite( updates );
 
 
-            if (bulkWriteResult.wasAcknowledged()) {
+            if ( bulkWriteResult.wasAcknowledged() ) {
                 int mods = bulkWriteResult.getModifiedCount();
                 int inserts = bulkWriteResult.getInsertedCount();
                 int deletes = bulkWriteResult.getDeletedCount();
@@ -111,12 +112,12 @@ public abstract class AbstractMongoDatabaseManager<T extends DBObject> implement
     }
 
     @Override
-    public void loadAll() {
+    public void loadAll () {
         int found = 0;
         int loaded = 0;
 
         try ( MongoCursor<Document> cursor = getCollection().find().iterator() ) {
-            while (cursor.hasNext()) {
+            while ( cursor.hasNext() ) {
                 Optional<T> object = fromDocument( cursor.next() );
                 if ( object.isPresent() ) {
                     this.getCache().put( object.get().getUUID(), object.get() );
@@ -136,7 +137,7 @@ public abstract class AbstractMongoDatabaseManager<T extends DBObject> implement
 
     @Override
     public void removeAll ( Collection<T> objects ) {
-        objects.forEach(this::remove);
+        objects.forEach( this::remove );
     }
 
     protected abstract Optional<Document> toDocument ( T object );

@@ -24,15 +24,16 @@ import java.util.Optional;
 public class DamageConfig {
 
     @Setting( "damage_per_type" )
-    public Map<ItemType,AtherysDamageType> damageMap = new HashMap<>();
+    public Map<ItemType, AtherysDamageType> damageMap = new HashMap<>();
+
     {
-        damageMap.put(ItemTypes.WOODEN_SWORD, AtherysDamageTypes.SLASH);
+        damageMap.put( ItemTypes.WOODEN_SWORD, AtherysDamageTypes.SLASH );
     }
 
     public AtherysDamageSource getSource ( EntityDamageSource originalSource ) {
 
         if ( originalSource instanceof IndirectEntityDamageSource ) {
-            Entity source = ((IndirectEntityDamageSource) originalSource).getIndirectSource();
+            Entity source = ( (IndirectEntityDamageSource) originalSource ).getIndirectSource();
 
             Entity projectile = originalSource.getSource();
 

@@ -14,7 +14,7 @@ public class AtherysDamageType implements DamageType {
 
     private final DamageType primitive;
 
-    AtherysDamageType(String id, String name, DamageType primitive) {
+    AtherysDamageType ( String id, String name, DamageType primitive ) {
         this.id = id;
         this.name = name;
         this.primitive = primitive;
@@ -22,16 +22,16 @@ public class AtherysDamageType implements DamageType {
     }
 
     @Override
-    public String getId() {
+    public String getId () {
         return id;
     }
 
     @Override
-    public String getName() {
+    public String getName () {
         return name;
     }
 
-    public DamageType getPrimitive() {
+    public DamageType getPrimitive () {
         return primitive;
     }
 

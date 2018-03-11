@@ -16,16 +16,18 @@ public final class ViewManager {
 
     private Map<Class<? extends Viewable>, Class<? extends View>> views = new HashMap<>();
 
-    private ViewManager() {}
+    private ViewManager () {
+    }
 
-    public static ViewManager getInstance() {
+    public static ViewManager getInstance () {
         return instance;
     }
 
     /**
      * Register a new {@link Viewable}-{@link View} relationship.
+     *
      * @param clazz The Viewable class.
-     * @param view The View class.
+     * @param view  The View class.
      */
     public <T extends View<V>, V extends Viewable<T>> void registerView ( Class<V> clazz, Class<T> view ) {
         views.put( clazz, view );
@@ -33,6 +35,7 @@ public final class ViewManager {
 
     /**
      * Removes an already-existing {@link Viewable}-{@link View} relationship.
+     *
      * @param clazz The Viewable class.
      */
     public <T extends View<V>, V extends Viewable<T>> void unregisterView ( Class<V> clazz ) {
@@ -41,10 +44,11 @@ public final class ViewManager {
 
     /**
      * Uses reflection to create an appropriate {@link View} for the given {@link Viewable} based upon a registered Viewable-View relationship.
+     *
      * @param object The viewable
      * @return The view. Null if such is not registered or a problem with instantiation occurred.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     @Nullable
     <T extends View<V>, V extends Viewable<T>> T createView ( V object ) {
         try {
@@ -55,7 +59,7 @@ public final class ViewManager {
 
             return constructor.newInstance( object );
 
-        } catch (InstantiationException e ) {
+        } catch ( InstantiationException e ) {
             // TODO: Handle
             e.printStackTrace();
         } catch ( IllegalAccessException e ) {

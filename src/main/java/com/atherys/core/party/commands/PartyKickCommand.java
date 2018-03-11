@@ -18,9 +18,9 @@ public class PartyKickCommand extends UserCommand {
 
     @Nonnull
     @Override
-    public CommandResult execute( @Nonnull User source, @Nonnull CommandContext args ) throws CommandException {
+    public CommandResult execute ( @Nonnull User source, @Nonnull CommandContext args ) throws CommandException {
 
-        Optional<User> kickedUser = args.getOne("kickedPlayer");
+        Optional<User> kickedUser = args.getOne( "kickedPlayer" );
 
         if ( !kickedUser.isPresent() ) return CommandResult.empty();
 
@@ -46,20 +46,20 @@ public class PartyKickCommand extends UserCommand {
                     PartyMsg.error( source, "That player is not in your party." );
                 } else {
                     party.removePlayer( kickedUser.get() );
-                    PartyMsg.error ( party, kickedUser.get().getName(), " has been kicked from the party." );
+                    PartyMsg.error( party, kickedUser.get().getName(), " has been kicked from the party." );
                 }
-            });
-        });
+            } );
+        } );
 
         return CommandResult.success();
     }
 
-    public CommandSpec getCommandSpec() {
+    public CommandSpec getCommandSpec () {
         return CommandSpec.builder()
                 .permission( "atherys.core.party.kick" )
                 .executor( this )
                 .arguments(
-                        GenericArguments.player( Text.of("kickedPlayer") )
+                        GenericArguments.player( Text.of( "kickedPlayer" ) )
                 )
                 .build();
     }

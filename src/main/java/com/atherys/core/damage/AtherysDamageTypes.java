@@ -7,7 +7,8 @@ import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
  */
 public final class AtherysDamageTypes {
 
-    private AtherysDamageTypes() {}
+    private AtherysDamageTypes () {
+    }
 
     // Melee
     public static final AtherysDamageType BLUNT = new AtherysDamageType( "atherys:blunt", "Blunt", DamageTypes.ATTACK );
@@ -30,7 +31,7 @@ public final class AtherysDamageTypes {
 
     public static final AtherysDamageType ARCANE = new AtherysDamageType( "atherys:arcane", "Arcane", DamageTypes.MAGIC );
 
-    public static final AtherysDamageType SHOCK = new AtherysDamageType ( "atherys:shock", "Shock", DamageTypes.MAGIC );
+    public static final AtherysDamageType SHOCK = new AtherysDamageType( "atherys:shock", "Shock", DamageTypes.MAGIC );
 
     public static final AtherysDamageType NATURE = new AtherysDamageType( "atherys:nature", "Nature", DamageTypes.MAGIC );
 

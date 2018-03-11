@@ -8,11 +8,11 @@ import org.spongepowered.api.entity.living.player.User;
 
 import javax.annotation.Nonnull;
 
-public class PartyLeaderCommand extends UserCommand{
+public class PartyLeaderCommand extends UserCommand {
 
     @Nonnull
     @Override
-    public CommandResult execute(@Nonnull User source, @Nonnull CommandContext args) throws CommandException {
+    public CommandResult execute ( @Nonnull User source, @Nonnull CommandContext args ) throws CommandException {
         return null;
     }
 

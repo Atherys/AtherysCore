@@ -10,8 +10,9 @@ public interface AtherysDamageSource extends DamageSource {
 
     /**
      * The {@link AtherysDamageType} contained within this DamageSource.
+     *
      * @return
      */
-    AtherysDamageType getAltType();
+    AtherysDamageType getAltType ();
 
 }

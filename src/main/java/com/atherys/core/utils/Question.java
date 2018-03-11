@@ -19,21 +19,20 @@ import java.util.function.Consumer;
  */
 public class Question {
 
-    public static Text QUESTION_DECORATION_TOP = Text.of(TextColors.DARK_AQUA, "{", TextColors.AQUA, "Question", TextColors.DARK_AQUA, "}\n");
-    public static Text QUESTION_DECORATION_BOT = Text.of(TextColors.DARK_AQUA, "\n");
+    public static Text QUESTION_DECORATION_TOP = Text.of( TextColors.DARK_AQUA, "{", TextColors.AQUA, "Question", TextColors.DARK_AQUA, "}\n" );
+    public static Text QUESTION_DECORATION_BOT = Text.of( TextColors.DARK_AQUA, "\n" );
 
-    private static Map<UUID,Question> questions = new HashMap<>();
+    private static Map<UUID, Question> questions = new HashMap<>();
 
     public static class Builder {
 
         private Question question;
 
-        private Builder( Text question ) {
+        private Builder ( Text question ) {
             this.question = new Question( question );
         }
 
         /**
-         *
          * @param answer A possible {@link Answer} to this question.
          * @return The builder for chaining.
          */
@@ -43,10 +42,9 @@ public class Question {
         }
 
         /**
-         *
          * @return The {@link Question} object.
          */
-        public Question build() {
+        public Question build () {
             return question;
         }
 
@@ -57,51 +55,49 @@ public class Question {
         private Text text;
         private Consumer<Player> action;
 
-        private Answer(Text text) {
+        private Answer ( Text text ) {
             this.text = text;
         }
 
-        private Answer(Text text, Consumer<Player> action) {
+        private Answer ( Text text, Consumer<Player> action ) {
             this.text = text;
             this.action = action;
         }
 
         /**
          * Factory method for creating an answer.
-         * @param name The display-text of this answer. This will be shown to the player as a clickable text object.
+         *
+         * @param name   The display-text of this answer. This will be shown to the player as a clickable text object.
          * @param action The result of this answer. This will be executed in the event that the player clicks this answer.
          * @return The answer.
          */
-        public static Answer of(Text name, Consumer<Player> action) {
-            return new Answer(name, action);
+        public static Answer of ( Text name, Consumer<Player> action ) {
+            return new Answer( name, action );
         }
 
         /**
-         *
          * @return The display text of this answer.
          */
-        public Text getText() {
+        public Text getText () {
             return text;
         }
 
         /**
-         *
          * @return The consumer which will be executed upon answering a question with this answer.
          */
-        Consumer<Player> getAction() {
+        Consumer<Player> getAction () {
             return action;
         }
 
-        public void setAction(Consumer<Player> action) {
+        public void setAction ( Consumer<Player> action ) {
             this.action = action;
         }
 
         /**
-         *
          * @param source The player who has answered the question
          */
-        public void execute(Player source) {
-            action.accept(source);
+        public void execute ( Player source ) {
+            action.accept( source );
         }
     }
 
@@ -116,43 +112,44 @@ public class Question {
         this.id = UUID.randomUUID();
     }
 
-    public static Builder of(Text question) {
+    public static Builder of ( Text question ) {
         return new Builder( question );
     }
 
-    public UUID getId() {
+    public UUID getId () {
         return id;
     }
 
-    public Text getQuestion() {
+    public Text getQuestion () {
         return question;
     }
 
-    public List<Answer> getAnswers() {
+    public List<Answer> getAnswers () {
         return answers;
     }
 
     void addAnswer ( Answer answer ) {
-        this.answers.add(answer);
+        this.answers.add( answer );
     }
 
     /**
      * Get the question as an interactable Text object. Above it will be placed the QUESTION_DECORATION_TOP, and after it the QUESTION_DECORATION_BOT.
+     *
      * @return the Text object.
      */
-    public Text asText() {
+    public Text asText () {
         Text.Builder builder = Text.builder();
         builder.append( QUESTION_DECORATION_TOP );
         builder.append( question );
-        builder.append( Text.of("\n") );
+        builder.append( Text.of( "\n" ) );
 
         for ( Answer answer : answers ) {
             builder.append( Text.of( TextStyles.RESET, TextColors.RESET, "[" ) );
             builder.append( Text.builder().append( answer.getText() )
-                    .onHover( TextActions.showText( Text.of("Click to answer") ) )
-                    .onClick( TextActions.executeCallback(source -> {
-                                if ( !(source instanceof Player) ) {
-                                    source.sendMessage( Text.of(TextColors.RED, "Must be a player to reply to a question.") );
+                    .onHover( TextActions.showText( Text.of( "Click to answer" ) ) )
+                    .onClick( TextActions.executeCallback( source -> {
+                                if ( !( source instanceof Player ) ) {
+                                    source.sendMessage( Text.of( TextColors.RED, "Must be a player to reply to a question." ) );
                                     return;
                                 }
 
@@ -160,10 +157,10 @@ public class Question {
                                     answer.execute( (Player) source );
                                     questions.remove( this.id );
                                 } else {
-                                    source.sendMessage( Text.of(TextColors.RED, "You have already responded to that question!") );
+                                    source.sendMessage( Text.of( TextColors.RED, "You have already responded to that question!" ) );
                                 }
                             }
-                    ))
+                    ) )
                     .build() );
             builder.append( Text.of( TextStyles.RESET, TextColors.RESET, "] " ) );
         }
@@ -174,6 +171,7 @@ public class Question {
 
     /**
      * Poll a player with this question via chat message ( See: {@link #asText()} ).
+     *
      * @param player The player to be polled.
      */
     public void pollChat ( @Nonnull Player player ) {
@@ -183,6 +181,7 @@ public class Question {
 
     /**
      * Poll a player with this question via book view.
+     *
      * @param player The player to be polled.
      */
     public void pollBook ( @Nonnull Player player ) {
@@ -192,15 +191,18 @@ public class Question {
 
     /**
      * Poll a player with an interactable Text object. Clicking it will result in a BookView appearing and the player having to respond to the question.
-     * @param player The player to be polled.
+     *
+     * @param player     The player to be polled.
      * @param buttonText The display text of the button.
      */
     public void pollViewButton ( @Nonnull Player player, @Nonnull Text buttonText ) {
         questions.put( id, this );
         Text text = Text.builder()
-                .append(buttonText)
-                .onHover(TextActions.showText(Text.of(TextColors.AQUA, "Click to View")))
-                .onClick(TextActions.executeCallback(source -> { if ( source instanceof Player ) this.pollBook((Player) source); }))
+                .append( buttonText )
+                .onHover( TextActions.showText( Text.of( TextColors.AQUA, "Click to View" ) ) )
+                .onClick( TextActions.executeCallback( source -> {
+                    if ( source instanceof Player ) this.pollBook( (Player) source );
+                } ) )
                 .build();
 
         player.sendMessage( text );

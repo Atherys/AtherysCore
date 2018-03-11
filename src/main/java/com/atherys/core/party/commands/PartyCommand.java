@@ -14,7 +14,7 @@ import org.spongepowered.api.text.format.TextColors;
 public class PartyCommand extends UserCommand {
 
     @Override
-    public CommandResult execute(User user, CommandContext args) throws CommandException {
+    public CommandResult execute ( User user, CommandContext args ) throws CommandException {
 
         PartyManager.getInstance().getPlayerParty( user ).ifPresent( party -> {
             Text.Builder partyMembers = Text.builder();
@@ -25,16 +25,16 @@ public class PartyCommand extends UserCommand {
                 } else {
                     partyMembers.append( Text.of( TextColors.DARK_AQUA, partyMember.getName(), "; " ) );
                 }
-            });
+            } );
 
             PartyMsg.info( user, "Party Members: ", partyMembers.build() );
-        });
+        } );
 
         return CommandResult.success();
     }
 
 
-    public CommandSpec getCommandSpec() {
+    public CommandSpec getCommandSpec () {
         return CommandSpec.builder()
                 .permission( "atherys.core.party" )
                 .executor( this )

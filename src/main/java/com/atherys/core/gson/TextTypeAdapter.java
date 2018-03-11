@@ -18,13 +18,13 @@ public class TextTypeAdapter extends TypeAdapter<Text> {
     static JsonParser parser = new JsonParser();
 
     @Override
-    public void write(JsonWriter out, Text value) throws IOException {
-        out.jsonValue( TextSerializers.JSON.serialize(value) );
+    public void write ( JsonWriter out, Text value ) throws IOException {
+        out.jsonValue( TextSerializers.JSON.serialize( value ) );
     }
 
     @Override
-    public Text read(JsonReader in) throws IOException {
-        String textJson = parser.parse(in).toString();
+    public Text read ( JsonReader in ) throws IOException {
+        String textJson = parser.parse( in ).toString();
 
         return TextSerializers.JSON.deserialize( textJson );
     }

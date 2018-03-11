@@ -14,19 +14,19 @@ import java.util.Optional;
 public final class AtherysDamageTypeRegistry implements CatalogRegistryModule<AtherysDamageType> {
     private static final AtherysDamageTypeRegistry instance = new AtherysDamageTypeRegistry();
 
-    protected Map<String,AtherysDamageType> flags = new HashMap<>();
+    protected Map<String, AtherysDamageType> flags = new HashMap<>();
 
     @Override
     public Optional<AtherysDamageType> getById ( @Nonnull String id ) {
-        return Optional.ofNullable( flags.get(id) );
+        return Optional.ofNullable( flags.get( id ) );
     }
 
     @Override
-    public Collection<AtherysDamageType> getAll() {
+    public Collection<AtherysDamageType> getAll () {
         return flags.values();
     }
 
-    public static AtherysDamageTypeRegistry getInstance() {
+    public static AtherysDamageTypeRegistry getInstance () {
         return instance;
     }
 }
