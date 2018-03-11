@@ -1,0 +1,15 @@
+death.entity.atherys:blunt=%1 was beaten to a pulp by %2 using %3
+death.entity.atherys:slash=%1 was cut to ribbons by %2 using %3
+death.entity.atherys:stab=%1 was turned into swiss cheese by %2 using %3
+death.entity.atherys:unarmed=%1 was clobbered by %2
+death.entity.atherys:pierce=%1 was turned into a pincushion by %2 using %3
+death.entity.atherys:ballistic=%1 was gunned down by %2 using %3
+death.entity.atherys:fire=%1 was incinerated by %2
+death.entity.atherys:ice=%1 was put on ice by %2
+death.entity.atherys:arcane=%1 was emulsified by %2
+death.entity.atherys:shock=%1 suffered a shocking defeat at the hands of %2.
+death.entity.atherys:nature=%1 was turned to mulch by %2
+death.entity.atherys:mental=%1 was turned into a basket case by %2
+death.entity.atherys:radiant=%1 was cleansed in radiant light by  %2
+death.entity.atherys:necrotic=%1 wilted by %2’s vile magic
+death.entity.atherys:blood=%1 was avasculated by %2

@@ -23,8 +23,8 @@ public class PartyInviteCommand extends UserCommand {
 
     @Nonnull
     @Override
-    public CommandResult execute(@Nonnull User user, @Nonnull CommandContext args) throws CommandException {
-        Optional<Player> invitee = args.getOne("invitedPlayer");
+    public CommandResult execute ( @Nonnull User user, @Nonnull CommandContext args ) throws CommandException {
+        Optional<Player> invitee = args.getOne( "invitedPlayer" );
         if ( !invitee.isPresent() ) return CommandResult.empty();
 
         // if invitee is already in another party, don't invite
@@ -39,12 +39,12 @@ public class PartyInviteCommand extends UserCommand {
             // If player has party and is leader of that party, invitee will be invited to player's party
             Party party = playerParty.get();
 
-            Question q = Question.of(  Text.of ( user.getName(), " has invited you to their party. Would you like to join?" ) )
-                    .addAnswer( Question.Answer.of( Text.of( TextStyles.BOLD, TextColors.DARK_GREEN, "Yes" ), (respondent) -> {
+            Question q = Question.of( Text.of( user.getName(), " has invited you to their party. Would you like to join?" ) )
+                    .addAnswer( Question.Answer.of( Text.of( TextStyles.BOLD, TextColors.DARK_GREEN, "Yes" ), ( respondent ) -> {
                         party.addPlayer( respondent );
                         PartyMsg.info( party, respondent.getName(), " has joined your party!" );
-                    }))
-                    .addAnswer( Question.Answer.of( Text.of( TextStyles.BOLD, TextColors.DARK_RED, "No" ), (respondent) -> PartyMsg.error(user, respondent.getName(), " has refused to join your party.")))
+                    } ) )
+                    .addAnswer( Question.Answer.of( Text.of( TextStyles.BOLD, TextColors.DARK_RED, "No" ), ( respondent ) -> PartyMsg.error( user, respondent.getName(), " has refused to join your party." ) ) )
                     .build();
 
             q.pollChat( invitee.get() );
@@ -52,8 +52,8 @@ public class PartyInviteCommand extends UserCommand {
         } else {
             // If player does not have a party, and neither does invitee, then the party will be created when invitee accepts party invite
 
-            Question q = Question.of(  Text.of ( user.getName(), " has invited you to their party. Would you like to join?" ) )
-                    .addAnswer( Question.Answer.of( Text.of( TextStyles.BOLD, TextColors.DARK_GREEN, "Yes" ), (respondent) -> {
+            Question q = Question.of( Text.of( user.getName(), " has invited you to their party. Would you like to join?" ) )
+                    .addAnswer( Question.Answer.of( Text.of( TextStyles.BOLD, TextColors.DARK_GREEN, "Yes" ), ( respondent ) -> {
 
                         if ( !user.isOnline() ) {
                             // If when party invite is accepted, player is offline, party will not be created.
@@ -63,8 +63,8 @@ public class PartyInviteCommand extends UserCommand {
 
                         Party party = Party.of( user, invitee.get() );
                         PartyMsg.info( party, "Your party has been created! Do ", TextColors.GREEN, TextStyles.BOLD, "/party", TextColors.DARK_AQUA, TextStyles.RESET, " for a list of members." );
-                    }))
-                    .addAnswer( Question.Answer.of( Text.of( TextStyles.BOLD, TextColors.DARK_RED, "No" ), (respondent) -> PartyMsg.error(user, respondent.getName(), " has refused to join your party.")))
+                    } ) )
+                    .addAnswer( Question.Answer.of( Text.of( TextStyles.BOLD, TextColors.DARK_RED, "No" ), ( respondent ) -> PartyMsg.error( user, respondent.getName(), " has refused to join your party." ) ) )
                     .build();
 
             q.pollChat( invitee.get() );
@@ -73,12 +73,12 @@ public class PartyInviteCommand extends UserCommand {
         return CommandResult.success();
     }
 
-    public CommandSpec getCommandSpec() {
+    public CommandSpec getCommandSpec () {
         return CommandSpec.builder()
                 .permission( "atherys.core.party.invite" )
                 .executor( this )
                 .arguments(
-                        GenericArguments.player( Text.of("invitedPlayer") )
+                        GenericArguments.player( Text.of( "invitedPlayer" ) )
                 )
                 .build();
     }

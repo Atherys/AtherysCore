@@ -13,9 +13,9 @@ public abstract class UserCommand implements CommandExecutor {
 
     @Override
     @Nonnull
-    public CommandResult execute( @Nonnull CommandSource src, @Nonnull CommandContext args) throws CommandException {
+    public CommandResult execute ( @Nonnull CommandSource src, @Nonnull CommandContext args ) throws CommandException {
         if ( !( src instanceof User ) ) return CommandResult.empty();
-        User user = ( User ) src;
+        User user = (User) src;
         return execute( user, args );
     }
 

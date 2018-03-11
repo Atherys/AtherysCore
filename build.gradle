@@ -1,17 +1,42 @@
 group 'com.atherys'
-version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'maven'
 
 sourceCompatibility = 1.8
 
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/"
+            exclude "java/**"
+        }
+    }
+}
+
 repositories {
     mavenCentral()
-    maven { url = 'http://repo.spongepowered.org/maven' }
+    maven {
+        name = 'sponge'
+        url = 'http://repo.spongepowered.org/maven'
+    }
 }
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT',
+    compile 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT',
             'org.mongodb:mongodb-driver:3.5.0'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "https://nexus.atherys.com/repository/maven-releases/") {
+                authentication(userName: "gitlab", password: "YaWK3BT3d3mpJYA2")
+            }
+            pom.version = "1.2.1"
+            pom.artifactId = "${rootProject.name}"
+            pom.groupId = "com.atherys"
+        }
+    }
 }
