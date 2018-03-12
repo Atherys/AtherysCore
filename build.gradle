@@ -32,16 +32,3 @@ dependencies {
 
     shade   'org.mongodb:mongodb-driver:3.5.0'
 }
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "https://nexus.atherys.com/repository/maven-releases/") {
-                authentication(userName: "gitlab", password: "YaWK3BT3d3mpJYA2")
-            }
-            pom.version = "1.2.1"
-            pom.artifactId = "${rootProject.name}"
-            pom.groupId = "com.atherys"
-        }
-    }
-}
