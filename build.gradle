@@ -36,3 +36,9 @@ dependencies {
     compile 'org.mongodb:mongodb-driver:3.5.0'
     compile 'com.j256:ormlite:3.0'
 }
+
+shadowJar {
+    relocate 'org.bson', 'com.atherys.libs.org.bson'
+    relocate 'com.mongodb', 'com.atherys.libs.com.mongodb'
+    relocate 'com.j256', 'com.atherys.libs.com.j256'
+}
