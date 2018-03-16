@@ -1,7 +1,16 @@
 group 'com.atherys'
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
-apply plugin: 'maven'
 
 sourceCompatibility = 1.8
 
@@ -14,11 +23,6 @@ sourceSets {
     }
 }
 
-configurations {
-    shade
-    compile.extendsFrom shade
-}
-
 repositories {
     mavenCentral()
     maven {
@@ -28,7 +32,6 @@ repositories {
 }
 
 dependencies {
-    compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
-
-    shade   'org.mongodb:mongodb-driver:3.5.0'
+    shadow 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
+    compile  'org.mongodb:mongodb-driver:3.5.0'
 }
