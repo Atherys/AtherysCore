@@ -12,6 +12,6 @@ public interface Database<T> {
      *
      * @return the database object
      */
-    T getDatabase ();
+    T getDatabase();
 
 }

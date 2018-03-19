@@ -42,7 +42,7 @@ public class AtherysCore {
 
     private static CoreConfig config;
 
-    private void init () {
+    private void init() {
         instance = this;
 
         // initialize the static constructor...
@@ -68,7 +68,7 @@ public class AtherysCore {
         init = true;
     }
 
-    private void start () {
+    private void start() {
         PartyManager.getInstance().loadAll();
 
         Sponge.getCommandManager().register( this, new PartyCommand().getCommandSpec(), "party" );
@@ -77,42 +77,42 @@ public class AtherysCore {
 
     }
 
-    private void stop () {
+    private void stop() {
         PartyManager.getInstance().saveAll();
     }
 
     @Listener( order = Order.EARLY )
-    public void onInit ( GameInitializationEvent event ) {
+    public void onInit( GameInitializationEvent event ) {
         init();
     }
 
     @Listener
-    public void onStart ( GameStartingServerEvent event ) {
+    public void onStart( GameStartingServerEvent event ) {
         if ( init ) start();
     }
 
     @Listener
-    public void onStop ( GameStoppingServerEvent event ) {
+    public void onStop( GameStoppingServerEvent event ) {
         if ( init ) stop();
     }
 
-    public static AtherysCore getInstance () {
+    public static AtherysCore getInstance() {
         return instance;
     }
 
-    public Logger getLogger () {
+    public Logger getLogger() {
         return logger;
     }
 
-    public Game getGame () {
+    public Game getGame() {
         return game;
     }
 
-    public static CoreConfig getConfig () {
+    public static CoreConfig getConfig() {
         return config;
     }
 
-    public String getWorkingDirectory () {
+    public String getWorkingDirectory() {
         return configDirectory;
     }
 }

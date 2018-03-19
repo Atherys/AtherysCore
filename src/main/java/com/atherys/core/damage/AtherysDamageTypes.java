@@ -7,7 +7,7 @@ import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
  */
 public final class AtherysDamageTypes {
 
-    private AtherysDamageTypes () {
+    private AtherysDamageTypes() {
     }
 
     // Melee

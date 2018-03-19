@@ -23,7 +23,7 @@ public class PartyInviteCommand extends UserCommand {
 
     @Nonnull
     @Override
-    public CommandResult execute ( @Nonnull User user, @Nonnull CommandContext args ) throws CommandException {
+    public CommandResult execute( @Nonnull User user, @Nonnull CommandContext args ) throws CommandException {
         Optional<Player> invitee = args.getOne( "invitedPlayer" );
         if ( !invitee.isPresent() ) return CommandResult.empty();
 
@@ -73,7 +73,7 @@ public class PartyInviteCommand extends UserCommand {
         return CommandResult.success();
     }
 
-    public CommandSpec getCommandSpec () {
+    public CommandSpec getCommandSpec() {
         return CommandSpec.builder()
                 .permission( "atherys.core.party.invite" )
                 .executor( this )

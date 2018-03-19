@@ -1,6 +1,5 @@
 package com.atherys.core.gson;
 
-import com.atherys.core.AtherysCore;
 import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -18,16 +17,16 @@ public class TextTypeAdapter extends TypeAdapter<Text> {
     static JsonParser parser = new JsonParser();
 
     @Override
-    public void write ( JsonWriter out, Text value ) throws IOException {
+    public void write( JsonWriter out, Text value ) throws IOException {
         String textJson = TextSerializers.JSON.serialize( value );
-        AtherysCore.getInstance().getLogger().info( "Write: " + textJson );
+        //AtherysCore.getInstance().getLogger().info( "Write: " + textJson ); // DEBUG
         out.jsonValue( textJson );
     }
 
     @Override
-    public Text read ( JsonReader in ) throws IOException {
+    public Text read( JsonReader in ) throws IOException {
         String textJson = parser.parse( in ).toString();
-        AtherysCore.getInstance().getLogger().info( "Read: " + textJson );
+        //AtherysCore.getInstance().getLogger().info( "Read: " + textJson ); // DEBUG
         return TextSerializers.JSON.deserialize( textJson );
     }
 

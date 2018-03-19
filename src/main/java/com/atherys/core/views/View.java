@@ -17,6 +17,6 @@ public interface View<T extends Viewable> {
      *
      * @param player The player this view will be displayed to.
      */
-    void show ( Player player );
+    void show( Player player );
 
 }

@@ -18,7 +18,7 @@ public final class CoreConfig extends PluginConfig {
     @Setting( "damage" )
     public DamageConfig DAMAGE = new DamageConfig();
 
-    CoreConfig () throws IOException {
+    CoreConfig() throws IOException {
         super( AtherysCore.getInstance().getWorkingDirectory(), "config.conf" );
     }
 }

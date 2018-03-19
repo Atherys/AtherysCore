@@ -11,7 +11,7 @@ import org.spongepowered.api.entity.living.player.User;
 
 public class PartyLeaveCommand extends UserCommand {
     @Override
-    public CommandResult execute ( User user, CommandContext args ) throws CommandException {
+    public CommandResult execute( User user, CommandContext args ) throws CommandException {
 
         if ( !PartyManager.getInstance().hasPlayerParty( user ) ) {
             PartyMsg.info( user, "You are not in a party." );
@@ -27,7 +27,7 @@ public class PartyLeaveCommand extends UserCommand {
         return CommandResult.success();
     }
 
-    public CommandSpec getCommandSpec () {
+    public CommandSpec getCommandSpec() {
         return CommandSpec.builder()
                 .permission( "atherys.core.party.leave" )
                 .executor( this )

@@ -14,7 +14,7 @@ import org.spongepowered.api.text.format.TextColors;
 public class PartyCommand extends UserCommand {
 
     @Override
-    public CommandResult execute ( User user, CommandContext args ) throws CommandException {
+    public CommandResult execute( User user, CommandContext args ) throws CommandException {
 
         PartyManager.getInstance().getPlayerParty( user ).ifPresent( party -> {
             Text.Builder partyMembers = Text.builder();
@@ -34,7 +34,7 @@ public class PartyCommand extends UserCommand {
     }
 
 
-    public CommandSpec getCommandSpec () {
+    public CommandSpec getCommandSpec() {
         return CommandSpec.builder()
                 .permission( "atherys.core.party" )
                 .executor( this )

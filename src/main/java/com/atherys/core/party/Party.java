@@ -21,11 +21,11 @@ public class Party implements DBObject {
 
     private UUID leader;
 
-    Party ( UUID uuid ) {
+    Party( UUID uuid ) {
         this.partyUUID = uuid;
     }
 
-    private Party ( User... members ) {
+    private Party( User... members ) {
         if ( members.length == 0 ) return;
 
         partyUUID = UUID.randomUUID();
@@ -44,7 +44,7 @@ public class Party implements DBObject {
      * @param player The party leader
      * @return The party instance
      */
-    public static Party fromLeader ( User player ) {
+    public static Party fromLeader( User player ) {
         return new Party( player );
     }
 
@@ -55,7 +55,7 @@ public class Party implements DBObject {
      * @param members The remaining member of the party, EXCLUDING the leader.
      * @return The party instance
      */
-    public static Party of ( User leader, User... members ) {
+    public static Party of( User leader, User... members ) {
         Party party = Party.fromLeader( leader );
 
         for ( User player : members ) {
@@ -71,7 +71,7 @@ public class Party implements DBObject {
      * @return The UUID of the party.
      */
     @Override
-    public UUID getUUID () {
+    public UUID getUUID() {
         return partyUUID;
     }
 
@@ -81,7 +81,7 @@ public class Party implements DBObject {
      * @param player The player to be looked up.
      * @return Whether or not this player is in the party.
      */
-    public boolean hasPlayer ( User player ) {
+    public boolean hasPlayer( User player ) {
         return PartyManager.getInstance().hasPlayerParty( player );
     }
 
@@ -92,7 +92,7 @@ public class Party implements DBObject {
      *
      * @param player The player to be added.
      */
-    public void addPlayer ( User player ) {
+    public void addPlayer( User player ) {
         if ( !hasPlayer( player ) ) {
             PartyManager.getInstance().setPlayerParty( player, this );
         }
@@ -105,7 +105,7 @@ public class Party implements DBObject {
      *
      * @param player The player to be removed.
      */
-    public void removePlayer ( User player ) {
+    public void removePlayer( User player ) {
         PartyManager.getInstance().resetPlayerParty( player );
 
         List<User> members = getMembers();
@@ -126,7 +126,7 @@ public class Party implements DBObject {
      * @param player The player to be checked
      * @return Whether or not the player is the leader of this party.
      */
-    public boolean isLeader ( User player ) {
+    public boolean isLeader( User player ) {
         return leader.equals( player.getUniqueId() );
     }
 
@@ -136,7 +136,7 @@ public class Party implements DBObject {
      * @return The leader {@link User} of this party.
      */
     @Nullable
-    public User getLeader () {
+    public User getLeader() {
         return UserUtils.getUser( leader ).orElse( null );
     }
 
@@ -145,7 +145,7 @@ public class Party implements DBObject {
      *
      * @param newLeader The new leader of the party.
      */
-    public void setLeader ( User newLeader ) {
+    public void setLeader( User newLeader ) {
         leader = newLeader.getUniqueId();
     }
 
@@ -154,14 +154,14 @@ public class Party implements DBObject {
      *
      * @return A list of {@link User}s who are associated with this party.
      */
-    public List<User> getMembers () {
+    public List<User> getMembers() {
         return PartyManager.getInstance().getPartyMembers( this );
     }
 
     /**
      * Removes this party using {@link PartyManager#removeParty(Party)}.
      */
-    public void remove () {
+    public void remove() {
         PartyManager.getInstance().removeParty( this );
     }
 

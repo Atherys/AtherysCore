@@ -7,7 +7,7 @@ public abstract class AbstractView<T extends Viewable<V>, V extends View<T>> imp
 
     protected T object;
 
-    protected AbstractView ( T object ) {
+    protected AbstractView( T object ) {
         this.object = object;
     }
 

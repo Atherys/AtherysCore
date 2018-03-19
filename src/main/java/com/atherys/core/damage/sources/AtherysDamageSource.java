@@ -13,6 +13,6 @@ public interface AtherysDamageSource extends DamageSource {
      *
      * @return
      */
-    AtherysDamageType getAltType ();
+    AtherysDamageType getAltType();
 
 }

@@ -16,10 +16,10 @@ public final class ViewManager {
 
     private Map<Class<? extends Viewable>, Class<? extends View>> views = new HashMap<>();
 
-    private ViewManager () {
+    private ViewManager() {
     }
 
-    public static ViewManager getInstance () {
+    public static ViewManager getInstance() {
         return instance;
     }
 
@@ -29,7 +29,7 @@ public final class ViewManager {
      * @param clazz The Viewable class.
      * @param view  The View class.
      */
-    public <T extends View<V>, V extends Viewable<T>> void registerView ( Class<V> clazz, Class<T> view ) {
+    public <T extends View<V>, V extends Viewable<T>> void registerView( Class<V> clazz, Class<T> view ) {
         views.put( clazz, view );
     }
 
@@ -38,7 +38,7 @@ public final class ViewManager {
      *
      * @param clazz The Viewable class.
      */
-    public <T extends View<V>, V extends Viewable<T>> void unregisterView ( Class<V> clazz ) {
+    public <T extends View<V>, V extends Viewable<T>> void unregisterView( Class<V> clazz ) {
         views.remove( clazz );
     }
 
@@ -50,9 +50,9 @@ public final class ViewManager {
      */
     @SuppressWarnings( "unchecked" )
     @Nullable
-    <T extends View<V>, V extends Viewable<T>> T createView ( V object ) {
+    <T extends View<V>, V extends Viewable<T>> T createView( V object ) {
         try {
-            Class<T> view = (Class<T>) views.get( object.getClass() );
+            Class<T> view = ( Class<T> ) views.get( object.getClass() );
             if ( view == null ) return null;
 
             Constructor<T> constructor = view.getConstructor( object.getClass() );

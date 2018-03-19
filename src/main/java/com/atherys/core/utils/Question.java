@@ -28,7 +28,7 @@ public final class Question {
 
         private Question question;
 
-        private Builder ( Text question ) {
+        private Builder( Text question ) {
             this.question = new Question( question );
         }
 
@@ -36,7 +36,7 @@ public final class Question {
          * @param answer A possible {@link Answer} to this question.
          * @return The builder for chaining.
          */
-        public Builder addAnswer ( Answer answer ) {
+        public Builder addAnswer( Answer answer ) {
             question.addAnswer( answer );
             return this;
         }
@@ -44,7 +44,7 @@ public final class Question {
         /**
          * @return The {@link Question} object.
          */
-        public Question build () {
+        public Question build() {
             return question;
         }
 
@@ -55,11 +55,11 @@ public final class Question {
         private Text text;
         private Consumer<Player> action;
 
-        private Answer ( Text text ) {
+        private Answer( Text text ) {
             this.text = text;
         }
 
-        private Answer ( Text text, Consumer<Player> action ) {
+        private Answer( Text text, Consumer<Player> action ) {
             this.text = text;
             this.action = action;
         }
@@ -71,32 +71,32 @@ public final class Question {
          * @param action The result of this answer. This will be executed in the event that the player clicks this answer.
          * @return The answer.
          */
-        public static Answer of ( Text name, Consumer<Player> action ) {
+        public static Answer of( Text name, Consumer<Player> action ) {
             return new Answer( name, action );
         }
 
         /**
          * @return The display text of this answer.
          */
-        public Text getText () {
+        public Text getText() {
             return text;
         }
 
         /**
          * @return The consumer which will be executed upon answering a question with this answer.
          */
-        Consumer<Player> getAction () {
+        Consumer<Player> getAction() {
             return action;
         }
 
-        public void setAction ( Consumer<Player> action ) {
+        public void setAction( Consumer<Player> action ) {
             this.action = action;
         }
 
         /**
          * @param source The player who has answered the question
          */
-        public void execute ( Player source ) {
+        public void execute( Player source ) {
             action.accept( source );
         }
     }
@@ -106,29 +106,29 @@ public final class Question {
     private Text question;
     private List<Answer> answers;
 
-    Question ( Text question ) {
+    Question( Text question ) {
         this.question = question;
         this.answers = new LinkedList<>();
         this.id = UUID.randomUUID();
     }
 
-    public static Builder of ( Text question ) {
+    public static Builder of( Text question ) {
         return new Builder( question );
     }
 
-    public UUID getId () {
+    public UUID getId() {
         return id;
     }
 
-    public Text getQuestion () {
+    public Text getQuestion() {
         return question;
     }
 
-    public List<Answer> getAnswers () {
+    public List<Answer> getAnswers() {
         return answers;
     }
 
-    void addAnswer ( Answer answer ) {
+    void addAnswer( Answer answer ) {
         this.answers.add( answer );
     }
 
@@ -137,7 +137,7 @@ public final class Question {
      *
      * @return the Text object.
      */
-    public Text asText () {
+    public Text asText() {
         Text.Builder builder = Text.builder();
         builder.append( QUESTION_DECORATION_TOP );
         builder.append( question );
@@ -154,7 +154,7 @@ public final class Question {
                                 }
 
                                 if ( questions.containsKey( this.id ) ) {
-                                    answer.execute( (Player) source );
+                                    answer.execute( ( Player ) source );
                                     questions.remove( this.id );
                                 } else {
                                     source.sendMessage( Text.of( TextColors.RED, "You have already responded to that question!" ) );
@@ -174,7 +174,7 @@ public final class Question {
      *
      * @param player The player to be polled.
      */
-    public void pollChat ( @Nonnull Player player ) {
+    public void pollChat( @Nonnull Player player ) {
         questions.put( id, this );
         player.sendMessage( this.asText() );
     }
@@ -184,7 +184,7 @@ public final class Question {
      *
      * @param player The player to be polled.
      */
-    public void pollBook ( @Nonnull Player player ) {
+    public void pollBook( @Nonnull Player player ) {
         questions.put( id, this );
         player.sendBookView( BookView.builder().addPage( asText() ).build() );
     }
@@ -195,13 +195,13 @@ public final class Question {
      * @param player     The player to be polled.
      * @param buttonText The display text of the button.
      */
-    public void pollViewButton ( @Nonnull Player player, @Nonnull Text buttonText ) {
+    public void pollViewButton( @Nonnull Player player, @Nonnull Text buttonText ) {
         questions.put( id, this );
         Text text = Text.builder()
                 .append( buttonText )
                 .onHover( TextActions.showText( Text.of( TextColors.AQUA, "Click to View" ) ) )
                 .onClick( TextActions.executeCallback( source -> {
-                    if ( source instanceof Player ) this.pollBook( (Player) source );
+                    if ( source instanceof Player ) this.pollBook( ( Player ) source );
                 } ) )
                 .build();
 

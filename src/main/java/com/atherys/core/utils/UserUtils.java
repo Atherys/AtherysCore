@@ -20,7 +20,7 @@ public final class UserUtils {
      * @param uuid the UUID of the player
      * @return An offline User object, or an online Player object. If neither is available, returns empty Optional.
      */
-    public static Optional<? extends User> getUser ( UUID uuid ) {
+    public static Optional<? extends User> getUser( UUID uuid ) {
         Optional<Player> onlinePlayer = Sponge.getServer().getPlayer( uuid );
 
         if ( onlinePlayer.isPresent() ) {
