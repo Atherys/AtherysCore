@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class InventoryUtils {
+public final class InventoryUtils {
 
     public static final List<EquipmentType> EQUIPMENT_SLOTS = Arrays.asList(
             EquipmentTypes.HEADWEAR,

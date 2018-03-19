@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  * a book view ( {@link #pollBook(Player)} ),
  * or a combination of the two in the form of a chat-based view button ( {@link #pollViewButton(Player, Text)} ).
  */
-public class Question {
+public final class Question {
 
     public static Text QUESTION_DECORATION_TOP = Text.of( TextColors.DARK_AQUA, "{", TextColors.AQUA, "Question", TextColors.DARK_AQUA, "}\n" );
     public static Text QUESTION_DECORATION_BOT = Text.of( TextColors.DARK_AQUA, "\n" );
