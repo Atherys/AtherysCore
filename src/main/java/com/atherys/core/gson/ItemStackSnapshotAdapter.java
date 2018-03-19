@@ -4,7 +4,7 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 public class ItemStackSnapshotAdapter extends AbstractConfigurateAdapter<ItemStackSnapshot> {
 
-    protected ItemStackSnapshotAdapter() {
+    public ItemStackSnapshotAdapter() {
         super( ItemStackSnapshot.class );
     }
 

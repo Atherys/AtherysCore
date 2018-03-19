@@ -4,7 +4,7 @@ import org.spongepowered.api.service.economy.Currency;
 
 public class CurrencyAdapter extends AbstractConfigurateAdapter<Currency> {
 
-    protected CurrencyAdapter( ) {
+    public CurrencyAdapter( ) {
         super( Currency.class );
     }
 }
