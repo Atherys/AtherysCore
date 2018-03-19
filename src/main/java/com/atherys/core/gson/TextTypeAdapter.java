@@ -1,5 +1,6 @@
 package com.atherys.core.gson;
 
+import com.atherys.core.AtherysCore;
 import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -10,22 +11,23 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 import java.io.IOException;
 
 /**
- * *DEPRECATED* A Gson {@link TypeAdapter} for Sponge's {@link Text}
+ * A Gson {@link TypeAdapter} for Sponge's {@link Text}
  */
-@Deprecated
 public class TextTypeAdapter extends TypeAdapter<Text> {
 
     static JsonParser parser = new JsonParser();
 
     @Override
     public void write ( JsonWriter out, Text value ) throws IOException {
-        out.jsonValue( TextSerializers.JSON.serialize( value ) );
+        String textJson = TextSerializers.JSON.serialize( value );
+        AtherysCore.getInstance().getLogger().info( "Write: " + textJson );
+        out.jsonValue( textJson );
     }
 
     @Override
     public Text read ( JsonReader in ) throws IOException {
         String textJson = parser.parse( in ).toString();
-
+        AtherysCore.getInstance().getLogger().info( "Read: " + textJson );
         return TextSerializers.JSON.deserialize( textJson );
     }
 

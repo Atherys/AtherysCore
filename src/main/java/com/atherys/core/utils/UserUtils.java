@@ -8,7 +8,7 @@ import org.spongepowered.api.service.user.UserStorageService;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UserUtils {
+public final class UserUtils {
 
     private static UserStorageService userStorage;
 
