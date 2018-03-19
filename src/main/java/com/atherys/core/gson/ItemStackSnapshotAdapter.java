@@ -1,6 +1,5 @@
 package com.atherys.core.gson;
 
-import com.atherys.core.AtherysCore;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
@@ -21,37 +20,37 @@ public class ItemStackSnapshotAdapter extends TypeAdapter<ItemStackSnapshot> {
     private JsonParser parser = new JsonParser();
 
     @Override
-    public void write(JsonWriter out, ItemStackSnapshot value) throws IOException {
+    public void write( JsonWriter out, ItemStackSnapshot value ) throws IOException {
         GsonConfigurationLoader loader = GsonConfigurationLoader.builder().build();
         ConfigurationNode node = null;
         try {
-            node = loader.createEmptyNode().setValue( TypeToken.of( ItemStackSnapshot.class ), value);
+            node = loader.createEmptyNode().setValue( TypeToken.of( ItemStackSnapshot.class ), value );
             StringWriter writer = new StringWriter();
-            loader.saveInternal( node, writer);
+            loader.saveInternal( node, writer );
 
             String json = writer.toString();
 
-            AtherysCore.getInstance().getLogger().info( "Write: " + json );
+            //therysCore.getInstance().getLogger().info( "Write: " + json ); // DEBUG
 
             out.jsonValue( json );
 
-        } catch (ObjectMappingException e) {
+        } catch ( ObjectMappingException e ) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public ItemStackSnapshot read(JsonReader in) throws IOException {
-        String json = parser.parse(in).toString();
+    public ItemStackSnapshot read( JsonReader in ) throws IOException {
+        String json = parser.parse( in ).toString();
 
-        AtherysCore.getInstance().getLogger().info( "Read: " + json );
+        //AtherysCore.getInstance().getLogger().info( "Read: " + json ); // DEBUG
 
         GsonConfigurationLoader loader = GsonConfigurationLoader.builder().setSource( () -> new BufferedReader( new StringReader( json ) ) ).build();
         ConfigurationNode node = loader.load();
 
         try {
             return node.getValue( TypeToken.of( ItemStackSnapshot.class ) );
-        } catch (ObjectMappingException e) {
+        } catch ( ObjectMappingException e ) {
             e.printStackTrace();
         }
 

@@ -15,7 +15,7 @@ public abstract class AbstractMongoDatabase implements Database<MongoDatabase> {
 
     private MongoDatabase db;
 
-    protected AbstractMongoDatabase ( MongoDatabaseConfig config ) {
+    protected AbstractMongoDatabase( MongoDatabaseConfig config ) {
         MongoCredential credential = MongoCredential.createCredential( config.USERNAME, config.USER_DB, config.PASSWORD.toCharArray() );
         MongoClient client = new MongoClient( new ServerAddress( config.HOST, config.PORT ), Arrays.asList( credential ) );
 
@@ -23,7 +23,7 @@ public abstract class AbstractMongoDatabase implements Database<MongoDatabase> {
     }
 
     @Override
-    public MongoDatabase getDatabase () {
+    public MongoDatabase getDatabase() {
         return db;
     }
 }

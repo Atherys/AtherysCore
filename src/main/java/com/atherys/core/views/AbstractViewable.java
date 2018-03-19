@@ -14,7 +14,7 @@ public abstract class AbstractViewable<T extends View<V>, V extends Viewable<T>>
      */
     @SuppressWarnings( "unchecked" )
     @Override
-    public Optional<T> createView () {
-        return Optional.ofNullable( ViewManager.getInstance().createView( (V) this ) );
+    public Optional<T> createView() {
+        return Optional.ofNullable( ViewManager.getInstance().createView( ( V ) this ) );
     }
 }

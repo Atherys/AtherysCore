@@ -17,16 +17,16 @@ public final class AtherysDamageTypeRegistry implements CatalogRegistryModule<At
     protected Map<String, AtherysDamageType> flags = new HashMap<>();
 
     @Override
-    public Optional<AtherysDamageType> getById ( @Nonnull String id ) {
+    public Optional<AtherysDamageType> getById( @Nonnull String id ) {
         return Optional.ofNullable( flags.get( id ) );
     }
 
     @Override
-    public Collection<AtherysDamageType> getAll () {
+    public Collection<AtherysDamageType> getAll() {
         return flags.values();
     }
 
-    public static AtherysDamageTypeRegistry getInstance () {
+    public static AtherysDamageTypeRegistry getInstance() {
         return instance;
     }
 }

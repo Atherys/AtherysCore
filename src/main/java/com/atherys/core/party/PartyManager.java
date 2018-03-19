@@ -19,12 +19,12 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
 
     private Map<UUID, Party> playerPartyMap = new HashMap<>();
 
-    private PartyManager () {
+    private PartyManager() {
         super( AtherysCore.getInstance().getLogger(), MongoCoreDatabase.getInstance(), "parties" );
     }
 
     @Override
-    protected Optional<Document> toDocument ( Party object ) {
+    protected Optional<Document> toDocument( Party object ) {
         Document doc = new Document( "uuid", object.getUUID() );
 
         doc.append( "leader", object.getLeader().getUniqueId() );
@@ -36,7 +36,7 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
     }
 
     @Override
-    protected Optional<Party> fromDocument ( Document doc ) {
+    protected Optional<Party> fromDocument( Document doc ) {
         // get uuid of party
         UUID partyUUID = doc.get( "uuid", UUID.class );
         // create new party from uuid, is not added to playerPartyMap
@@ -58,7 +58,7 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
         // Set leader's party along with all members' parties.
         playerPartyMap.put( leaderUUID, party );
         for ( Object uuid : members ) {
-            playerPartyMap.put( (UUID) uuid, party );
+            playerPartyMap.put( ( UUID ) uuid, party );
         }
 
         // if the members of the party are 1 or less ( 0 ), remove the party as there is no point in a 1-player party. Otherwise, count the party as properly loaded.
@@ -71,7 +71,7 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
     /**
      * Save all parties and their members to the database.
      */
-    public void saveAll () {
+    public void saveAll() {
         saveAll( getParties() );
     }
 
@@ -81,7 +81,7 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
      * @param party The party object whose members are going to be looked up.
      * @return A list of UUIDs representing the players who are in this party.
      */
-    public List<UUID> getPartyMemberUUIDs ( Party party ) {
+    public List<UUID> getPartyMemberUUIDs( Party party ) {
         List<UUID> partyMembers = new ArrayList<>();
 
         playerPartyMap.forEach( ( k, v ) -> {
@@ -99,7 +99,7 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
      * @param party The party whose members are going to be looked up
      * @return A list of {@link User}s who are part of this party.
      */
-    public List<User> getPartyMembers ( Party party ) {
+    public List<User> getPartyMembers( Party party ) {
         List<User> partyMembers = new ArrayList<>();
 
         playerPartyMap.forEach( ( k, v ) -> {
@@ -118,7 +118,7 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
      *
      * @return A list of all relevant {@link Party} objects.
      */
-    public List<Party> getParties () {
+    public List<Party> getParties() {
         List<Party> uniqueParties = new ArrayList<>();
 
         playerPartyMap.values().forEach( party -> {
@@ -134,7 +134,7 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
      * @param player The player being looked up
      * @return Whether or not this player is in a party.
      */
-    public boolean hasPlayerParty ( User player ) {
+    public boolean hasPlayerParty( User player ) {
         return playerPartyMap.containsKey( player.getUniqueId() );
     }
 
@@ -143,7 +143,7 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
      *
      * @param player The player to be removed.
      */
-    public void resetPlayerParty ( User player ) {
+    public void resetPlayerParty( User player ) {
         playerPartyMap.remove( player.getUniqueId() );
     }
 
@@ -153,7 +153,7 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
      * @param player The player whose party is to be set.
      * @param party  The party the player will be part of.
      */
-    public void setPlayerParty ( User player, Party party ) {
+    public void setPlayerParty( User player, Party party ) {
         playerPartyMap.put( player.getUniqueId(), party );
     }
 
@@ -163,7 +163,7 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
      * @param player The player whose party is to be looked up
      * @return An {@link Optional} of the player's party. If the party was not found, this is empty.
      */
-    public Optional<Party> getPlayerParty ( User player ) {
+    public Optional<Party> getPlayerParty( User player ) {
         return Optional.ofNullable( playerPartyMap.get( player.getUniqueId() ) );
     }
 
@@ -173,7 +173,7 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
      * @param party   The {@link Party} to be added.
      * @param members The member {@link User}s
      */
-    public void addParty ( Party party, User... members ) {
+    public void addParty( Party party, User... members ) {
         for ( User user : members ) {
             setPlayerParty( user, party );
         }
@@ -184,13 +184,13 @@ public final class PartyManager extends AbstractMongoDatabaseManager<Party> {
      *
      * @param party The party to be removed.
      */
-    public void removeParty ( Party party ) {
+    public void removeParty( Party party ) {
         playerPartyMap.forEach( ( k, v ) -> {
             if ( v.getUUID().equals( party.getUUID() ) ) playerPartyMap.remove( k );
         } );
     }
 
-    public static PartyManager getInstance () {
+    public static PartyManager getInstance() {
         return instance;
     }
 }

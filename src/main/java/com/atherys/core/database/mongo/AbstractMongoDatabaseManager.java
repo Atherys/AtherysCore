@@ -29,22 +29,22 @@ public abstract class AbstractMongoDatabaseManager<T extends DBObject> implement
 
     private Map<UUID, T> cache = new HashMap<>();
 
-    protected AbstractMongoDatabaseManager ( Logger logger, AbstractMongoDatabase mongoDatabase, String collectionName ) {
+    protected AbstractMongoDatabaseManager( Logger logger, AbstractMongoDatabase mongoDatabase, String collectionName ) {
         this.collection = collectionName;
         this.mongo = mongoDatabase;
         this.logger = logger;
     }
 
-    protected Map<UUID, T> getCache () {
+    protected Map<UUID, T> getCache() {
         return cache;
     }
 
-    protected MongoCollection<Document> getCollection () {
+    protected MongoCollection<Document> getCollection() {
         return mongo.getDatabase().getCollection( collection );
     }
 
     @Override
-    public void save ( T object ) {
+    public void save( T object ) {
         this.getCache().put( object.getUUID(), object );
         toDocument( object ).ifPresent( doc -> {
             Bson update = new Document( "$set", doc );
@@ -59,22 +59,22 @@ public abstract class AbstractMongoDatabaseManager<T extends DBObject> implement
     }
 
     @Override
-    public Optional<T> get ( UUID uuid ) {
+    public Optional<T> get( UUID uuid ) {
         return Optional.ofNullable( this.getCache().get( uuid ) );
     }
 
     @Override
-    public void update ( T object ) {
+    public void update( T object ) {
         save( object );
     }
 
     @Override
-    public void remove ( T object ) {
+    public void remove( T object ) {
         getCollection().deleteOne( new Document( "_id", object.getUUID() ) );
     }
 
     @Override
-    public void saveAll ( Collection<T> objects ) {
+    public void saveAll( Collection<T> objects ) {
         List<WriteModel<Document>> updates = new ArrayList<>();
 
         for ( T object : objects ) {
@@ -112,7 +112,7 @@ public abstract class AbstractMongoDatabaseManager<T extends DBObject> implement
     }
 
     @Override
-    public void loadAll () {
+    public void loadAll() {
         int found = 0;
         int loaded = 0;
 
@@ -131,16 +131,16 @@ public abstract class AbstractMongoDatabaseManager<T extends DBObject> implement
     }
 
     @Override
-    public void updateAll ( Collection<T> objects ) {
+    public void updateAll( Collection<T> objects ) {
         saveAll( objects );
     }
 
     @Override
-    public void removeAll ( Collection<T> objects ) {
+    public void removeAll( Collection<T> objects ) {
         objects.forEach( this::remove );
     }
 
-    protected abstract Optional<Document> toDocument ( T object );
+    protected abstract Optional<Document> toDocument( T object );
 
-    protected abstract Optional<T> fromDocument ( Document doc );
+    protected abstract Optional<T> fromDocument( Document doc );
 }

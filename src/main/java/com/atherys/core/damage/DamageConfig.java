@@ -30,10 +30,10 @@ public class DamageConfig {
         damageMap.put( ItemTypes.WOODEN_SWORD, AtherysDamageTypes.SLASH );
     }
 
-    public AtherysDamageSource getSource ( EntityDamageSource originalSource ) {
+    public AtherysDamageSource getSource( EntityDamageSource originalSource ) {
 
         if ( originalSource instanceof IndirectEntityDamageSource ) {
-            Entity source = ( (IndirectEntityDamageSource) originalSource ).getIndirectSource();
+            Entity source = ( ( IndirectEntityDamageSource ) originalSource ).getIndirectSource();
 
             Entity projectile = originalSource.getSource();
 

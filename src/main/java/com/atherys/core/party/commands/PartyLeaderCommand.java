@@ -12,7 +12,7 @@ public class PartyLeaderCommand extends UserCommand {
 
     @Nonnull
     @Override
-    public CommandResult execute ( @Nonnull User source, @Nonnull CommandContext args ) throws CommandException {
+    public CommandResult execute( @Nonnull User source, @Nonnull CommandContext args ) throws CommandException {
         return null;
     }
 

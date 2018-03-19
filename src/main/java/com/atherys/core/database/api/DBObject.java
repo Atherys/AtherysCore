@@ -12,6 +12,6 @@ public interface DBObject {
      *
      * @return The UUID.
      */
-    UUID getUUID ();
+    UUID getUUID();
 
 }

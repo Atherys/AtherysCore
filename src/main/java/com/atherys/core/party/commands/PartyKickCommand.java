@@ -18,7 +18,7 @@ public class PartyKickCommand extends UserCommand {
 
     @Nonnull
     @Override
-    public CommandResult execute ( @Nonnull User source, @Nonnull CommandContext args ) throws CommandException {
+    public CommandResult execute( @Nonnull User source, @Nonnull CommandContext args ) throws CommandException {
 
         Optional<User> kickedUser = args.getOne( "kickedPlayer" );
 
@@ -54,7 +54,7 @@ public class PartyKickCommand extends UserCommand {
         return CommandResult.success();
     }
 
-    public CommandSpec getCommandSpec () {
+    public CommandSpec getCommandSpec() {
         return CommandSpec.builder()
                 .permission( "atherys.core.party.kick" )
                 .executor( this )

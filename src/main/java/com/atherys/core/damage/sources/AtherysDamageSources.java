@@ -17,7 +17,7 @@ public final class AtherysDamageSources {
      * @param source the entity source of this damage
      * @return the builder
      */
-    public static AtherysDirectEntityDamageSource.Builder directBuilder ( Entity source ) {
+    public static AtherysDirectEntityDamageSource.Builder directBuilder( Entity source ) {
         return new AtherysDirectEntityDamageSource.Builder().type( DamageTypes.CUSTOM ).entity( source );
     }
 
@@ -28,7 +28,7 @@ public final class AtherysDamageSources {
      * @param proxy  the proxy entity ( See: {@link org.spongepowered.api.entity.projectile.Projectile} )
      * @return The builder
      */
-    public static AtherysIndirectEntityDamageSource.Builder indirectBuilder ( Entity source, Entity proxy ) {
+    public static AtherysIndirectEntityDamageSource.Builder indirectBuilder( Entity source, Entity proxy ) {
         return new AtherysIndirectEntityDamageSource.Builder().type( DamageTypes.CUSTOM ).entity( source ).proxySource( proxy );
     }
 
@@ -39,7 +39,7 @@ public final class AtherysDamageSources {
      * @param type   The custom damage type
      * @return the source
      */
-    public static AtherysDirectEntityDamageSource direct ( Entity source, AtherysDamageType type ) {
+    public static AtherysDirectEntityDamageSource direct( Entity source, AtherysDamageType type ) {
         return directBuilder( source ).type( type.getPrimitive() ).atherysType( type ).build();
     }
 
@@ -50,7 +50,7 @@ public final class AtherysDamageSources {
      * @param type   The custom damage type
      * @return the source
      */
-    public static AtherysDirectEntityDamageSource directMagic ( Entity source, AtherysDamageType type ) {
+    public static AtherysDirectEntityDamageSource directMagic( Entity source, AtherysDamageType type ) {
         return directBuilder( source ).type( type.getPrimitive() ).atherysType( type ).magical().build();
     }
 
@@ -62,7 +62,7 @@ public final class AtherysDamageSources {
      * @param proxy  The proxy entity for this damage
      * @return the source
      */
-    public static AtherysIndirectEntityDamageSource indirect ( Entity source, Entity proxy, AtherysDamageType type ) {
+    public static AtherysIndirectEntityDamageSource indirect( Entity source, Entity proxy, AtherysDamageType type ) {
         return indirectBuilder( source, proxy ).type( type.getPrimitive() ).atherysType( type ).build();
     }
 
@@ -74,7 +74,7 @@ public final class AtherysDamageSources {
      * @param source The entity source of this damage
      * @return the DamageSource
      */
-    public static AtherysDirectEntityDamageSource blunt ( Entity source ) {
+    public static AtherysDirectEntityDamageSource blunt( Entity source ) {
         return direct( source, AtherysDamageTypes.BLUNT );
     }
 
@@ -84,7 +84,7 @@ public final class AtherysDamageSources {
      * @param source The entity source of this damage
      * @return the DamageSource
      */
-    public static AtherysDirectEntityDamageSource slash ( Entity source ) {
+    public static AtherysDirectEntityDamageSource slash( Entity source ) {
         return direct( source, AtherysDamageTypes.SLASH );
     }
 
@@ -94,7 +94,7 @@ public final class AtherysDamageSources {
      * @param source The entity source of this damage
      * @return the DamageSource
      */
-    public static AtherysDirectEntityDamageSource stab ( Entity source ) {
+    public static AtherysDirectEntityDamageSource stab( Entity source ) {
         return direct( source, AtherysDamageTypes.STAB );
     }
 
@@ -104,7 +104,7 @@ public final class AtherysDamageSources {
      * @param source The entity source of this damage
      * @return the DamageSource
      */
-    public static AtherysDirectEntityDamageSource unarmed ( Entity source ) {
+    public static AtherysDirectEntityDamageSource unarmed( Entity source ) {
         return direct( source, AtherysDamageTypes.UNARMED );
     }
 
@@ -117,7 +117,7 @@ public final class AtherysDamageSources {
      * @param projectile the proxy entity for this damage
      * @return the DamageSource
      */
-    public static AtherysIndirectEntityDamageSource ballistic ( Entity source, Entity projectile ) {
+    public static AtherysIndirectEntityDamageSource ballistic( Entity source, Entity projectile ) {
         return indirect( source, projectile, AtherysDamageTypes.BALLISTIC );
     }
 
@@ -128,7 +128,7 @@ public final class AtherysDamageSources {
      * @param projectile the proxy entity for this damage
      * @return the DamageSource
      */
-    public static AtherysIndirectEntityDamageSource piercing ( Entity source, Entity projectile ) {
+    public static AtherysIndirectEntityDamageSource piercing( Entity source, Entity projectile ) {
         return indirect( source, projectile, AtherysDamageTypes.PIERCE );
     }
 
@@ -140,7 +140,7 @@ public final class AtherysDamageSources {
      * @param source The entity source of this damage
      * @return the DamageSource
      */
-    public static AtherysDirectEntityDamageSource fire ( Entity source ) {
+    public static AtherysDirectEntityDamageSource fire( Entity source ) {
         return directMagic( source, AtherysDamageTypes.FIRE );
     }
 
@@ -150,7 +150,7 @@ public final class AtherysDamageSources {
      * @param source The entity source of this damage
      * @return the DamageSource
      */
-    public static AtherysDirectEntityDamageSource ice ( Entity source ) {
+    public static AtherysDirectEntityDamageSource ice( Entity source ) {
         return directMagic( source, AtherysDamageTypes.ICE );
     }
 
@@ -160,7 +160,7 @@ public final class AtherysDamageSources {
      * @param source The entity source of this damage
      * @return the DamageSource
      */
-    public static AtherysDirectEntityDamageSource arcane ( Entity source ) {
+    public static AtherysDirectEntityDamageSource arcane( Entity source ) {
         return directMagic( source, AtherysDamageTypes.ARCANE );
     }
 
@@ -170,7 +170,7 @@ public final class AtherysDamageSources {
      * @param source The entity source of this damage
      * @return the DamageSource
      */
-    public static AtherysDirectEntityDamageSource shock ( Entity source ) {
+    public static AtherysDirectEntityDamageSource shock( Entity source ) {
         return directMagic( source, AtherysDamageTypes.SHOCK );
     }
 
@@ -180,7 +180,7 @@ public final class AtherysDamageSources {
      * @param source The entity source of this damage
      * @return the DamageSource
      */
-    public static AtherysDirectEntityDamageSource nature ( Entity source ) {
+    public static AtherysDirectEntityDamageSource nature( Entity source ) {
         return directMagic( source, AtherysDamageTypes.NATURE );
     }
 
@@ -190,7 +190,7 @@ public final class AtherysDamageSources {
      * @param source The entity source of this damage
      * @return the DamageSource
      */
-    public static AtherysDirectEntityDamageSource mental ( Entity source ) {
+    public static AtherysDirectEntityDamageSource mental( Entity source ) {
         return directMagic( source, AtherysDamageTypes.MENTAL );
     }
 
@@ -200,7 +200,7 @@ public final class AtherysDamageSources {
      * @param source The entity source of this damage
      * @return the DamageSource
      */
-    public static AtherysDirectEntityDamageSource radiant ( Entity source ) {
+    public static AtherysDirectEntityDamageSource radiant( Entity source ) {
         return directMagic( source, AtherysDamageTypes.RADIANT );
     }
 
@@ -210,7 +210,7 @@ public final class AtherysDamageSources {
      * @param source The entity source of this damage
      * @return the DamageSource
      */
-    public static AtherysDirectEntityDamageSource necrotic ( Entity source ) {
+    public static AtherysDirectEntityDamageSource necrotic( Entity source ) {
         return directMagic( source, AtherysDamageTypes.NECROTIC );
     }
 
@@ -220,7 +220,7 @@ public final class AtherysDamageSources {
      * @param source The entity source of this damage
      * @return the DamageSource
      */
-    public static AtherysDirectEntityDamageSource blood ( Entity source ) {
+    public static AtherysDirectEntityDamageSource blood( Entity source ) {
         return directMagic( source, AtherysDamageTypes.BLOOD );
     }
 }

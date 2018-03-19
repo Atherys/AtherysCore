@@ -22,9 +22,9 @@ public final class InventoryUtils {
             EquipmentTypes.OFF_HAND
     );
 
-    public static Optional<List<ItemStack>> getEquippedItems ( Entity entity ) {
+    public static Optional<List<ItemStack>> getEquippedItems( Entity entity ) {
         if ( !( entity instanceof ArmorEquipable ) ) return Optional.empty();
-        ArmorEquipable equipable = (ArmorEquipable) entity;
+        ArmorEquipable equipable = ( ArmorEquipable ) entity;
 
         List<ItemStack> equippedItems = new ArrayList<>();
 
@@ -33,17 +33,17 @@ public final class InventoryUtils {
         return Optional.of( equippedItems );
     }
 
-    public static Optional<ItemStack> getMainHand ( Entity entity ) {
+    public static Optional<ItemStack> getMainHand( Entity entity ) {
         return getEquipment( entity, EquipmentTypes.MAIN_HAND );
     }
 
-    public static Optional<ItemStack> getOffHand ( Entity entity ) {
+    public static Optional<ItemStack> getOffHand( Entity entity ) {
         return getEquipment( entity, EquipmentTypes.OFF_HAND );
     }
 
-    public static Optional<ItemStack> getEquipment ( Entity entity, EquipmentType type ) {
+    public static Optional<ItemStack> getEquipment( Entity entity, EquipmentType type ) {
         if ( !( entity instanceof ArmorEquipable ) ) return Optional.empty();
-        ArmorEquipable equipable = (ArmorEquipable) entity;
+        ArmorEquipable equipable = ( ArmorEquipable ) entity;
 
         return equipable.getEquipped( type );
     }

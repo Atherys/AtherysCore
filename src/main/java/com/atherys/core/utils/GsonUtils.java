@@ -13,7 +13,7 @@ public final class GsonUtils {
         return new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapter( Text.class, new TextTypeAdapter() )
-                .registerTypeAdapter(ItemStackSnapshot.class, new ItemStackSnapshotAdapter() )
+                .registerTypeAdapter( ItemStackSnapshot.class, new ItemStackSnapshotAdapter() )
                 .create();
     }
 

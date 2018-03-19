@@ -14,6 +14,6 @@ public interface Viewable<T extends View> {
      *
      * @return The appropriate View for this Viewable. If no View has been registered with the ViewManager, or if the View could not be instantiated, this will be empty.
      */
-    Optional<T> createView ();
+    Optional<T> createView();
 
 }

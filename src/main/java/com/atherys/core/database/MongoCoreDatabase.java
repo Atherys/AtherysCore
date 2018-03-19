@@ -7,11 +7,11 @@ public class MongoCoreDatabase extends AbstractMongoDatabase {
 
     private static MongoCoreDatabase instance = new MongoCoreDatabase();
 
-    private MongoCoreDatabase () {
+    private MongoCoreDatabase() {
         super( AtherysCore.getConfig().DATABASE );
     }
 
-    public static MongoCoreDatabase getInstance () {
+    public static MongoCoreDatabase getInstance() {
         return instance;
     }
 
