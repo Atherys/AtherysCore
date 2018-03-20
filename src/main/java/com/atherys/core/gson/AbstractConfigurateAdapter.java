@@ -1,6 +1,5 @@
 package com.atherys.core.gson;
 
-import com.atherys.core.AtherysCore;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -64,7 +63,7 @@ public class AbstractConfigurateAdapter<T> /* extends TypeAdapter<T> */ implemen
     public T deserialize( JsonElement json, Type typeOfT, JsonDeserializationContext context ) throws JsonParseException {
         String jsonString = json.toString();
 
-        AtherysCore.getInstance().getLogger().info( "Read: " + jsonString ); // DEBUG
+        //AtherysCore.getInstance().getLogger().info( "Read: " + jsonString ); // DEBUG
 
         try {
 
@@ -94,7 +93,7 @@ public class AbstractConfigurateAdapter<T> /* extends TypeAdapter<T> */ implemen
 
             String json = writer.toString();
 
-            AtherysCore.getInstance().getLogger().info( "Write: " + json ); // DEBUG
+            //AtherysCore.getInstance().getLogger().info( "Write: " + json ); // DEBUG
 
             return parser.parse( json );
 
