@@ -45,16 +45,18 @@ public final class Question {
          * Set the top decoration for this Question.
          * @param text The text representation of the decoration
          */
-        public void topDecoration ( Text text ) {
+        public Builder topDecoration ( Text text ) {
             this.question.decorationTop = text;
+            return this;
         }
 
         /**
          * Set the bottom decoration for this Question.
          * @param text the text representation of the decoration
          */
-        public void bottomDecoration ( Text text ) {
+        public Builder bottomDecoration ( Text text ) {
             this.question.decorationBottom = text;
+            return this;
         }
 
         /**
