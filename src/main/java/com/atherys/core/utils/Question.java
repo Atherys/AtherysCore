@@ -42,6 +42,22 @@ public final class Question {
         }
 
         /**
+         * Set the top decoration for this Question.
+         * @param text The text representation of the decoration
+         */
+        public void topDecoration ( Text text ) {
+            this.question.decorationTop = text;
+        }
+
+        /**
+         * Set the bottom decoration for this Question.
+         * @param text the text representation of the decoration
+         */
+        public void bottomDecoration ( Text text ) {
+            this.question.decorationBottom = text;
+        }
+
+        /**
          * @return The {@link Question} object.
          */
         public Question build() {
@@ -106,10 +122,15 @@ public final class Question {
     private Text question;
     private List<Answer> answers;
 
+    private Text decorationTop;
+    private Text decorationBottom;
+
     Question( Text question ) {
         this.question = question;
         this.answers = new LinkedList<>();
         this.id = UUID.randomUUID();
+        decorationTop = Text.EMPTY;
+        decorationBottom = Text.EMPTY;
     }
 
     public static Builder of( Text question ) {
@@ -129,7 +150,7 @@ public final class Question {
     }
 
     void addAnswer( Answer answer ) {
-        this.answers.add( answer );
+        if ( !this.answers.contains( answer ) ) this.answers.add( answer );
     }
 
     /**
@@ -139,7 +160,7 @@ public final class Question {
      */
     public Text asText() {
         Text.Builder builder = Text.builder();
-        builder.append( QUESTION_DECORATION_TOP );
+        builder.append( decorationTop );
         builder.append( question );
         builder.append( Text.of( "\n" ) );
 
@@ -165,7 +186,7 @@ public final class Question {
             builder.append( Text.of( TextStyles.RESET, TextColors.RESET, "] " ) );
         }
 
-        builder.append( QUESTION_DECORATION_BOT );
+        builder.append( decorationBottom );
         return builder.build();
     }
 
