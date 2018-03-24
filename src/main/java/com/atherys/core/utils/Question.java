@@ -171,19 +171,18 @@ public final class Question {
             builder.append( Text.builder().append( answer.getText() )
                     .onHover( TextActions.showText( Text.of( "Click to answer" ) ) )
                     .onClick( TextActions.executeCallback( source -> {
-                                if ( !( source instanceof Player ) ) {
-                                    source.sendMessage( Text.of( TextColors.RED, "Must be a player to reply to a question." ) );
-                                    return;
-                                }
-
-                                if ( questions.containsKey( this.id ) ) {
-                                    answer.execute( ( Player ) source );
-                                    questions.remove( this.id );
-                                } else {
-                                    source.sendMessage( Text.of( TextColors.RED, "You have already responded to that question!" ) );
-                                }
+                            if ( !( source instanceof Player ) ) {
+                                source.sendMessage( Text.of( TextColors.RED, "Must be a player to reply to a question." ) );
+                                return;
                             }
-                    ) )
+
+                            if ( questions.containsKey( this.id ) ) {
+                                answer.execute( ( Player ) source );
+                                questions.remove( this.id );
+                            } else {
+                                source.sendMessage( Text.of( TextColors.RED, "You have already responded to that question!" ) );
+                            }
+                    } ) )
                     .build() );
             builder.append( Text.of( TextStyles.RESET, TextColors.RESET, "] " ) );
         }
@@ -193,12 +192,19 @@ public final class Question {
     }
 
     /**
+     * Registers this question. Required to ensure the player cannot answer the question multiple times.
+     */
+    public void register () {
+        questions.put( id, this );
+    }
+
+    /**
      * Poll a player with this question via chat message ( See: {@link #asText()} ).
      *
      * @param player The player to be polled.
      */
     public void pollChat( @Nonnull Player player ) {
-        questions.put( id, this );
+        register();
         player.sendMessage( this.asText() );
     }
 
@@ -208,7 +214,7 @@ public final class Question {
      * @param player The player to be polled.
      */
     public void pollBook( @Nonnull Player player ) {
-        questions.put( id, this );
+        register();
         player.sendBookView( BookView.builder().addPage( asText() ).build() );
     }
 
@@ -219,7 +225,7 @@ public final class Question {
      * @param buttonText The display text of the button.
      */
     public void pollViewButton( @Nonnull Player player, @Nonnull Text buttonText ) {
-        questions.put( id, this );
+        register();
         Text text = Text.builder()
                 .append( buttonText )
                 .onHover( TextActions.showText( Text.of( TextColors.AQUA, "Click to View" ) ) )
