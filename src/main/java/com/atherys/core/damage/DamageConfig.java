@@ -1,5 +1,6 @@
 package com.atherys.core.damage;
 
+import com.atherys.core.damage.sources.AtherysDamageSources;
 import com.atherys.core.utils.InventoryUtils;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
@@ -46,5 +47,21 @@ public class DamageConfig {
         } else {
             return AtherysDamageTypes.UNARMED;
         }
+    }
+
+    public EntityDamageSource getDamageSource ( EntityDamageSource source ) {
+        AtherysDamageType type = getDamageType( source );
+
+        if ( source instanceof IndirectEntityDamageSource ) {
+            Entity entitySource = ( ( IndirectEntityDamageSource ) source ).getIndirectSource();
+            Entity projectile = source.getSource();
+
+            return AtherysDamageSources.ranged( type, entitySource, projectile ).build();
+        } else {
+            Entity entitySource = source.getSource();
+
+            return AtherysDamageSources.melee( type, entitySource ).build();
+        }
+
     }
 }
