@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-    shadow 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
+    shadow 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
     compile 'org.mongodb:mongodb-driver:3.5.0'
     compile 'com.j256:ormlite:3.0'
 }

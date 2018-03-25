@@ -66,6 +66,7 @@ public class AtherysCore {
         }
 
         init = true;
+
     }
 
     private void start() {

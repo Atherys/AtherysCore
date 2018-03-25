@@ -1,7 +1,8 @@
 package com.atherys.core.damage.listeners;
 
 import com.atherys.core.AtherysCore;
-import com.atherys.core.damage.sources.AtherysDamageSource;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.event.CauseStackManager;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
@@ -12,13 +13,9 @@ public class DamageListeners {
 
     @Listener( order = Order.FIRST )
     public void onSingleDamage( DamageEntityEvent event, @Root EntityDamageSource source ) {
-        if ( event.getCause().containsType( AtherysDamageSource.class ) ) return;
-
-        event.setCancelled( true );
-        AtherysDamageSource newSource = AtherysCore.getConfig().DAMAGE.getSource( source );
-        event.getTargetEntity().damage( event.getBaseDamage(), newSource );
-
-        //AtherysCore.getInstance().getLogger().info("Dealing " + event.getFinalDamage() + " " + newSource.getAltType().getName() + " damage");
+        try ( CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame() ) {
+            frame.pushCause( AtherysCore.getConfig().DAMAGE.getDamageType( source ) );
+        }
     }
 
 }

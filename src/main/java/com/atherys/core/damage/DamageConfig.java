@@ -1,7 +1,5 @@
 package com.atherys.core.damage;
 
-import com.atherys.core.damage.sources.AtherysDamageSource;
-import com.atherys.core.damage.sources.AtherysDamageSources;
 import com.atherys.core.utils.InventoryUtils;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
@@ -24,36 +22,29 @@ import java.util.Optional;
 public class DamageConfig {
 
     @Setting( "damage_per_type" )
-    public Map<ItemType, AtherysDamageType> damageMap = new HashMap<>();
-
+    private Map<ItemType, AtherysDamageType> damageMap = new HashMap<>();
     {
         damageMap.put( ItemTypes.WOODEN_SWORD, AtherysDamageTypes.SLASH );
     }
 
-    public AtherysDamageSource getSource( EntityDamageSource originalSource ) {
+    public AtherysDamageType getItemDamageType ( ItemType type ) {
+        return damageMap.getOrDefault( type, AtherysDamageTypes.UNARMED );
+    }
+
+    public AtherysDamageType getDamageType ( EntityDamageSource originalSource ) {
+        Entity source;
 
         if ( originalSource instanceof IndirectEntityDamageSource ) {
-            Entity source = ( ( IndirectEntityDamageSource ) originalSource ).getIndirectSource();
-
-            Entity projectile = originalSource.getSource();
-
-            Optional<ItemStack> stack = InventoryUtils.getMainHand( source );
-            if ( stack.isPresent() ) {
-                return AtherysDamageSources.indirect( source, projectile, damageMap.getOrDefault( stack.get().getType(), AtherysDamageTypes.UNARMED ) );
-            } else {
-                return AtherysDamageSources.indirect( source, projectile, AtherysDamageTypes.UNARMED );
-            }
-
+            source = ( ( IndirectEntityDamageSource ) originalSource ).getIndirectSource();
         } else {
-            Entity source = originalSource.getSource();
-
-            Optional<ItemStack> stack = InventoryUtils.getMainHand( source );
-            if ( stack.isPresent() ) {
-                return AtherysDamageSources.direct( source, damageMap.getOrDefault( stack.get().getType(), AtherysDamageTypes.UNARMED ) );
-            } else {
-                return AtherysDamageSources.direct( source, AtherysDamageTypes.UNARMED );
-            }
+            source = originalSource.getSource();
         }
 
+        Optional<ItemStack> stack = InventoryUtils.getMainHand( source );
+        if ( stack.isPresent() ) {
+            return getItemDamageType( stack.get().getType() );
+        } else {
+            return AtherysDamageTypes.UNARMED;
+        }
     }
 }
