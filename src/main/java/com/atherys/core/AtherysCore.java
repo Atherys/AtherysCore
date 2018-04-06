@@ -74,7 +74,7 @@ public class AtherysCore {
 
         Sponge.getCommandManager().register( this, new PartyCommand().getCommandSpec(), "party" );
 
-        Sponge.getEventManager().registerListeners( this, new DamageListeners() );
+        if ( config.DAMAGE.ENABLED ) Sponge.getEventManager().registerListeners( this, new DamageListeners() );
 
     }
 

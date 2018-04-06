@@ -22,6 +22,9 @@ import java.util.Optional;
 @ConfigSerializable
 public class DamageConfig {
 
+    @Setting( "enabled" )
+    public boolean ENABLED = true;
+
     @Setting( "damage_per_type" )
     private Map<ItemType, AtherysDamageType> damageMap = new HashMap<>();
     {
