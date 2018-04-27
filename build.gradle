@@ -34,11 +34,11 @@ repositories {
 dependencies {
     shadow 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
     compile 'org.mongodb:mongodb-driver:3.5.0'
-    compile 'com.j256:ormlite:3.0'
+    compile 'org.hibernate:hibernate-core:5.2.16.Final'
 }
 
 shadowJar {
     relocate 'org.bson', 'com.atherys.libs.org.bson'
     relocate 'com.mongodb', 'com.atherys.libs.com.mongodb'
-    relocate 'com.j256', 'com.atherys.libs.com.j256'
+    relocate 'org.hibernate', 'com.atherys.libs.org.hibernate'
 }
