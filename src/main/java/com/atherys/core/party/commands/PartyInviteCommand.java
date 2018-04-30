@@ -5,6 +5,7 @@ import com.atherys.core.party.Party;
 import com.atherys.core.party.PartyManager;
 import com.atherys.core.party.PartyMsg;
 import com.atherys.core.utils.Question;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
@@ -24,9 +25,15 @@ public class PartyInviteCommand extends UserCommand {
     @Nonnull
     @Override
     public CommandResult execute( @Nonnull User user, @Nonnull CommandContext args ) throws CommandException {
-        Optional<Player> invitee = args.getOne( "invitedPlayer" );
-        if ( !invitee.isPresent() ) return CommandResult.empty();
+        Optional<String> inviteeArg = args.getOne( "invitedPlayer" );
+        if ( !inviteeArg.isPresent() ) return CommandResult.empty();
 
+		Optional<Player> invitee = Sponge.getServer().getPlayer(inviteeArg.get());
+
+        if ( !invitee.isPresent() ){
+            PartyMsg.error(user, "That player is not online.");
+            return CommandResult.empty();
+        }
         // if invitee is already in another party, don't invite
         if ( PartyManager.getInstance().hasPlayerParty( invitee.get() ) ) {
             PartyMsg.error( user, "That player is already in another party." );
@@ -78,7 +85,7 @@ public class PartyInviteCommand extends UserCommand {
                 .permission( "atherys.core.party.invite" )
                 .executor( this )
                 .arguments(
-                        GenericArguments.player( Text.of( "invitedPlayer" ) )
+                        GenericArguments.string( Text.of( "invitedPlayer" ) )
                 )
                 .build();
     }
