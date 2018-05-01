@@ -1,6 +1,7 @@
 package com.atherys.core.database.mongo;
 
 import com.atherys.core.database.api.Database;
+import com.atherys.core.database.config.DatabaseConfig;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -15,7 +16,7 @@ public abstract class AbstractMongoDatabase implements Database<MongoDatabase> {
 
     private MongoDatabase db;
 
-    protected AbstractMongoDatabase( MongoDatabaseConfig config ) {
+    protected AbstractMongoDatabase( DatabaseConfig config ) {
         MongoCredential credential = MongoCredential.createCredential( config.USERNAME, config.USER_DB, config.PASSWORD.toCharArray() );
         MongoClient client = new MongoClient( new ServerAddress( config.HOST, config.PORT ), Arrays.asList( credential ) );
 

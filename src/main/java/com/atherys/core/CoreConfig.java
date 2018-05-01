@@ -1,7 +1,7 @@
 package com.atherys.core;
 
 import com.atherys.core.damage.DamageConfig;
-import com.atherys.core.database.mongo.MongoDatabaseConfig;
+import com.atherys.core.database.config.DatabaseConfig;
 import com.atherys.core.utils.PluginConfig;
 import ninja.leaping.configurate.objectmapping.Setting;
 
@@ -13,7 +13,7 @@ public final class CoreConfig extends PluginConfig {
     public boolean DEFAULT = true;
 
     @Setting( "database" )
-    public MongoDatabaseConfig DATABASE = new MongoDatabaseConfig();
+    public DatabaseConfig DATABASE = new DatabaseConfig();
 
     @Setting( "damage" )
     public DamageConfig DAMAGE = new DamageConfig();
