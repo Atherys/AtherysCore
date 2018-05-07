@@ -5,22 +5,23 @@ import org.spongepowered.api.event.cause.entity.damage.source.common.AbstractEnt
 
 public class AtherysEntityDamageSource extends AbstractEntityDamageSource {
 
-    private AtherysDamageType type;
+  private AtherysDamageType type;
 
-    protected AtherysEntityDamageSource ( AbstractEntityDamageSourceBuilder<?, ?> builder ) {
-        super( builder );
-    }
+  protected AtherysEntityDamageSource(AbstractEntityDamageSourceBuilder<?, ?> builder) {
+    super(builder);
+  }
 
-    protected AtherysEntityDamageSource ( AbstractEntityDamageSourceBuilder<?, ?> builder, AtherysDamageType type ) {
-        super( builder );
-        this.type = type;
-    }
+  protected AtherysEntityDamageSource(AbstractEntityDamageSourceBuilder<?, ?> builder,
+      AtherysDamageType type) {
+    super(builder);
+    this.type = type;
+  }
 
-    public static AtherysEntityDamageSourceBuilder builder () {
-        return new AtherysEntityDamageSourceBuilder();
-    }
+  public static AtherysEntityDamageSourceBuilder builder() {
+    return new AtherysEntityDamageSourceBuilder();
+  }
 
-    public AtherysDamageType getAtherysType () {
-        return type;
-    }
+  public AtherysDamageType getAtherysType() {
+    return type;
+  }
 }
