@@ -1,18 +1,11 @@
 package com.atherys.core;
 
-import static com.atherys.core.AtherysCore.DESCRIPTION;
-import static com.atherys.core.AtherysCore.ID;
-import static com.atherys.core.AtherysCore.NAME;
-import static com.atherys.core.AtherysCore.VERSION;
-
 import com.atherys.core.damage.AtherysDamageType;
 import com.atherys.core.damage.AtherysDamageTypeRegistry;
 import com.atherys.core.damage.AtherysDamageTypes;
 import com.atherys.core.damage.listeners.DamageListeners;
 import com.atherys.core.party.PartyManager;
 import com.atherys.core.party.commands.PartyCommand;
-import java.io.IOException;
-import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
@@ -23,13 +16,18 @@ import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 
+import javax.inject.Inject;
+import java.io.IOException;
+
+import static com.atherys.core.AtherysCore.*;
+
 @Plugin(id = ID, version = VERSION, name = NAME, description = DESCRIPTION)
 public class AtherysCore {
 
   public static final String ID = "atheryscore";
   public static final String NAME = "A'therys Core";
   public static final String DESCRIPTION = "The core utilities used on the A'therys Horizons server.";
-  public static final String VERSION = "1.2.2";
+  public static final String VERSION = "1.2.3";
 
   private static AtherysCore instance;
 
