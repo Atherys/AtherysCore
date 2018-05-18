@@ -3,9 +3,7 @@ package com.atherys.core.gson;
 import com.atherys.core.utils.RuntimeTypeAdapterFactory;
 import com.google.gson.GsonBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * A class for managing many RuntimeTypeAdapterFactories ( RTAF for short )
@@ -32,6 +30,19 @@ public class TypeAdapterFactoryRegistry {
      */
     public <T> void registerSubtype(Class<T> interfaceClass, Class<? extends T> implementation) {
         get(interfaceClass).ifPresent(typeAdapterFactory -> typeAdapterFactory.registerSubtype(implementation));
+    }
+
+    /**
+     * Looks through this Registry for an appropriate class-RTAF pair, and registers multiple subtypes
+     * to the corresponding RTAF
+     * @param interfaceClass Teh interface class
+     * @param implementations The implementation classes
+     * @param <T> The type
+     */
+    public final <T> void registerSubtypes(Class<T> interfaceClass, Collection<Class<? extends T>> implementations) {
+        get(interfaceClass).ifPresent(typeAdapterFactory -> {
+            for ( Class<? extends T> implementation : implementations ) typeAdapterFactory.registerSubtype(implementation);
+        });
     }
 
     /**
