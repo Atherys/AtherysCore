@@ -1,5 +1,6 @@
 package com.atherys.core;
 
+import com.atherys.core.command.CommandService;
 import com.atherys.core.damage.AtherysDamageType;
 import com.atherys.core.damage.AtherysDamageTypeRegistry;
 import com.atherys.core.damage.AtherysDamageTypes;
@@ -7,7 +8,6 @@ import com.atherys.core.damage.listeners.DamageListeners;
 import com.atherys.core.party.PartyManager;
 import com.atherys.core.party.commands.PartyCommand;
 import org.slf4j.Logger;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
@@ -24,105 +24,100 @@ import static com.atherys.core.AtherysCore.*;
 @Plugin(id = ID, version = VERSION, name = NAME, description = DESCRIPTION)
 public class AtherysCore {
 
-  public static final String ID = "atheryscore";
-  public static final String NAME = "A'therys Core";
-  public static final String DESCRIPTION = "The core utilities used on the A'therys Horizons server.";
-  public static final String VERSION = "1.2.3";
+    public static final String ID = "atheryscore";
+    public static final String NAME = "A'therys Core";
+    public static final String DESCRIPTION = "The core utilities used on the A'therys Horizons server.";
+    public static final String VERSION = "1.2.3";
 
-  private static AtherysCore instance;
+    private static AtherysCore instance;
 
-  private static boolean init = false;
+    private static boolean init = false;
+    private static CoreConfig config;
 
-  @Inject
-  private Logger logger;
+    @Inject
+    private Logger logger;
 
-  @Inject
-  private Game game;
+    private String configDirectory = "config/" + ID;
 
-  private String configDirectory = "config/" + ID;
-
-  private static CoreConfig config;
-
-  private void init() {
-    instance = this;
-
-    // initialize the static constructor...
-    getLogger().info(AtherysDamageTypes.ARCANE.getName());
-
-    game.getRegistry()
-        .registerModule(AtherysDamageType.class, AtherysDamageTypeRegistry.getInstance());
-
-    try {
-      config = new CoreConfig();
-      config.init();
-    } catch (IOException e) {
-      e.printStackTrace();
-      init = false;
-      return;
+    public static AtherysCore getInstance() {
+        return instance;
     }
 
-    if (config.DEFAULT) {
-      logger.error(
-          "AtherysCore config set to default. Plugin will halt. Please modify defaultConfig in config.conf to 'false' once non-default values have been inserted.");
-      init = false;
-      return;
+    public static CoreConfig getConfig() {
+        return config;
     }
 
-    init = true;
+    private void init() {
+        instance = this;
 
-  }
+        // initialize the static constructor...
+        getLogger().info(AtherysDamageTypes.ARCANE.getName());
 
-  private void start() {
-    PartyManager.getInstance().loadAll();
+        Sponge.getRegistry().registerModule(AtherysDamageType.class, AtherysDamageTypeRegistry.getInstance());
 
-    Sponge.getCommandManager().register(this, new PartyCommand().getCommandSpec(), "party");
+        try {
+            config = new CoreConfig();
+            config.init();
+        } catch (IOException e) {
+            e.printStackTrace();
+            init = false;
+            return;
+        }
 
-    if (config.DAMAGE.ENABLED) {
-      Sponge.getEventManager().registerListeners(this, new DamageListeners());
+        if (config.DEFAULT) {
+            logger.error(
+                    "AtherysCore config set to default. Plugin will halt. Please modify defaultConfig in config.conf to 'false' once non-default values have been inserted.");
+            init = false;
+            return;
+        }
+
+        init = true;
+
     }
 
-  }
+    private void start() {
+        PartyManager.getInstance().loadAll();
 
-  private void stop() {
-    PartyManager.getInstance().saveAll();
-  }
+        Sponge.getCommandManager().register(this, new PartyCommand().getCommandSpec(), "party");
 
-  @Listener(order = Order.EARLY)
-  public void onInit(GameInitializationEvent event) {
-    init();
-  }
+        if (config.DAMAGE.ENABLED) {
+            Sponge.getEventManager().registerListeners(this, new DamageListeners());
+        }
 
-  @Listener
-  public void onStart(GameStartingServerEvent event) {
-    if (init) {
-      start();
     }
-  }
 
-  @Listener
-  public void onStop(GameStoppingServerEvent event) {
-    if (init) {
-      stop();
+    private void stop() {
+        PartyManager.getInstance().saveAll();
     }
-  }
 
-  public static AtherysCore getInstance() {
-    return instance;
-  }
+    @Listener(order = Order.EARLY)
+    public void onInit(GameInitializationEvent event) {
+        init();
+    }
 
-  public Logger getLogger() {
-    return logger;
-  }
+    @Listener
+    public void onStart(GameStartingServerEvent event) {
+        if (init) {
+            start();
+        }
+    }
 
-  public Game getGame() {
-    return game;
-  }
+    @Listener
+    public void onStop(GameStoppingServerEvent event) {
+        if (init) {
+            stop();
+        }
+    }
 
-  public static CoreConfig getConfig() {
-    return config;
-  }
+    public static CommandService getCommandService() {
+        return CommandService.getInstance();
+    }
 
-  public String getWorkingDirectory() {
-    return configDirectory;
-  }
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public String getWorkingDirectory() {
+        return configDirectory;
+    }
 }

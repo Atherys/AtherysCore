@@ -1,32 +1,33 @@
 package com.atherys.core.utils;
 
-import java.util.Optional;
-import java.util.UUID;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.service.user.UserStorageService;
 
+import java.util.Optional;
+import java.util.UUID;
+
 public final class UserUtils {
 
-  private static UserStorageService userStorage;
+    private static UserStorageService userStorage;
 
-  static {
-    userStorage = Sponge.getServiceManager().provide(UserStorageService.class).get();
-  }
-
-  /**
-   * @param uuid the UUID of the player
-   * @return An offline User object, or an online Player object. If neither is available, returns
-   * empty Optional.
-   */
-  public static Optional<? extends User> getUser(UUID uuid) {
-    Optional<Player> onlinePlayer = Sponge.getServer().getPlayer(uuid);
-
-    if (onlinePlayer.isPresent()) {
-      return onlinePlayer;
+    static {
+        userStorage = Sponge.getServiceManager().provide(UserStorageService.class).get();
     }
-    return userStorage.get(uuid);
-  }
+
+    /**
+     * @param uuid the UUID of the player
+     * @return An offline User object, or an online Player object. If neither is available, returns
+     * empty Optional.
+     */
+    public static Optional<? extends User> getUser(UUID uuid) {
+        Optional<Player> onlinePlayer = Sponge.getServer().getPlayer(uuid);
+
+        if (onlinePlayer.isPresent()) {
+            return onlinePlayer;
+        }
+        return userStorage.get(uuid);
+    }
 
 }

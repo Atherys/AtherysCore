@@ -7,11 +7,11 @@ package com.atherys.core.database.api;
  */
 public interface Database<T> {
 
-  /**
-   * Retrieve the database object
-   *
-   * @return the database object
-   */
-  T getDatabase();
+    /**
+     * Retrieve the database object
+     *
+     * @return the database object
+     */
+    T getDatabase();
 
 }

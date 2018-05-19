@@ -5,14 +5,14 @@ import com.atherys.core.database.mongo.AbstractMongoDatabase;
 
 public class MongoCoreDatabase extends AbstractMongoDatabase {
 
-  private static MongoCoreDatabase instance = new MongoCoreDatabase();
+    private static MongoCoreDatabase instance = new MongoCoreDatabase();
 
-  private MongoCoreDatabase() {
-    super(AtherysCore.getConfig().DATABASE);
-  }
+    private MongoCoreDatabase() {
+        super(AtherysCore.getConfig().DATABASE);
+    }
 
-  public static MongoCoreDatabase getInstance() {
-    return instance;
-  }
+    public static MongoCoreDatabase getInstance() {
+        return instance;
+    }
 
 }
