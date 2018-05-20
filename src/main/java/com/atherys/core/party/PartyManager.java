@@ -38,7 +38,9 @@ public final class PartyManager extends MorphiaDatabaseManager<Party> {
     }
 
     public <T extends User> Optional<Party> getUserParty(T user) {
-        return user.get(PartyData.class).flatMap(PartyData::getParty);
+        Optional<PartyData> partyData = user.get(PartyData.class);
+        if (partyData.isPresent()) return partyData.get().getParty();
+        else return Optional.empty();
     }
 
     public <T extends User> void setUserParty(T user, Party party) {
@@ -53,6 +55,7 @@ public final class PartyManager extends MorphiaDatabaseManager<Party> {
      * Checks if the provided users are in the same party.
      * If both users are in a party, and both parties share the same UUID (i.e. they are the same ), this returns true.
      * Under any other circumstances, including if neither user is in a party, this will return false.
+     *
      * @param user1 The first user
      * @param user2 The second user
      */
