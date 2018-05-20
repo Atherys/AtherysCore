@@ -34,8 +34,6 @@ public class PartyInviteCommand extends UserCommand implements ParameterizedComm
 
         Player player = invitee.get();
 
-        Party party = PartyManager.getInstance().getUserParty(source).orElse(Party.of(source, Arrays.asList(player)));
-
         if (player.equals(source)) {
             PartyMsg.error(source, "You can't invite yourself!");
             return CommandResult.success();
@@ -45,6 +43,8 @@ public class PartyInviteCommand extends UserCommand implements ParameterizedComm
             PartyMsg.error(source, "That player is already in another party!");
             return CommandResult.success();
         }
+
+        Party party = PartyManager.getInstance().getUserParty(source).orElse(Party.of(source, Arrays.asList(player)));
 
         PartyInviteCommand.invite(source, player, party);
 
