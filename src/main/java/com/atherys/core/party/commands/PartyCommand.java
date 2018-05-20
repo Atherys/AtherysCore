@@ -32,6 +32,7 @@ public class PartyCommand extends UserCommand {
     public CommandResult execute(User user, CommandContext args) throws CommandException {
 
         Optional<Party> userParty = PartyManager.getInstance().getUserParty(user);
+
         if (userParty.isPresent()) {
             Text.Builder partyMembers = Text.builder();
 

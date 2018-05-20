@@ -25,6 +25,7 @@ public class PartyLeaveCommand extends UserCommand {
         PartyManager.getInstance().getUserParty(source).ifPresent(party -> {
             party.removeMember(source);
             PartyMsg.info(party, source.getName(), " has left the party.");
+            PartyMsg.info(source, "You have left the party.");
         });
 
         return CommandResult.success();

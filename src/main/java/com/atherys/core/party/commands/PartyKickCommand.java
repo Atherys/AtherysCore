@@ -48,6 +48,7 @@ public class PartyKickCommand extends UserCommand implements ParameterizedComman
 
             party.removeMember(kickedUser.get());
             PartyMsg.error(party, kickedUser.get().getName(), " has been kicked from the party by ", source.getName());
+            PartyMsg.error(kickedUser.get(), "You have been kicked from the party");
         });
 
         return CommandResult.success();
