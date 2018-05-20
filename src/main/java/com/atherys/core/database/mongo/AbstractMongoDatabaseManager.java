@@ -20,6 +20,7 @@ import java.util.*;
  *
  * @param <T> the type of object which will be managed
  */
+@Deprecated
 public abstract class AbstractMongoDatabaseManager<T extends DBObject> implements
         DatabaseManager<T> {
 

@@ -18,6 +18,9 @@ public final class CoreConfig extends PluginConfig {
     @Setting("damage")
     public DamageConfig DAMAGE = new DamageConfig();
 
+    @Setting("parties")
+    public boolean PARTIES_ENABLED = true;
+
     CoreConfig() throws IOException {
         super(AtherysCore.getInstance().getWorkingDirectory(), "config.conf");
     }
