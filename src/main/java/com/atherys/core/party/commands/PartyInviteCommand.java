@@ -36,6 +36,16 @@ public class PartyInviteCommand extends UserCommand implements ParameterizedComm
 
         Party party = PartyManager.getInstance().getUserParty(source).orElse(Party.of(source, Arrays.asList(player)));
 
+        if (player.equals(source)) {
+            PartyMsg.error(source, "You can't invite yourself!");
+            return CommandResult.success();
+        }
+
+        if (PartyManager.getInstance().hasUserParty(player)) {
+            PartyMsg.error(source, "That player is already in another party!");
+            return CommandResult.success();
+        }
+
         PartyInviteCommand.invite(source, player, party);
 
         return CommandResult.success();
