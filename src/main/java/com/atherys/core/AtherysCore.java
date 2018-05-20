@@ -8,6 +8,7 @@ import com.atherys.core.damage.listeners.DamageListeners;
 import com.atherys.core.party.PartyManager;
 import com.atherys.core.party.commands.PartyCommand;
 import com.atherys.core.party.data.PartyData;
+import com.atherys.core.party.listeners.PlayerPartyListener;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataRegistration;
@@ -88,6 +89,7 @@ public class AtherysCore {
         }
 
         if ( config.PARTIES_ENABLED ) {
+            Sponge.getEventManager().registerListeners(this, new PlayerPartyListener());
             PartyManager.getInstance().loadAll();
 
             try {
