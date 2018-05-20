@@ -46,6 +46,7 @@ public class PartyInviteCommand extends UserCommand implements ParameterizedComm
 
         Party party = PartyManager.getInstance().getUserParty(source).orElse(Party.of(source, Arrays.asList(player)));
 
+        if ( PartyManager.getInstance().hasUserParty(source) ) PartyMsg.info(source, "You have invited ", player.getName(), " to your party.");
         PartyInviteCommand.invite(source, player, party);
 
         return CommandResult.success();
@@ -59,7 +60,6 @@ public class PartyInviteCommand extends UserCommand implements ParameterizedComm
     }
 
     private static void invite(User source, Player player, Party party) {
-
         Question question = Question.of(Text.of(source.getName(), " has invited you to their party."))
                 .addAnswer(Question.Answer.of(Text.of("Accept"), invitee -> {
                     party.addMember(invitee);

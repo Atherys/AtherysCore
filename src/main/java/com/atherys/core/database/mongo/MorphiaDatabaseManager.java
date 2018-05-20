@@ -37,6 +37,7 @@ public class MorphiaDatabaseManager<T extends DBObject> implements DatabaseManag
 
     @Override
     public void remove(T object) {
+        getCache().remove(object.getUUID());
         morphia.getDatabase().delete(object);
     }
 

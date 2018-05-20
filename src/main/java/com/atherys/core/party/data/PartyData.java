@@ -92,7 +92,7 @@ public class PartyData extends AbstractData<PartyData, PartyData.Immutable> {
 
     @Override
     public DataContainer toContainer() {
-        return super.toContainer().set(CoreKeys.PARTY.getQuery(), partyUUID);
+        return super.toContainer().set(CoreKeys.PARTY.getQuery(), partyUUID.toString());
     }
 
     public static class Immutable extends AbstractImmutableData<Immutable, PartyData> {

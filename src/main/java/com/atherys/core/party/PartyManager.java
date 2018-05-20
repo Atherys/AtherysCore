@@ -67,7 +67,6 @@ public final class PartyManager extends MorphiaDatabaseManager<Party> {
 
     public void removeParty(Party party) {
         party.getMembers().forEach(this::removeUserParty);
-        this.getCache().remove(party.getUUID());
         this.remove(party);
     }
 

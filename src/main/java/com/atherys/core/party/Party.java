@@ -20,9 +20,13 @@ public class Party implements DBObject {
 
     private List<UUID> members = new ArrayList<>();
 
+    public Party() {
+    }
+
     private <T extends User, C extends Collection<T>> Party(T leader, C members) {
         this.uuid = UUID.randomUUID();
         this.leader = leader.getUniqueId();
+        addMember(leader);
         members.forEach(this::addMember);
     }
 
@@ -56,27 +60,30 @@ public class Party implements DBObject {
     }
 
     public <T extends User> void addMember(T user) {
-        PartyManager.getInstance().setUserParty(user, this);
-        this.members.add(user.getUniqueId());
+        if (!this.members.contains(user.getUniqueId())) {
+            PartyManager.getInstance().setUserParty(user, this);
+            this.members.add(user.getUniqueId());
+        }
     }
 
     /**
      * Removes a member from this party. If the number of remaining members are <= 1, then this returns true.
+     *
      * @param user The user to be removed from the party
      */
     public <T extends User> boolean removeMember(T user) {
-        if ( this.members.contains(user.getUniqueId()) ) {
+        if (this.members.contains(user.getUniqueId())) {
             PartyManager.getInstance().removeUserParty(user);
             this.members.remove(user.getUniqueId());
 
             // If only 1 member is left in the party, remove it
-            if ( members.size() <= 1 ) {
+            if (members.size() <= 1) {
                 PartyManager.getInstance().removeParty(this);
                 return true;
             }
 
             // If the user that was removed from the party was the party leader, find a random member and set them as leader
-            if ( user.getUniqueId().equals(leader) ) setRandomLeader();
+            if (user.getUniqueId().equals(leader)) setRandomLeader();
         }
         return false;
     }
@@ -87,7 +94,7 @@ public class Party implements DBObject {
     }
 
     public <T extends User> void setLeader(T user) {
-        if ( members.contains(user.getUniqueId()) ) leader = user.getUniqueId();
+        if (members.contains(user.getUniqueId())) leader = user.getUniqueId();
     }
 
     public <T extends User> boolean isLeader(T user) {
