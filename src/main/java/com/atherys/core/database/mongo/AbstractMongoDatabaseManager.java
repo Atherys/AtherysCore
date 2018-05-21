@@ -42,6 +42,8 @@ public abstract class AbstractMongoDatabaseManager<T extends DBObject> implement
     this.logger = logger;
   }
 
+
+
   protected Map<UUID, T> getCache() {
     return cache;
   }
