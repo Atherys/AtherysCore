@@ -56,6 +56,10 @@ public class MorphiaDatabase implements Database<Datastore> {
         datastore = morphia.createDatastore(client, config.NAME);
     }
 
+    protected Morphia getMorphia() {
+        return morphia;
+    }
+
     @Override
     public Datastore getDatabase() {
         return datastore;
