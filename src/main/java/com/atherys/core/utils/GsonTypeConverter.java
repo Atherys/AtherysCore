@@ -24,6 +24,6 @@ public class GsonTypeConverter<T> extends TypeConverter {
 
     @Override
     public Object encode(Object object, MappedField optionalExtraInfo) {
-        return gson.toJson(object);
+        return BasicDBObject.parse(gson.toJson(object));
     }
 }
