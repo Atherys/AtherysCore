@@ -21,21 +21,21 @@ import java.util.*;
  * @param <T> the type of object which will be managed
  */
 @Deprecated
-public abstract class AbstractMongoDatabaseManager<T extends DBObject> implements
-        DatabaseManager<T> {
+public abstract class AbstractMongoDatabaseManager<T extends DBObject> implements DatabaseManager<T> {
 
     private final Logger logger;
 
     private String collection;
     private AbstractMongoDatabase mongo;
 
+    private Class<T> clazz;
     private Map<UUID, T> cache = new HashMap<>();
 
-    protected AbstractMongoDatabaseManager(Logger logger, AbstractMongoDatabase mongoDatabase,
-                                           String collectionName) {
-        this.collection = collectionName;
+    protected AbstractMongoDatabaseManager(Logger logger, AbstractMongoDatabase mongoDatabase, Class<T> clazz) {
+        this.collection = clazz.getSimpleName();
         this.mongo = mongoDatabase;
         this.logger = logger;
+        this.clazz = clazz;
     }
 
     protected Map<UUID, T> getCache() {
@@ -145,7 +145,17 @@ public abstract class AbstractMongoDatabaseManager<T extends DBObject> implement
         objects.forEach(this::remove);
     }
 
-    protected abstract Optional<Document> toDocument(T object);
+    protected Optional<MongoTypeAdapter> getAdapter() {
+        return mongo.getAdapter(clazz);
+    }
 
-    protected abstract Optional<T> fromDocument(Document doc);
+    @SuppressWarnings("unchecked")
+    protected Optional<Document> toDocument(Object object) {
+        return getAdapter().flatMap(ta -> ta.toDocument(object));
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Optional<T> fromDocument(Document doc) {
+        return getAdapter().flatMap(ta -> ta.fromDocument(doc));
+    }
 }
