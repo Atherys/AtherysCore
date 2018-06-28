@@ -49,6 +49,8 @@ public class SRunCommand implements ParameterizedCommand {
                 src.sendMessage(Text.of(ERROR_PREFIX, TextColors.RED, "Executed: ", TextColors.RESET, script));
                 src.sendMessage(Text.of(ERROR_PREFIX, TextColors.RED, "Error: ", TextColors.RESET, e.getMessage()));
 
+                if ( e.getMessage() == null ) e.printStackTrace();
+
             }
         }
 
