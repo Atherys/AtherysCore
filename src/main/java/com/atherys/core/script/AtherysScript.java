@@ -1,7 +1,9 @@
 package com.atherys.core.script;
 
 import com.atherys.core.AtherysCore;
+import com.atherys.core.event.ScriptLibraryRegistrationEvent;
 import com.atherys.core.script.lib.ScriptLibrary;
+import org.spongepowered.api.Sponge;
 
 import javax.script.*;
 import java.util.Arrays;
@@ -23,6 +25,9 @@ public final class AtherysScript {
 
         if ( engine == null ) {
             engine = new ScriptEngineManager().getEngineByName("nashorn");
+
+            Sponge.getEventManager().post(new ScriptLibraryRegistrationEvent(this));
+
             libraries.forEach( library -> library.registerObjects(engine) );
         }
 
