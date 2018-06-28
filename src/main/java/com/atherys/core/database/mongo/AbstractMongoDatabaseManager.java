@@ -20,7 +20,6 @@ import java.util.*;
  *
  * @param <T> the type of object which will be managed
  */
-@Deprecated
 public abstract class AbstractMongoDatabaseManager<T extends DBObject> implements DatabaseManager<T> {
 
     private final Logger logger;
@@ -150,7 +149,7 @@ public abstract class AbstractMongoDatabaseManager<T extends DBObject> implement
     }
 
     @SuppressWarnings("unchecked")
-    protected Optional<Document> toDocument(Object object) {
+    protected Optional<Document> toDocument(T object) {
         return getAdapter().flatMap(ta -> ta.toDocument(object));
     }
 
