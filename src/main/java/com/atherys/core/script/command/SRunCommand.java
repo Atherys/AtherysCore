@@ -18,6 +18,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @Aliases("srun")
 @Description("Runs a script")
@@ -51,7 +52,7 @@ public class SRunCommand implements ParameterizedCommand {
 
                 src.sendMessage(Text.of(SUCCESS_PREFIX, TextColors.GREEN, "Executed: ", TextColors.RESET, script));
                 src.sendMessage(Text.of(SUCCESS_PREFIX, TextColors.GREEN, "Result: ", TextColors.RESET, result == null ? "None" : result));
-                src.sendMessage(Text.of(SUCCESS_PREFIX, TextColors.GREEN, "Time: ", TextColors.RESET, formatDuration(Duration.ofMillis(after - before))));
+                src.sendMessage(Text.of(SUCCESS_PREFIX, TextColors.GREEN, "Time: ", TextColors.RESET, formatDuration(after - before)));
 
             } catch (Exception e) {
 
@@ -66,14 +67,7 @@ public class SRunCommand implements ParameterizedCommand {
         return CommandResult.success();
     }
 
-    private static String formatDuration(Duration duration) {
-        long seconds = duration.getSeconds();
-        long absSeconds = Math.abs(seconds);
-        String positive = String.format(
-                "%d:%02d:%02d",
-                absSeconds / 3600,
-                (absSeconds % 3600) / 60,
-                absSeconds % 60);
-        return seconds < 0 ? "-" + positive : positive;
+    private static String formatDuration(long millis) {
+        return String.format("%d.%d", TimeUnit.MILLISECONDS.toSeconds(millis), millis % 1000);
     }
 }
