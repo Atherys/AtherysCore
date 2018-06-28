@@ -13,30 +13,27 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
 
-@Aliases("kick")
-@Permission("atheryscore.party.kick")
-public class PartyKickCommand extends UserCommand implements ParameterizedCommand {
+@Aliases("pvp")
+@Permission("atheryscore.party.pvp")
+public class PartyPvpCommand extends UserCommand implements ParameterizedCommand {
 
     @Nonnull
     @Override
     public CommandResult execute(@Nonnull User source, @Nonnull CommandContext args) throws CommandException {
-        Optional<User> kickedUser = args.getOne("kickedPlayer");
 
-        if (!kickedUser.isPresent()) {
+        Optional<Boolean> pvp = args.getOne("toggle");
+
+        if (!pvp.isPresent()) {
             return CommandResult.success();
         }
 
-        if (!PartyManager.getInstance().areUsersInSameParty(source, kickedUser.get())) {
-            PartyMsg.error(source, "That player is not in your party!");
-            return CommandResult.success();
-        }
-
-        if (kickedUser.get().equals(source)) {
-            PartyMsg.error(source, "You can't kick yourself!");
+        if (!PartyManager.getInstance().hasUserParty(source)) {
+            PartyMsg.error(source, "You are not in a party!");
             return CommandResult.success();
         }
 
@@ -46,9 +43,8 @@ public class PartyKickCommand extends UserCommand implements ParameterizedComman
                 return;
             }
 
-            party.removeMember(kickedUser.get());
-            PartyMsg.error(party, kickedUser.get().getName(), " has been kicked from the party by ", source.getName());
-            PartyMsg.error(kickedUser.get(), "You have been kicked from the party");
+            party.setPvp(pvp.get());
+            PartyMsg.info(party, "Party PvP set to ", pvp.get() ? TextColors.GREEN : TextColors.RED, pvp.get());
         });
 
         return CommandResult.success();
@@ -56,8 +52,8 @@ public class PartyKickCommand extends UserCommand implements ParameterizedComman
 
     @Override
     public CommandElement[] getArguments() {
-        return new CommandElement[]{
-                GenericArguments.user(Text.of("kickedPlayer"))
+        return new CommandElement[] {
+                GenericArguments.bool(Text.of("toggle"))
         };
     }
 }

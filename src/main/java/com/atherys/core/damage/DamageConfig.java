@@ -58,7 +58,9 @@ public class DamageConfig {
 
         if (source instanceof IndirectEntityDamageSource) {
             Entity entitySource = ((IndirectEntityDamageSource) source).getIndirectSource();
-            //Entity projectile = source.getSource();
+
+            Entity projectile = source.getSource();
+            projectile.remove();
 
             return AtherysDamageSources.ranged(type, entitySource).build();
         } else {

@@ -3,172 +3,118 @@ package com.atherys.core.party;
 import com.atherys.core.database.api.DBObject;
 import com.atherys.core.utils.UserUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 import org.spongepowered.api.entity.living.player.User;
 
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-/**
- * Represents a party of players. This class only stores the party {@link UUID} and the leader of
- * the party's UUID. The party does not store information on which members are part of it. That job
- * falls to the {@link PartyManager}. Any methods related to party members in this class will have
- * to utilize the PartyManager in some way or another.
- */
+@Entity
 public class Party implements DBObject {
 
-    private UUID partyUUID;
+    @Id
+    private UUID uuid;
 
     private UUID leader;
+    private boolean pvp;
 
-    Party(UUID uuid) {
-        this.partyUUID = uuid;
+    private List<UUID> members = new ArrayList<>();
+
+    public Party() {
     }
 
-    private Party(User... members) {
-        if (members.length == 0) {
-            return;
-        }
-
-        partyUUID = UUID.randomUUID();
-
-        this.leader = members[0].getUniqueId();
-        for (User player : members) {
-            addPlayer(player);
-        }
-
-        PartyManager.getInstance().addParty(this, members);
+    private <T extends User, C extends Collection<T>> Party(T leader, C members) {
+        this.uuid = UUID.randomUUID();
+        this.leader = leader.getUniqueId();
+        addMember(leader);
+        members.forEach(this::addMember);
     }
 
-    /**
-     * Creates a new single-player party. If this constructor is used, a second player must be added
-     * immediately afterwards.
-     *
-     * @param player The party leader
-     * @return The party instance
-     */
-    public static Party fromLeader(User player) {
-        return new Party(player);
-    }
-
-    /**
-     * Creates a party of players.
-     *
-     * @param leader  The leader of the party
-     * @param members The remaining member of the party, EXCLUDING the leader.
-     * @return The party instance
-     */
-    public static Party of(User leader, User... members) {
-        Party party = Party.fromLeader(leader);
-
-        for (User player : members) {
-            party.addPlayer(player);
-        }
-
+    public static <T extends User, C extends Collection<T>> Party of(T leader, C members) {
+        Party party = new Party(leader, members);
+        PartyManager.getInstance().register(party);
         return party;
     }
 
-    /**
-     * A party is tracked using it's {@link UUID}. This gets it.
-     *
-     * @return The UUID of the party.
-     */
     @Override
     public UUID getUUID() {
-        return partyUUID;
+        return uuid;
     }
 
-    /**
-     * Uses the {@link PartyManager#hasPlayerParty(User)} to figure out if the given player is part of
-     * this party.
-     *
-     * @param player The player to be looked up.
-     * @return Whether or not this player is in the party.
-     */
-    public boolean hasPlayer(User player) {
-        return PartyManager.getInstance().hasPlayerParty(player);
+    public UUID getLeaderUUID() {
+        return leader;
     }
 
-    /**
-     * Uses the {@link PartyManager#setPlayerParty(User, Party)} to add a player to the party. Checks
-     * beforehand using {@link PartyManager#hasPlayerParty(User)} to check if the given player already
-     * has a party. If so, the player's party will not be changed.
-     *
-     * @param player The player to be added.
-     */
-    public void addPlayer(User player) {
-        if (!hasPlayer(player)) {
-            PartyManager.getInstance().setPlayerParty(player, this);
-        }
+    public List<UUID> getMemberUUIDs() {
+        return members;
     }
 
-    /**
-     * Uses the {@link PartyManager#resetPlayerParty(User)} to remove a player from this party. If the
-     * player is the leader of the party, a new leader will be randomly selected from the remaining
-     * members. If the number of remaining members is less than or equal to 1, the party will be
-     * removed and all remaining members will become party-less.
-     *
-     * @param player The player to be removed.
-     */
-    public void removePlayer(User player) {
-        PartyManager.getInstance().resetPlayerParty(player);
-
-        List<User> members = getMembers();
-
-        if (members.size() <= 1) {
-            this.remove();
-            return;
-        }
-
-        if (player.getUniqueId().equals(leader)) {
-            setLeader(members.get(RandomUtils.nextInt(0, members.size() - 1)));
-        }
+    public Optional<? extends User> getLeader() {
+        return UserUtils.getUser(leader);
     }
 
-    /**
-     * Used to check if the given player is the leader of this party.
-     *
-     * @param player The player to be checked
-     * @return Whether or not the player is the leader of this party.
-     */
-    public boolean isLeader(User player) {
-        return leader.equals(player.getUniqueId());
-    }
-
-    /**
-     * Uses {@link UserUtils#getUser(UUID)} to get the leader of this party. If the leader could not
-     * be found, returns null.
-     *
-     * @return The leader {@link User} of this party.
-     */
-    @Nullable
-    public User getLeader() {
-        return UserUtils.getUser(leader).orElse(null);
-    }
-
-    /**
-     * Used to change the leader of this party.
-     *
-     * @param newLeader The new leader of the party.
-     */
-    public void setLeader(User newLeader) {
-        leader = newLeader.getUniqueId();
-    }
-
-    /**
-     * Uses {@link PartyManager#getPartyMembers(Party)} to retrieve all members of this party.
-     *
-     * @return A list of {@link User}s who are associated with this party.
-     */
     public List<User> getMembers() {
-        return PartyManager.getInstance().getPartyMembers(this);
+        List<User> users = new ArrayList<>(members.size());
+        members.forEach(member -> UserUtils.getUser(member).map(users::add));
+        return users;
+    }
+
+    public <T extends User> void addMember(T user) {
+        if (!this.members.contains(user.getUniqueId())) {
+            PartyManager.getInstance().setUserParty(user, this);
+            this.members.add(user.getUniqueId());
+        }
     }
 
     /**
-     * Removes this party using {@link PartyManager#removeParty(Party)}.
+     * Removes a member from this party. If the number of remaining members are <= 1, then this returns true.
+     *
+     * @param user The user to be removed from the party
      */
-    public void remove() {
-        PartyManager.getInstance().removeParty(this);
+    public <T extends User> boolean removeMember(T user) {
+        if (this.members.contains(user.getUniqueId())) {
+            PartyManager.getInstance().removeUserParty(user);
+            this.members.remove(user.getUniqueId());
+
+            // If only 1 member is left in the party, remove it
+            if (members.size() <= 1) {
+                PartyManager.getInstance().removeParty(this);
+                return true;
+            }
+
+            // If the user that was removed from the party was the party leader, find a random member and set them as leader
+            if (user.getUniqueId().equals(leader)) setRandomLeader();
+        }
+        return false;
     }
 
+    public <T extends User> boolean isMember(T user) {
+        Optional<Boolean> result = PartyManager.getInstance().getUserParty(user).map(party -> party.equals(this));
+        return result.orElse(false);
+    }
+
+    public <T extends User> void setLeader(T user) {
+        if (members.contains(user.getUniqueId())) leader = user.getUniqueId();
+    }
+
+    public <T extends User> boolean isLeader(T user) {
+        return isMember(user) && user.getUniqueId().equals(this.getLeaderUUID());
+    }
+
+    public void setPvp(boolean state) {
+        this.pvp = state;
+    }
+
+    public boolean hasPvp() {
+        return pvp;
+    }
+
+    private void setRandomLeader() {
+        this.leader = members.get(RandomUtils.nextInt(0, members.size() - 1));
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof Party && ((Party) other).getUUID().equals(this.getUUID());
+    }
 }

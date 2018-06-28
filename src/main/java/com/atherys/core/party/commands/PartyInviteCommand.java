@@ -1,6 +1,9 @@
 package com.atherys.core.party.commands;
 
+import com.atherys.core.command.ParameterizedCommand;
 import com.atherys.core.command.UserCommand;
+import com.atherys.core.command.annotation.Aliases;
+import com.atherys.core.command.annotation.Permission;
 import com.atherys.core.party.Party;
 import com.atherys.core.party.PartyManager;
 import com.atherys.core.party.PartyMsg;
@@ -8,92 +11,66 @@ import com.atherys.core.utils.Question;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyles;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Optional;
 
-public class PartyInviteCommand extends UserCommand {
+@Aliases({"add", "invite"})
+@Permission("atheryscore.party.invite")
+public class PartyInviteCommand extends UserCommand implements ParameterizedCommand {
 
     @Nonnull
     @Override
-    public CommandResult execute(@Nonnull User user, @Nonnull CommandContext args)
-            throws CommandException {
+    public CommandResult execute(@Nonnull User source, @Nonnull CommandContext args) throws CommandException {
         Optional<Player> invitee = args.getOne("invitedPlayer");
-        if (!invitee.isPresent()) {
-            return CommandResult.empty();
-        }
 
-        // if invitee is already in another party, don't invite
-        if (PartyManager.getInstance().hasPlayerParty(invitee.get())) {
-            PartyMsg.error(user, "That player is already in another party.");
+        if (!invitee.isPresent()) return CommandResult.success();
+
+        Player player = invitee.get();
+
+        if (player.equals(source)) {
+            PartyMsg.error(source, "You can't invite yourself!");
             return CommandResult.success();
         }
 
-        Optional<Party> playerParty = PartyManager.getInstance().getPlayerParty(user);
-
-        if (playerParty.isPresent() && playerParty.get().isLeader(user)) {
-            // If player has party and is leader of that party, invitee will be invited to player's party
-            Party party = playerParty.get();
-
-            Question q = Question
-                    .of(Text.of(user.getName(), " has invited you to their party. Would you like to join?"))
-                    .addAnswer(Question.Answer
-                            .of(Text.of(TextStyles.BOLD, TextColors.DARK_GREEN, "Yes"), (respondent) -> {
-                                party.addPlayer(respondent);
-                                PartyMsg.info(party, respondent.getName(), " has joined your party!");
-                            }))
-                    .addAnswer(Question.Answer.of(Text.of(TextStyles.BOLD, TextColors.DARK_RED, "No"),
-                            (respondent) -> PartyMsg
-                                    .error(user, respondent.getName(), " has refused to join your party.")))
-                    .build();
-
-            q.pollChat(invitee.get());
-
-        } else {
-            // If player does not have a party, and neither does invitee, then the party will be created when invitee accepts party invite
-
-            Question q = Question
-                    .of(Text.of(user.getName(), " has invited you to their party. Would you like to join?"))
-                    .addAnswer(Question.Answer
-                            .of(Text.of(TextStyles.BOLD, TextColors.DARK_GREEN, "Yes"), (respondent) -> {
-
-                                if (!user.isOnline()) {
-                                    // If when party invite is accepted, player is offline, party will not be created.
-                                    PartyMsg.error(respondent, user.getName(),
-                                            " has gone offline since sending you that invite. Party could not be created. Sorry!");
-                                    return;
-                                }
-
-                                Party party = Party.of(user, invitee.get());
-                                PartyMsg.info(party, "Your party has been created! Do ", TextColors.GREEN,
-                                        TextStyles.BOLD, "/party", TextColors.DARK_AQUA, TextStyles.RESET,
-                                        " for a list of members.");
-                            }))
-                    .addAnswer(Question.Answer.of(Text.of(TextStyles.BOLD, TextColors.DARK_RED, "No"),
-                            (respondent) -> PartyMsg
-                                    .error(user, respondent.getName(), " has refused to join your party.")))
-                    .build();
-
-            q.pollChat(invitee.get());
+        if (PartyManager.getInstance().hasUserParty(player)) {
+            PartyMsg.error(source, "That player is already in another party!");
+            return CommandResult.success();
         }
+
+        Party party = PartyManager.getInstance().getUserParty(source).orElse(Party.of(source, Arrays.asList(player)));
+
+        PartyInviteCommand.invite(source, player, party);
 
         return CommandResult.success();
     }
 
-    public CommandSpec getCommandSpec() {
-        return CommandSpec.builder()
-                .permission("atherys.core.party.invite")
-                .executor(this)
-                .arguments(
-                        GenericArguments.player(Text.of("invitedPlayer"))
-                )
+    @Override
+    public CommandElement[] getArguments() {
+        return new CommandElement[]{
+                GenericArguments.player(Text.of("invitedPlayer"))
+        };
+    }
+
+    private static void invite(User source, Player player, Party party) {
+        Question question = Question.of(Text.of(source.getName(), " has invited you to their party."))
+                .addAnswer(Question.Answer.of(Text.of("Accept"), invitee -> {
+                    party.addMember(invitee);
+                    PartyMsg.info(player, "You have accepted ", source.getName(), "'s invite");
+                    PartyMsg.info(party, player.getName(), " has joined the party!");
+                }))
+                .addAnswer(Question.Answer.of(Text.of("Reject"), invitee -> {
+                    PartyMsg.error(player, "You have rejected ", source.getName(), "'s invite");
+                }))
                 .build();
+
+        question.pollChat(player);
+        PartyMsg.info(party, player.getName(), " has been invited to the party.");
     }
 }

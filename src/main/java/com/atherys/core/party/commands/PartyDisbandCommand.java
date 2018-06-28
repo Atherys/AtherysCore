@@ -10,22 +10,28 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.User;
 
-@Aliases("leave")
-@Permission("atheryscore.party.leave")
-public class PartyLeaveCommand extends UserCommand {
+import javax.annotation.Nonnull;
 
+@Aliases({"disband", "remove"})
+@Permission("atheryscore.party.disband")
+public class PartyDisbandCommand extends UserCommand {
+
+    @Nonnull
     @Override
-    public CommandResult execute(User source, CommandContext args) throws CommandException {
-
+    public CommandResult execute(@Nonnull User source, @Nonnull CommandContext args) throws CommandException {
         if (!PartyManager.getInstance().hasUserParty(source)) {
             PartyMsg.error(source, "You are not in a party!");
             return CommandResult.success();
         }
 
         PartyManager.getInstance().getUserParty(source).ifPresent(party -> {
-            party.removeMember(source);
-            PartyMsg.info(party, source.getName(), " has left the party.");
-            PartyMsg.info(source, "You have left the party.");
+            if (!party.isLeader(source)) {
+                PartyMsg.error(source, "You are not the leader of this party.");
+                return;
+            }
+
+            PartyMsg.error(party, "Your party has been disbanded.");
+            PartyManager.getInstance().removeParty(party);
         });
 
         return CommandResult.success();
