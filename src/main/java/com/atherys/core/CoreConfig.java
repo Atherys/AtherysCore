@@ -21,6 +21,9 @@ public final class CoreConfig extends PluginConfig {
     @Setting("parties")
     public boolean PARTIES_ENABLED = true;
 
+    @Setting("scripting")
+    public boolean SCRIPTING_ENABLED = true;
+
     CoreConfig() throws IOException {
         super(AtherysCore.getInstance().getWorkingDirectory(), "config.conf");
     }
