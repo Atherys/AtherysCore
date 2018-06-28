@@ -36,14 +36,14 @@ public final class AtherysScript {
 
     public void compile(String script, Consumer<Invocable> consumer) {
         try {
-            consumer.accept((Invocable) engine.eval(script));
+            consumer.accept((Invocable) getEngine().eval(script));
         } catch (ScriptException e) {
             e.printStackTrace();
         }
     }
 
     public Object run(String script) throws ScriptException {
-        return engine.eval(script);
+        return getEngine().eval(script);
     }
 
     public boolean addLibrary(ScriptLibrary library) {
