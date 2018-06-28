@@ -16,6 +16,9 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+
 @Aliases("srun")
 @Description("Runs a script")
 @Permission("atherysquests.admin.srun")
@@ -40,20 +43,37 @@ public class SRunCommand implements ParameterizedCommand {
         else {
             try {
 
+                long before = System.currentTimeMillis();
+
                 Object result = AtherysCore.getScriptingEngine().run(script);
+
+                long after = System.currentTimeMillis();
+
                 src.sendMessage(Text.of(SUCCESS_PREFIX, TextColors.GREEN, "Executed: ", TextColors.RESET, script));
                 src.sendMessage(Text.of(SUCCESS_PREFIX, TextColors.GREEN, "Result: ", TextColors.RESET, result == null ? "None" : result));
+                src.sendMessage(Text.of(SUCCESS_PREFIX, TextColors.GREEN, "Time: ", TextColors.RESET, formatDuration(Duration.ofMillis(after - before))));
 
             } catch (Exception e) {
 
                 src.sendMessage(Text.of(ERROR_PREFIX, TextColors.RED, "Executed: ", TextColors.RESET, script));
                 src.sendMessage(Text.of(ERROR_PREFIX, TextColors.RED, "Error: ", TextColors.RESET, e.getMessage()));
 
-                if ( e.getMessage() == null ) e.printStackTrace();
+                if (e.getMessage() == null) e.printStackTrace();
 
             }
         }
 
         return CommandResult.success();
+    }
+
+    private static String formatDuration(Duration duration) {
+        long seconds = duration.getSeconds();
+        long absSeconds = Math.abs(seconds);
+        String positive = String.format(
+                "%d:%02d:%02d",
+                absSeconds / 3600,
+                (absSeconds % 3600) / 60,
+                absSeconds % 60);
+        return seconds < 0 ? "-" + positive : positive;
     }
 }
