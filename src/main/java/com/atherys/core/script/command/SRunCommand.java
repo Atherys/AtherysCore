@@ -33,26 +33,25 @@ public class SRunCommand implements ParameterizedCommand {
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-        if (src instanceof Player) {
-            String script = args.<String>getOne("javascript").orElse("");
+        String script = args.<String>getOne("javascript").orElse("");
 
-            if (script.isEmpty()) return CommandResult.empty();
+        if (script.isEmpty()) return CommandResult.empty();
 
-            else {
-                try {
+        else {
+            try {
 
-                    Object result = AtherysCore.getScriptingEngine().run(script);
-                    src.sendMessage(Text.of(SUCCESS_PREFIX, TextColors.GREEN, "Executed: ", TextColors.RESET, script));
-                    src.sendMessage(Text.of(SUCCESS_PREFIX, TextColors.GREEN, "Result: ", TextColors.RESET, result == null ? "None" : result));
+                Object result = AtherysCore.getScriptingEngine().run(script);
+                src.sendMessage(Text.of(SUCCESS_PREFIX, TextColors.GREEN, "Executed: ", TextColors.RESET, script));
+                src.sendMessage(Text.of(SUCCESS_PREFIX, TextColors.GREEN, "Result: ", TextColors.RESET, result == null ? "None" : result));
 
-                } catch (Exception e) {
+            } catch (Exception e) {
 
-                    src.sendMessage(Text.of(ERROR_PREFIX, TextColors.RED, "Executed: ", TextColors.RESET, script));
-                    src.sendMessage(Text.of(ERROR_PREFIX, TextColors.RED, "Error: ", TextColors.RESET, e.getMessage()));
+                src.sendMessage(Text.of(ERROR_PREFIX, TextColors.RED, "Executed: ", TextColors.RESET, script));
+                src.sendMessage(Text.of(ERROR_PREFIX, TextColors.RED, "Error: ", TextColors.RESET, e.getMessage()));
 
-                }
             }
         }
-        return CommandResult.empty();
+
+        return CommandResult.success();
     }
 }
