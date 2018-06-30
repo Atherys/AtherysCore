@@ -1,4 +1,13 @@
 package com.atherys.core.script.lib.entity;
 
-public class GetEntityHealth {
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.living.Living;
+
+import java.util.function.Function;
+
+public class GetEntityHealth implements Function<Entity, Double> {
+    public Double apply(Entity entity){
+        if (!(entity instanceof Living)) return null;
+        return ((Living) entity).health().get();
+    }
 }
