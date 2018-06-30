@@ -13,12 +13,12 @@ import org.spongepowered.api.text.Text;
  */
 public interface View<T extends Viewable> {
 
-  /**
-   * Used to send this view to the player. Depending on implementaiton, this can be done via {@link
-   * Player#sendMessage(Text)}, {@link Player#sendBookView(BookView)} or other.
-   *
-   * @param player The player this view will be displayed to.
-   */
-  void show(Player player);
+    /**
+     * Used to send this view to the player. Depending on implementaiton, this can be done via {@link
+     * Player#sendMessage(Text)}, {@link Player#sendBookView(BookView)} or other.
+     *
+     * @param player The player this view will be displayed to.
+     */
+    void show(Player player);
 
 }

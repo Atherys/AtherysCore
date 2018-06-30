@@ -5,6 +5,6 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 
 public interface ParameterizedCommand extends CommandExecutor {
 
-  CommandElement[] getArguments();
+    CommandElement[] getArguments();
 
 }

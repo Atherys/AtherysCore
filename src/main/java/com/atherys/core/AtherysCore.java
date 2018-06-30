@@ -1,130 +1,164 @@
 package com.atherys.core;
 
-import static com.atherys.core.AtherysCore.DESCRIPTION;
-import static com.atherys.core.AtherysCore.ID;
-import static com.atherys.core.AtherysCore.NAME;
-import static com.atherys.core.AtherysCore.VERSION;
-
+import com.atherys.core.command.CommandService;
 import com.atherys.core.damage.AtherysDamageType;
 import com.atherys.core.damage.AtherysDamageTypeRegistry;
 import com.atherys.core.damage.AtherysDamageTypes;
 import com.atherys.core.damage.listeners.DamageListeners;
 import com.atherys.core.party.PartyManager;
 import com.atherys.core.party.commands.PartyCommand;
-import java.io.IOException;
-import javax.inject.Inject;
+import com.atherys.core.party.data.PartyData;
+import com.atherys.core.party.listeners.PlayerPartyListener;
+import com.atherys.core.script.AtherysScript;
+import com.atherys.core.script.CoreLibrary;
+import com.atherys.core.script.command.SRunCommand;
 import org.slf4j.Logger;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
+
+import javax.inject.Inject;
+import java.io.IOException;
+
+import static com.atherys.core.AtherysCore.*;
 
 @Plugin(id = ID, version = VERSION, name = NAME, description = DESCRIPTION)
 public class AtherysCore {
 
-  public static final String ID = "atheryscore";
-  public static final String NAME = "A'therys Core";
-  public static final String DESCRIPTION = "The core utilities used on the A'therys Horizons server.";
-  public static final String VERSION = "1.2.2";
+    public static final String ID = "atheryscore";
+    public static final String NAME = "A'therys Core";
+    public static final String DESCRIPTION = "The core utilities used on the A'therys Horizons server.";
+    public static final String VERSION = "1.2.3";
 
-  private static AtherysCore instance;
+    @Inject
+    PluginContainer container;
 
-  private static boolean init = false;
+    private static AtherysCore instance;
 
-  @Inject
-  private Logger logger;
+    private static boolean init = false;
+    private static CoreConfig config;
 
-  @Inject
-  private Game game;
+    @Inject
+    private Logger logger;
 
-  private String configDirectory = "config/" + ID;
+    private String configDirectory = "config/" + ID;
 
-  private static CoreConfig config;
-
-  private void init() {
-    instance = this;
-
-    // initialize the static constructor...
-    getLogger().info(AtherysDamageTypes.ARCANE.getName());
-
-    game.getRegistry()
-        .registerModule(AtherysDamageType.class, AtherysDamageTypeRegistry.getInstance());
-
-    try {
-      config = new CoreConfig();
-      config.init();
-    } catch (IOException e) {
-      e.printStackTrace();
-      init = false;
-      return;
+    public static AtherysCore getInstance() {
+        return instance;
     }
 
-    if (config.DEFAULT) {
-      logger.error(
-          "AtherysCore config set to default. Plugin will halt. Please modify defaultConfig in config.conf to 'false' once non-default values have been inserted.");
-      init = false;
-      return;
+    public static CoreConfig getConfig() {
+        return config;
     }
 
-    init = true;
+    private void init() {
+        instance = this;
 
-  }
+        // initialize the static constructor...
+        getLogger().info(AtherysDamageTypes.ARCANE.getName());
 
-  private void start() {
-    PartyManager.getInstance().loadAll();
+        Sponge.getRegistry().registerModule(AtherysDamageType.class, AtherysDamageTypeRegistry.getInstance());
 
-    Sponge.getCommandManager().register(this, new PartyCommand().getCommandSpec(), "party");
+        try {
+            config = new CoreConfig();
+            config.init();
+        } catch (IOException e) {
+            e.printStackTrace();
+            init = false;
+            return;
+        }
 
-    if (config.DAMAGE.ENABLED) {
-      Sponge.getEventManager().registerListeners(this, new DamageListeners());
+        if (config.DEFAULT) {
+            logger.error(
+                    "AtherysCore config set to default. Plugin will halt. Please modify defaultConfig in config.conf to 'false' once non-default values have been inserted.");
+            init = false;
+            return;
+        }
+
+        init = true;
+
     }
 
-  }
+    private void start() {
+        if (config.DAMAGE.ENABLED) {
+            Sponge.getEventManager().registerListeners(this, new DamageListeners());
+        }
 
-  private void stop() {
-    PartyManager.getInstance().saveAll();
-  }
+        if ( config.PARTIES_ENABLED ) {
+            Sponge.getEventManager().registerListeners(this, new PlayerPartyListener());
+            PartyManager.getInstance().loadAll();
 
-  @Listener(order = Order.EARLY)
-  public void onInit(GameInitializationEvent event) {
-    init();
-  }
+            try {
+                getCommandService().register(new PartyCommand(), this);
+            } catch (CommandService.AnnotatedCommandException e) {
+                e.printStackTrace();
+            }
+        }
 
-  @Listener
-  public void onStart(GameStartingServerEvent event) {
-    if (init) {
-      start();
+        if ( config.SCRIPTING_ENABLED ) {
+            getScriptingEngine().addLibrary(new CoreLibrary());
+            try {
+                getCommandService().register(new SRunCommand(), this);
+            } catch (CommandService.AnnotatedCommandException e) {
+                e.printStackTrace();
+            }
+        }
     }
-  }
 
-  @Listener
-  public void onStop(GameStoppingServerEvent event) {
-    if (init) {
-      stop();
+    private void stop() {
+        if ( config.PARTIES_ENABLED ) PartyManager.getInstance().saveAll();
     }
-  }
 
-  public static AtherysCore getInstance() {
-    return instance;
-  }
+    @Listener
+    public void preInit(GamePreInitializationEvent event) {
+        CoreKeys.PARTY_DATA_REGISTRATION = DataRegistration.builder()
+                .dataClass(PartyData.class)
+                .immutableClass(PartyData.Immutable.class)
+                .builder(new PartyData.Builder())
+                .dataName("Party")
+                .manipulatorId("party")
+                .buildAndRegister(this.container);
+    }
 
-  public Logger getLogger() {
-    return logger;
-  }
+    @Listener(order = Order.EARLY)
+    public void onInit(GameInitializationEvent event) {
+        init();
+    }
 
-  public Game getGame() {
-    return game;
-  }
+    @Listener
+    public void onStart(GameStartingServerEvent event) {
+        if (init) {
+            start();
+        }
+    }
 
-  public static CoreConfig getConfig() {
-    return config;
-  }
+    @Listener
+    public void onStop(GameStoppingServerEvent event) {
+        if (init) {
+            stop();
+        }
+    }
 
-  public String getWorkingDirectory() {
-    return configDirectory;
-  }
+    public static AtherysScript getScriptingEngine() { return AtherysScript.getInstance(); }
+
+    public static boolean isScriptingEnabled() { return config.SCRIPTING_ENABLED; }
+
+    public static CommandService getCommandService() {
+        return CommandService.getInstance();
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public String getWorkingDirectory() {
+        return configDirectory;
+    }
 }

@@ -7,11 +7,11 @@ package com.atherys.core.views;
  */
 public interface Viewable<T extends View> {
 
-  /**
-   * Used to get an instance of an appropriate {@link View}.
-   *
-   * @return The appropriate View for this Viewable
-   */
-  T createView();
+    /**
+     * Used to get an instance of an appropriate {@link View}.
+     *
+     * @return The appropriate View for this Viewable
+     */
+    T createView();
 
 }

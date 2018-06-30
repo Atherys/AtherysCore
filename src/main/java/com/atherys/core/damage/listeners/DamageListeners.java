@@ -10,16 +10,16 @@ import org.spongepowered.api.event.filter.cause.Root;
 
 public class DamageListeners {
 
-  @Listener(order = Order.FIRST)
-  public void onSingleDamage(DamageEntityEvent event, @Root EntityDamageSource source) {
-    if (event.getCause().containsType(AtherysEntityDamageSource.class)) {
-      return;
+    @Listener(order = Order.FIRST)
+    public void onSingleDamage(DamageEntityEvent event, @Root EntityDamageSource source) {
+        if (event.getCause().containsType(AtherysEntityDamageSource.class)) {
+            return;
+        }
+
+        event.setCancelled(true);
+
+        EntityDamageSource newSource = AtherysCore.getConfig().DAMAGE.getDamageSource(source);
+        event.getTargetEntity().damage(event.getBaseDamage(), newSource);
     }
-
-    event.setCancelled(true);
-
-    EntityDamageSource newSource = AtherysCore.getConfig().DAMAGE.getDamageSource(source);
-    event.getTargetEntity().damage(event.getBaseDamage(), newSource);
-  }
 
 }

@@ -1,32 +1,27 @@
 package com.atherys.core.gson;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.gson.GsonConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.gson.GsonConfigurationLoader;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 public class AbstractConfigurateAdapter<T> /* extends TypeAdapter<T> */ implements
-    JsonDeserializer<T>, JsonSerializer<T> {
+        JsonDeserializer<T>, JsonSerializer<T> {
 
-  private Class<T> clazz;
+    private Class<T> clazz;
 
-  private JsonParser parser = new JsonParser();
+    private JsonParser parser = new JsonParser();
 
-  protected AbstractConfigurateAdapter(Class<T> clazz) {
-    this.clazz = clazz;
-  }
+    protected AbstractConfigurateAdapter(Class<T> clazz) {
+        this.clazz = clazz;
+    }
 
     /*@Override
     public void write( JsonWriter out, T value ) throws IOException {
@@ -65,53 +60,53 @@ public class AbstractConfigurateAdapter<T> /* extends TypeAdapter<T> */ implemen
         return null;
     }*/
 
-  @Override
-  public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-      throws JsonParseException {
-    String jsonString = json.toString();
+    @Override
+    public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+            throws JsonParseException {
+        String jsonString = json.toString();
 
-    //AtherysCore.getInstance().getLogger().info( "Read: " + jsonString ); // DEBUG
+        //AtherysCore.getInstance().getLogger().info( "Read: " + jsonString ); // DEBUG
 
-    try {
+        try {
 
-      GsonConfigurationLoader loader = GsonConfigurationLoader.builder()
-          .setSource(() -> new BufferedReader(new StringReader(jsonString))).build();
-      ConfigurationNode node = loader.load();
+            GsonConfigurationLoader loader = GsonConfigurationLoader.builder()
+                    .setSource(() -> new BufferedReader(new StringReader(jsonString))).build();
+            ConfigurationNode node = loader.load();
 
-      try {
-        return node.getValue(TypeToken.of(clazz));
-      } catch (ObjectMappingException e) {
-        e.printStackTrace();
-      }
+            try {
+                return node.getValue(TypeToken.of(clazz));
+            } catch (ObjectMappingException e) {
+                e.printStackTrace();
+            }
 
-    } catch (IOException e) {
-      e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
-    return null;
-  }
+    @Override
+    public JsonElement serialize(T src, Type typeOfSrc, JsonSerializationContext context) {
+        GsonConfigurationLoader loader = GsonConfigurationLoader.builder().setLenient(true).setIndent(0)
+                .build();
+        try {
+            ConfigurationNode node = loader.createEmptyNode().setValue(TypeToken.of(clazz), src);
+            StringWriter writer = new StringWriter();
+            loader.saveInternal(node, writer);
 
-  @Override
-  public JsonElement serialize(T src, Type typeOfSrc, JsonSerializationContext context) {
-    GsonConfigurationLoader loader = GsonConfigurationLoader.builder().setLenient(true).setIndent(0)
-        .build();
-    try {
-      ConfigurationNode node = loader.createEmptyNode().setValue(TypeToken.of(clazz), src);
-      StringWriter writer = new StringWriter();
-      loader.saveInternal(node, writer);
+            String json = writer.toString();
 
-      String json = writer.toString();
+            //AtherysCore.getInstance().getLogger().info( "Write: " + json ); // DEBUG
 
-      //AtherysCore.getInstance().getLogger().info( "Write: " + json ); // DEBUG
+            return parser.parse(json);
 
-      return parser.parse(json);
+        } catch (ObjectMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    } catch (ObjectMappingException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
+        return null;
     }
-
-    return null;
-  }
 }
