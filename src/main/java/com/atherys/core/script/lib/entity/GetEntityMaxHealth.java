@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 public class GetEntityMaxHealth implements Function<Entity, Double> {
     public Double apply(Entity entity){
-        if(!(entity instanceof Living)) return null;
+        if(!(entity instanceof Living)) return -1.0;
         return ((Living) entity).maxHealth().get();
     }
 }
