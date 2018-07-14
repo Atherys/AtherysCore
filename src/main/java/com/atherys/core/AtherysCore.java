@@ -9,9 +9,6 @@ import com.atherys.core.party.PartyManager;
 import com.atherys.core.party.commands.PartyCommand;
 import com.atherys.core.party.data.PartyData;
 import com.atherys.core.party.listeners.PlayerPartyListener;
-import com.atherys.core.script.AtherysScript;
-import com.atherys.core.script.CoreLibrary;
-import com.atherys.core.script.command.SRunCommand;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataRegistration;
@@ -101,15 +98,6 @@ public class AtherysCore {
                 e.printStackTrace();
             }
         }
-
-        if ( config.SCRIPTING_ENABLED ) {
-            getScriptingEngine().addLibrary(new CoreLibrary());
-            try {
-                getCommandService().register(new SRunCommand(), this);
-            } catch (CommandService.AnnotatedCommandException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void stop() {
@@ -145,8 +133,6 @@ public class AtherysCore {
             stop();
         }
     }
-
-    public static AtherysScript getScriptingEngine() { return AtherysScript.getInstance(); }
 
     public static boolean isScriptingEnabled() { return config.SCRIPTING_ENABLED; }
 
