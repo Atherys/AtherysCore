@@ -5,17 +5,11 @@ import com.atherys.core.damage.AtherysDamageType;
 import com.atherys.core.damage.AtherysDamageTypeRegistry;
 import com.atherys.core.damage.AtherysDamageTypes;
 import com.atherys.core.damage.listeners.DamageListeners;
-import com.atherys.core.party.PartyManager;
-import com.atherys.core.party.commands.PartyCommand;
-import com.atherys.core.party.data.PartyData;
-import com.atherys.core.party.listeners.PlayerPartyListener;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
@@ -87,32 +81,9 @@ public class AtherysCore {
         if (config.DAMAGE.ENABLED) {
             Sponge.getEventManager().registerListeners(this, new DamageListeners());
         }
-
-        if ( config.PARTIES_ENABLED ) {
-            Sponge.getEventManager().registerListeners(this, new PlayerPartyListener());
-            PartyManager.getInstance().loadAll();
-
-            try {
-                getCommandService().register(new PartyCommand(), this);
-            } catch (CommandService.AnnotatedCommandException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void stop() {
-        if ( config.PARTIES_ENABLED ) PartyManager.getInstance().saveAll();
-    }
-
-    @Listener
-    public void preInit(GamePreInitializationEvent event) {
-        CoreKeys.PARTY_DATA_REGISTRATION = DataRegistration.builder()
-                .dataClass(PartyData.class)
-                .immutableClass(PartyData.Immutable.class)
-                .builder(new PartyData.Builder())
-                .dataName("Party")
-                .manipulatorId("party")
-                .buildAndRegister(this.container);
     }
 
     @Listener(order = Order.EARLY)
@@ -133,8 +104,6 @@ public class AtherysCore {
             stop();
         }
     }
-
-    public static boolean isScriptingEnabled() { return config.SCRIPTING_ENABLED; }
 
     public static CommandService getCommandService() {
         return CommandService.getInstance();
