@@ -1,8 +1,10 @@
 # AtherysCore
-The core utilities behind the A'therys Horizons server
+The core utilities behind the A'therys Horizons server. This plugin
+does not introduce any note-worthy functionality. It is purely designed
+to provide A'thery plugins with crucial dependencies and utilities.
 
 ## Contents
-* A database API
-* An abstract implementation of said API for MongoDB ( TODO: SQL )
-* A Party system
-* Custom damage types and damage sources for the A'therys Horizons server
+* A Database API ( with an implementation for MongoDB and Morphia )
+* Various Gson utilities and abstractions
+* An annotation command API
+* Various other misc. utilities
