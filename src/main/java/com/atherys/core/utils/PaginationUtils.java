@@ -1,7 +1,7 @@
-package com.atherys.quests.util;
+package com.atherys.core.utils;
 
 import com.atherys.core.command.annotation.Description;
-import com.atherys.quests.AtherysQuests;
+import com.atherys.core.AtherysCore;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
@@ -14,7 +14,7 @@ public class PaginationUtils {
      */
     public static PaginationList paginate(String title, Class<? extends CommandExecutor>[] children, String...commands) {
         if (commands.length != children.length){
-            AtherysQuests.getInstance().getLogger().error("Descriptions and children are of different lengths; not all commands will be formatted.");
+            AtherysCore.getInstance().getLogger().error("Descriptions and children are of different lengths; not all commands will be formatted.");
         }
 
         Text[] content = new Text[commands.length];
