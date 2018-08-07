@@ -22,7 +22,7 @@ public class PaginationUtils {
         for (String command : commands){
             Class clazz = children[i];
             if (clazz.isAnnotationPresent(Description.class)){
-                content[i] = PaginationUtils.formatHelp(command, clazz.getClass().getAnnotation(Description.class).value());
+                content[i] = PaginationUtils.formatHelp(command, clazz.getAnnotation(Description.class).toString());
             }
             i++;
         }
