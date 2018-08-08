@@ -22,7 +22,8 @@ public class PaginationUtils {
         for (String command : commands){
             Class clazz = children[i];
             if (clazz.isAnnotationPresent(Description.class)){
-                content[i] = PaginationUtils.formatHelp(command, clazz.getAnnotation(Description.class).toString());
+                String desc = clazz.getAnnotation(Description.class).toString();
+                content[i] = PaginationUtils.formatHelp(command, desc.substring(55, desc.length() - 1));
             }
             i++;
         }
