@@ -16,10 +16,7 @@ public interface DBObject extends Identifiable {
      *
      * @return The UUID.
      */
-    UUID getUUID();
-
-    @Override
-    default UUID getUniqueId() {
-        return getUUID();
+    default UUID getUUID() {
+        return getUniqueId();
     }
 }
