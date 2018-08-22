@@ -7,26 +7,27 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Like {@link InteractionService} but for interactions that don't involve another object.
+ * Like {@link AttachmentService} but for interactions that don't involve another object.
  */
-public abstract class SimpleInteractionService {
+public abstract class AbstractInteractionService implements InteractionService{
     private Set<UUID> interactors;
 
-    public SimpleInteractionService() {
+    public AbstractInteractionService() {
         interactors = new HashSet<>();
     }
 
+    @Override
     public void startInteraction(Player player) {
         interactors.add(player.getUniqueId());
     }
 
+    @Override
     public void endInteraction(Player player) {
         interactors.remove(player.getUniqueId());
     }
 
+    @Override
     public boolean isInteracting(Player player) {
         return interactors.contains(player.getUniqueId());
     }
-
-    public abstract void interact(Player player);
 }
