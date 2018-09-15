@@ -106,7 +106,7 @@ public abstract class PluginConfig {
         }
     }
 
-    protected <T> void addTypeSerializer(TypeToken<T> token, TypeSerializer<T> serializer) {
+    protected <T> void addTypeSerializer(TypeToken<T> token, TypeSerializer<? super T> serializer) {
         serializers.registerType(token, serializer);
         options.setSerializers(serializers);
     }
