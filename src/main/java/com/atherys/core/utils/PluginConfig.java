@@ -23,6 +23,8 @@ public abstract class PluginConfig {
 
     protected ConfigurationLoader<CommentedConfigurationNode> loader;
 
+    protected ConfigurationOptions options;
+
     private boolean newFile = false;
 
     /**
@@ -56,8 +58,10 @@ public abstract class PluginConfig {
             }
         }
 
+        this.options = getOptions();
+
         this.loader = HoconConfigurationLoader.builder()
-                .setDefaultOptions(getOptions())
+                .setDefaultOptions(options)
                 .setPath(configFile.toPath())
                 .build();
     }
@@ -91,7 +95,7 @@ public abstract class PluginConfig {
      */
     public void load() {
         try {
-            this.configMapper.populate(this.loader.load());
+            this.configMapper.populate(this.loader.load(options));
         } catch (ObjectMappingException | IOException e) {
             e.printStackTrace();
         }
