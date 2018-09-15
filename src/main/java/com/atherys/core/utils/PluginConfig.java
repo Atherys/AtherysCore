@@ -1,6 +1,5 @@
 package com.atherys.core.utils;
 
-import com.google.common.reflect.TypeToken;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.SimpleConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -10,9 +9,6 @@ import ninja.leaping.configurate.objectmapping.ObjectMapper;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
-import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
-import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
-import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,10 +22,6 @@ public abstract class PluginConfig {
     protected ObjectMapper<PluginConfig>.BoundInstance configMapper;
 
     protected ConfigurationLoader<CommentedConfigurationNode> loader;
-
-    protected TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
-
-    protected ConfigurationOptions options = ConfigurationOptions.defaults();
 
     private boolean newFile = false;
 
@@ -64,7 +56,19 @@ public abstract class PluginConfig {
             }
         }
 
-        this.loader = HoconConfigurationLoader.builder().setPath(configFile.toPath()).build();
+        this.loader = HoconConfigurationLoader.builder()
+                .setDefaultOptions(getOptions())
+                .setPath(configFile.toPath())
+                .build();
+    }
+
+    /**
+     * Override this method to provide custom type serializers for the ConfigurationLoader
+     *
+     * @return the configuration options for the loader ot use
+     */
+    protected ConfigurationOptions getOptions() {
+        return ConfigurationOptions.defaults();
     }
 
     /**
@@ -87,7 +91,7 @@ public abstract class PluginConfig {
      */
     public void load() {
         try {
-            this.configMapper.populate(this.loader.load(options));
+            this.configMapper.populate(this.loader.load());
         } catch (ObjectMappingException | IOException e) {
             e.printStackTrace();
         }
@@ -104,10 +108,5 @@ public abstract class PluginConfig {
         } else {
             this.load();
         }
-    }
-
-    protected <T> void addTypeSerializer(TypeToken<T> token, TypeSerializer<? super T> serializer) {
-        serializers.registerType(token, serializer);
-        options.setSerializers(serializers);
     }
 }
