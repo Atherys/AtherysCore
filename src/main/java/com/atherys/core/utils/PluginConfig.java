@@ -1,5 +1,7 @@
 package com.atherys.core.utils;
 
+import com.google.common.reflect.TypeToken;
+import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.SimpleConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -8,6 +10,9 @@ import ninja.leaping.configurate.objectmapping.ObjectMapper;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
+import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
+import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
+import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +24,13 @@ import java.io.IOException;
 public abstract class PluginConfig {
 
     protected ObjectMapper<PluginConfig>.BoundInstance configMapper;
+
     protected ConfigurationLoader<CommentedConfigurationNode> loader;
+
+    protected TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
+
+    protected ConfigurationOptions options = ConfigurationOptions.defaults();
+
     private boolean newFile = false;
 
     /**
@@ -76,7 +87,7 @@ public abstract class PluginConfig {
      */
     public void load() {
         try {
-            this.configMapper.populate(this.loader.load());
+            this.configMapper.populate(this.loader.load(options));
         } catch (ObjectMappingException | IOException e) {
             e.printStackTrace();
         }
@@ -93,5 +104,10 @@ public abstract class PluginConfig {
         } else {
             this.load();
         }
+    }
+
+    protected <T> void addTypeSerializer(TypeToken<T> token, TypeSerializer<T> serializer) {
+        serializers.registerType(token, serializer);
+        options.setSerializers(serializers);
     }
 }
