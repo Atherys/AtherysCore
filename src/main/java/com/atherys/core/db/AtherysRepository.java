@@ -12,12 +12,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class AtherysRepository<T,ID> {
+public abstract class AtherysRepository<T, ID> {
 
     private Logger logger;
 
@@ -25,13 +26,15 @@ public class AtherysRepository<T,ID> {
 
     private EntityManager entityManager;
 
+    protected Map<ID, T> cache = new HashMap<>();
+
     protected AtherysRepository(Class<T> persistable, Logger logger) {
         this.entityManager = AtherysCore.getEntityManagerFactory().createEntityManager();
         this.persistable = persistable;
         this.logger = logger;
     }
 
-    protected void transactionOf(Consumer<EntityManager> query) {
+    private void transactionOf(Consumer<EntityManager> query) {
         Task.builder().async().execute(() -> {
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
@@ -40,40 +43,52 @@ public class AtherysRepository<T,ID> {
         }).submit(AtherysCore.class);
     }
 
-    public Optional<T> findById(ID id) {
-        return Optional.ofNullable(entityManager.find(persistable, id));
-    }
-
-    public void saveOne(T entity) {
-        transactionOf(em -> em.persist(entity));
-    }
-
-    public void saveAll(Collection<T> entities) {
-        transactionOf(em -> entities.forEach(em::persist));
-    }
-
-    public void deleteOne(T entity) {
-        transactionOf(em -> em.remove(entity));
-    }
-
-    public void deleteAll(Collection<T> entities) {
-        transactionOf(em -> entities.forEach(em::remove));
-    }
-
-    protected Query createQuery(String hql) {
-        return entityManager.createQuery(hql);
-    }
-
     protected CriteriaBuilder getQueryBuilder() {
         return entityManager.getCriteriaBuilder();
     }
 
-    protected <R> TypedQuery<R> query(CriteriaQuery<R> criteriaQuery) {
+    protected <R> TypedQuery<R> createQuery(CriteriaQuery<R> criteriaQuery) {
         return entityManager.createQuery(criteriaQuery);
     }
 
-    protected <R> void transactionQuery(CriteriaQuery<R> criteriaQuery) {
-        transactionOf(em -> em.createQuery(criteriaQuery).executeUpdate());
+    protected <R> Optional<R> querySingle(TypedQuery<R> query) {
+        try {
+            return Optional.ofNullable( query.getSingleResult() );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    protected <R> List<R> queryMultiple(TypedQuery<R> query) {
+        try {
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public Optional<T> findById(ID id) {
+        return Optional.ofNullable(cache.getOrDefault(id, entityManager.find(persistable, id)));
+    }
+
+    public void saveOne(ID id, T entity) {
+        transactionOf(em -> em.persist(entity));
+        cache.put(id, entity);
+    }
+
+    public void saveAll(Map<ID,T> entities) {
+        transactionOf(em -> entities.forEach(this::saveOne));
+    }
+
+    public void deleteOne(ID id, T entity) {
+        transactionOf(em -> em.remove(entity));
+        cache.remove(id);
+    }
+
+    public void deleteAll(Map<ID,T> entities) {
+        transactionOf(em -> entities.forEach(this::deleteOne));
     }
 
 }
