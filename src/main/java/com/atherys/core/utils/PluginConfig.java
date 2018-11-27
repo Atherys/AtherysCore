@@ -1,5 +1,6 @@
 package com.atherys.core.utils;
 
+import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.SimpleConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -19,7 +20,11 @@ import java.io.IOException;
 public abstract class PluginConfig {
 
     protected ObjectMapper<PluginConfig>.BoundInstance configMapper;
+
     protected ConfigurationLoader<CommentedConfigurationNode> loader;
+
+    protected ConfigurationOptions options;
+
     private boolean newFile = false;
 
     /**
@@ -53,7 +58,21 @@ public abstract class PluginConfig {
             }
         }
 
-        this.loader = HoconConfigurationLoader.builder().setPath(configFile.toPath()).build();
+        this.options = getOptions();
+
+        this.loader = HoconConfigurationLoader.builder()
+                .setDefaultOptions(options)
+                .setPath(configFile.toPath())
+                .build();
+    }
+
+    /**
+     * Override this method to provide custom type serializers for the ConfigurationLoader
+     *
+     * @return the configuration options for the loader ot use
+     */
+    protected ConfigurationOptions getOptions() {
+        return ConfigurationOptions.defaults();
     }
 
     /**
@@ -76,7 +95,7 @@ public abstract class PluginConfig {
      */
     public void load() {
         try {
-            this.configMapper.populate(this.loader.load());
+            this.configMapper.populate(this.loader.load(options));
         } catch (ObjectMappingException | IOException e) {
             e.printStackTrace();
         }
