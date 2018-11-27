@@ -1,7 +1,10 @@
 package com.atherys.core;
 
 import com.atherys.core.command.CommandService;
+import com.atherys.core.event.AtherysHibernateConfigurationEvent;
+import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -11,6 +14,10 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import java.io.IOException;
 
 import static com.atherys.core.AtherysCore.*;
 
@@ -32,8 +39,32 @@ public class AtherysCore {
     @Inject
     PluginContainer container;
 
+    private CoreConfig coreConfig;
+
+    private EntityManagerFactory entityManagerFactory;
+
     private void init() {
         instance = this;
+
+        try {
+            coreConfig = new CoreConfig();
+            if ( coreConfig.IS_DEFAULT ) {
+                logger.error("The AtherysCore configuration is set to default. Please input the proper required values and afterwards change 'is-default' to 'true'. Plugin initialization will not proceed.");
+                init = false;
+                return;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Configuration configuration = coreConfig.JPA_CONFIG.getHibernateConfiguration();
+
+        AtherysHibernateConfigurationEvent atherysHibernateConfigurationEvent = new AtherysHibernateConfigurationEvent(configuration);
+        Sponge.getEventManager().post(atherysHibernateConfigurationEvent);
+
+        configuration.configure();
+
+        entityManagerFactory = Persistence.createEntityManagerFactory("atherys-persistence-unit");
 
         init = true;
 
@@ -74,5 +105,9 @@ public class AtherysCore {
 
     public static AtherysCore getInstance() {
         return instance;
+    }
+
+    public static EntityManagerFactory getEntityManagerFactory() {
+        return getInstance().entityManagerFactory;
     }
 }
