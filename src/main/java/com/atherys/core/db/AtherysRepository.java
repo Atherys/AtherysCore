@@ -2,11 +2,10 @@ package com.atherys.core.db;
 
 import com.atherys.core.AtherysCore;
 import org.slf4j.Logger;
-import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.util.Identifiable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -16,9 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public abstract class AtherysRepository<T, ID> {
+public abstract class AtherysRepository<T extends Identifiable> {
 
     private Logger logger;
 
@@ -26,7 +27,7 @@ public abstract class AtherysRepository<T, ID> {
 
     private EntityManager entityManager;
 
-    protected Map<ID, T> cache = new HashMap<>();
+    protected Map<UUID, T> cache = new HashMap<>();
 
     protected AtherysRepository(Class<T> persistable, Logger logger) {
         this.entityManager = AtherysCore.getEntityManagerFactory().createEntityManager();
@@ -35,16 +36,20 @@ public abstract class AtherysRepository<T, ID> {
     }
 
     private void transactionOf(Consumer<EntityManager> query) {
-        Task.builder().async().execute(() -> {
+        CompletableFuture.runAsync(() -> {
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
             query.accept(entityManager);
             transaction.commit();
-        }).submit(AtherysCore.class);
+        });
     }
 
-    protected CriteriaBuilder getQueryBuilder() {
+    protected CriteriaBuilder getCriteriaBuilder() {
         return entityManager.getCriteriaBuilder();
+    }
+
+    protected <R> TypedQuery<R> createQuery(String hql, Class<R> result) {
+        return entityManager.createQuery(hql, result);
     }
 
     protected <R> TypedQuery<R> createQuery(CriteriaQuery<R> criteriaQuery) {
@@ -69,25 +74,33 @@ public abstract class AtherysRepository<T, ID> {
         }
     }
 
-    public Optional<T> findById(ID id) {
+    protected <R> CompletableFuture<Optional<R>> asyncQuerySingle(TypedQuery<R> query) {
+        return CompletableFuture.supplyAsync(() -> querySingle(query));
+    }
+
+    protected <R> CompletableFuture<List<R>> asyncQueryMultiple(TypedQuery<R> query) {
+        return CompletableFuture.supplyAsync(() -> queryMultiple(query));
+    }
+
+    public Optional<T> findById(UUID id) {
         return Optional.ofNullable(cache.getOrDefault(id, entityManager.find(persistable, id)));
     }
 
-    public void saveOne(ID id, T entity) {
+    public void saveOne(T entity) {
         transactionOf(em -> em.persist(entity));
-        cache.put(id, entity);
+        cache.put(entity.getUniqueId(), entity);
     }
 
-    public void saveAll(Map<ID,T> entities) {
+    public void saveAll(Collection<T> entities) {
         transactionOf(em -> entities.forEach(this::saveOne));
     }
 
-    public void deleteOne(ID id, T entity) {
+    public void deleteOne(T entity) {
         transactionOf(em -> em.remove(entity));
-        cache.remove(id);
+        cache.remove(entity.getUniqueId());
     }
 
-    public void deleteAll(Map<ID,T> entities) {
+    public void deleteAll(Collection<T> entities) {
         transactionOf(em -> entities.forEach(this::deleteOne));
     }
 
