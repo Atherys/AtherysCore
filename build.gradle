@@ -43,8 +43,15 @@ shadowJar {
     relocate 'org.hibernate', 'com.atherys.libs.org.hibernate'
 }
 
-javadocs {
+javadoc {
     source = sourceSets.main.allJava
     title = "AtherysCore"
     classpath = configurations.compile + configurations.shadow
+    options.links(
+            'http://www.slf4j.org/apidocs/',
+            'https://docs.oracle.com/javase/8/docs/api/',
+            'https://flowpowered.com/math/',
+            'http://jd.spongepowered.org/7.1.0/'
+    )
+    options.addStringOption('Xdoclint:none', '-quiet')
 }
