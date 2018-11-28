@@ -43,7 +43,7 @@ shadowJar {
     relocate 'org.hibernate', 'com.atherys.libs.org.hibernate'
 }
 
-task javadocs(type: Javadoc) {
+javadocs {
     source = sourceSets.main.allJava
     title = "AtherysCore"
     classpath = configurations.compile + configurations.shadow
