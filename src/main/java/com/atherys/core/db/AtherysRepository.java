@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 
 public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
 
-    private Logger logger;
+    protected Logger logger;
 
     private Class<T> persistable;
 
