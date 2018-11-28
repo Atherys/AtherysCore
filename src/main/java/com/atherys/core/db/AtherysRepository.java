@@ -2,7 +2,6 @@ package com.atherys.core.db;
 
 import com.atherys.core.AtherysCore;
 import org.slf4j.Logger;
-import org.spongepowered.api.util.Identifiable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -15,11 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public abstract class AtherysRepository<T extends Identifiable> {
+public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
 
     private Logger logger;
 
@@ -27,7 +25,7 @@ public abstract class AtherysRepository<T extends Identifiable> {
 
     private EntityManager entityManager;
 
-    protected Map<UUID, T> cache = new HashMap<>();
+    protected Map<ID, T> cache = new HashMap<>();
 
     protected AtherysRepository(Class<T> persistable, Logger logger) {
         this.entityManager = AtherysCore.getEntityManagerFactory().createEntityManager();
@@ -82,13 +80,13 @@ public abstract class AtherysRepository<T extends Identifiable> {
         return CompletableFuture.supplyAsync(() -> queryMultiple(query));
     }
 
-    public Optional<T> findById(UUID id) {
+    public Optional<T> findById(ID id) {
         return Optional.ofNullable(cache.getOrDefault(id, entityManager.find(persistable, id)));
     }
 
     public void saveOne(T entity) {
         transactionOf(em -> em.persist(entity));
-        cache.put(entity.getUniqueId(), entity);
+        cache.put(entity.getId(), entity);
     }
 
     public void saveAll(Collection<T> entities) {
@@ -97,7 +95,7 @@ public abstract class AtherysRepository<T extends Identifiable> {
 
     public void deleteOne(T entity) {
         transactionOf(em -> em.remove(entity));
-        cache.remove(entity.getUniqueId());
+        cache.remove(entity.getId());
     }
 
     public void deleteAll(Collection<T> entities) {
