@@ -50,7 +50,7 @@ javadoc {
     options.links(
             'http://www.slf4j.org/apidocs/',
             'https://docs.oracle.com/javase/8/docs/api/',
-            'https://flowpowered.com/math/',
+            'https://flow.github.io/math/',
             'http://jd.spongepowered.org/7.1.0/'
     )
     options.addStringOption('Xdoclint:none', '-quiet')
