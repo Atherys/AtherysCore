@@ -15,28 +15,22 @@ public final class JPAConfig {
     @ConfigSerializable
     public static class DatabaseConfig {
         @Setting("database-address")
-        public String ADDRESS = "127.0.0.1";
-
-        @Setting("port")
-        public int PORT = 5432;
-
-        @Setting("database-name")
-        public String NAME = "atherys";
+        public String ADDRESS = "jdbc:postgresql://127.0.0.1:5432/atherys";
 
         @Setting("database-user")
         public String USER = "postgre";
 
         @Setting("database-password")
         public String PASSWORD = "pwd";
+
+        @Setting("database-driver")
+        public String DRIVER = "org.postgresql.Driver";
     }
 
     @ConfigSerializable
     public static class HibernateConfig {
         @Setting("hibernate-dialect")
         public String DIALECT = "org.hibernate.dialect.PostgreSQLDialect";
-
-        @Setting("hibernate-driver")
-        public String DRIVER = "org.postgresql.Driver";
 
         @Setting("hibernate-hbm2ddl-auto")
         public String HBM2DDL_AUTO = "update";
@@ -48,23 +42,15 @@ public final class JPAConfig {
     @Setting("hibernate")
     public HibernateConfig HIBERNATE = new HibernateConfig();
 
-    public DataSource getDataSource() {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-
-        dataSource.setUrl(DB.ADDRESS);
-        dataSource.setPortNumber(DB.PORT);
-        dataSource.setDatabaseName(DB.NAME);
-        dataSource.setUser(DB.USER);
-        dataSource.setPassword(DB.PASSWORD);
-
-        return dataSource;
-    }
-
     public Configuration getHibernateConfiguration() {
         Configuration properties = new Configuration();
 
+        properties.setProperty(Environment.URL, DB.ADDRESS);
+        properties.setProperty(Environment.USER, DB.USER);
+        properties.setProperty(Environment.PASS, DB.PASSWORD);
+        properties.setProperty(Environment.DRIVER, DB.DRIVER);
+
         properties.setProperty(Environment.DIALECT, HIBERNATE.DIALECT);
-        properties.setProperty(Environment.DRIVER, HIBERNATE.DRIVER);
         properties.setProperty(Environment.HBM2DDL_AUTO, HIBERNATE.HBM2DDL_AUTO);
 
         return properties;
