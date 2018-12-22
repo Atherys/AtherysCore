@@ -14,7 +14,7 @@ public class AtherysHibernateConfigurationEvent implements Event {
     private List<Class<?>> classes;
 
     public AtherysHibernateConfigurationEvent(List<Class<?>> classes) {
-        this.cause = Cause.builder().build(Sponge.getCauseStackManager().getCurrentContext());
+        this.cause = Cause.builder().append(classes).build(Sponge.getCauseStackManager().getCurrentContext());
         this.classes = classes;
     }
 

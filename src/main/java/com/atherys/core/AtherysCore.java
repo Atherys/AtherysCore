@@ -53,6 +53,8 @@ public class AtherysCore {
 
         try {
             coreConfig = new CoreConfig();
+            coreConfig.init();
+
             if (coreConfig.IS_DEFAULT) {
                 logger.error("The AtherysCore configuration is set to default. Please input the proper required values and afterwards change 'is-default' to 'true'. Plugin initialization will not proceed.");
                 init = false;
