@@ -5,19 +5,21 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.cause.Cause;
 
+import java.util.List;
+
 public class AtherysHibernateConfigurationEvent implements Event {
 
     private Cause cause;
 
-    private Configuration configuration;
+    private List<Class<?>> classes;
 
-    public AtherysHibernateConfigurationEvent(Configuration configuration) {
+    public AtherysHibernateConfigurationEvent(List<Class<?>> classes) {
         this.cause = Cause.builder().build(Sponge.getCauseStackManager().getCurrentContext());
-        this.configuration = configuration;
+        this.classes = classes;
     }
 
-    public Configuration getConfiguration() {
-        return configuration;
+    public void registerEntity(Class<?> clazz) {
+        classes.add(clazz);
     }
 
     @Override

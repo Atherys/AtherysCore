@@ -1,8 +1,11 @@
 package com.atherys.core;
 
 import com.atherys.core.command.CommandService;
+import com.atherys.core.db.JPAConfig;
 import com.atherys.core.event.AtherysHibernateConfigurationEvent;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
@@ -15,9 +18,11 @@ import org.spongepowered.api.plugin.PluginContainer;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
 
 import static com.atherys.core.AtherysCore.*;
 
@@ -48,7 +53,7 @@ public class AtherysCore {
 
         try {
             coreConfig = new CoreConfig();
-            if ( coreConfig.IS_DEFAULT ) {
+            if (coreConfig.IS_DEFAULT) {
                 logger.error("The AtherysCore configuration is set to default. Please input the proper required values and afterwards change 'is-default' to 'true'. Plugin initialization will not proceed.");
                 init = false;
                 return;
@@ -57,14 +62,7 @@ public class AtherysCore {
             e.printStackTrace();
         }
 
-        Configuration configuration = coreConfig.JPA_CONFIG.getHibernateConfiguration();
-
-        AtherysHibernateConfigurationEvent atherysHibernateConfigurationEvent = new AtherysHibernateConfigurationEvent(configuration);
-        Sponge.getEventManager().post(atherysHibernateConfigurationEvent);
-
-        configuration.configure();
-
-        entityManagerFactory = Persistence.createEntityManagerFactory("atherys-persistence-unit");
+        entityManagerFactory = createEntityManagerFactory(coreConfig.JPA_CONFIG);
 
         init = true;
 
@@ -93,6 +91,39 @@ public class AtherysCore {
         if (init) {
             stop();
         }
+    }
+
+    protected static EntityManagerFactory createEntityManagerFactory(JPAConfig config) {
+        MetadataSources metadataSources = new MetadataSources(configureServiceRegistry(config));
+
+        addClasses(metadataSources);
+
+        return metadataSources.buildMetadata()
+                .getSessionFactoryBuilder()
+                .build();
+    }
+
+    protected static ServiceRegistry configureServiceRegistry(JPAConfig config) {
+        return new StandardServiceRegistryBuilder()
+                .applySettings(getProperties(config))
+                .build();
+    }
+
+    protected static Properties getProperties(JPAConfig config) {
+        Properties properties = new Properties();
+
+        config.HIBERNATE.forEach(properties::setProperty);
+
+        return properties;
+    }
+
+    protected static void addClasses(MetadataSources metadataSources) {
+        List<Class<?>> classes = new LinkedList<>();
+
+        AtherysHibernateConfigurationEvent event = new AtherysHibernateConfigurationEvent(classes);
+        Sponge.getEventManager().post(event);
+
+        classes.forEach(metadataSources::addAnnotatedClass);
     }
 
     public static CommandService getCommandService() {
