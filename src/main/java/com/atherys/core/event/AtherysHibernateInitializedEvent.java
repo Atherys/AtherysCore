@@ -13,7 +13,7 @@ public class AtherysHibernateInitializedEvent implements Event {
     private EntityManagerFactory entityManagerFactory;
 
     public AtherysHibernateInitializedEvent(EntityManagerFactory entityManagerFactory) {
-        this.cause = Cause.builder().build(Sponge.getCauseStackManager().getCurrentContext());
+        this.cause = Cause.builder().append(entityManagerFactory).build(Sponge.getCauseStackManager().getCurrentContext());
         this.entityManagerFactory = entityManagerFactory;
     }
 
