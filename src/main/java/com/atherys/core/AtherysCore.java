@@ -3,6 +3,7 @@ package com.atherys.core;
 import com.atherys.core.command.CommandService;
 import com.atherys.core.db.JPAConfig;
 import com.atherys.core.event.AtherysHibernateConfigurationEvent;
+import com.atherys.core.event.AtherysHibernateInitializedEvent;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
@@ -66,8 +67,9 @@ public class AtherysCore {
 
         entityManagerFactory = createEntityManagerFactory(coreConfig.JPA_CONFIG);
 
-        init = true;
+        Sponge.getEventManager().post(new AtherysHibernateInitializedEvent(entityManagerFactory));
 
+        init = true;
     }
 
     private void start() {
