@@ -36,6 +36,7 @@ dependencies {
     compile 'org.hibernate:hibernate-core:5.3.7.Final'
     compile 'org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final'
     compile 'org.postgresql:postgresql:42.1.1'
+    compile 'com.sparkjava:spark-core:2.5.4'
 }
 
 task javadocs(type: Javadoc) {
