@@ -1,26 +1,29 @@
 package com.atherys.core.command;
 
+import com.atherys.core.db.SpongeIdentifiable;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.entity.living.player.User;
-import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nonnull;
 
-public interface UserCommand extends CommandExecutor {
+/**
+ * An extension of a CommandExecutor which
+ *
+ * @param <T>
+ * @param <V>
+ */
+public interface SourceCommand<T extends CommandSource, V extends SpongeIdentifiable> extends CommandExecutor {
     @Override
     @Nonnull
     default CommandResult execute(@Nonnull CommandSource src, @Nonnull CommandContext args) throws CommandException {
-        if (!(src instanceof User)) {
-            throw new CommandException(Text.of("Must be in-game to execute this command."));
-        }
-
-        return execute((User) src, args);
+        return execute(wrap((T) src), args);
     }
 
     @Nonnull
-    CommandResult execute(@Nonnull User source, @Nonnull CommandContext args) throws CommandException;
+    CommandResult execute(@Nonnull V source, @Nonnull CommandContext args) throws CommandException;
+
+    V wrap(T user) throws CommandException;
 }
