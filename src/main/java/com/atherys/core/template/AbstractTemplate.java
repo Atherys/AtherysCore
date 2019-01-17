@@ -29,7 +29,7 @@ public abstract class AbstractTemplate<T> implements Template<T> {
         Text result = text;
 
         for (Map.Entry<String, Text> attribute : templateAttributes.entrySet()) {
-            result = TextUtils.replace(result, attribute.getKey(), attribute.getValue());
+            result = TextUtils.replace(result, ARGUMENT_BEGIN + attribute.getKey() + ARGUMENT_END, attribute.getValue());
         }
 
         return result;
