@@ -1,5 +1,6 @@
 package com.atherys.core.template;
 
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.BookView;
 import org.spongepowered.api.text.Text;
 
@@ -51,5 +52,10 @@ public class BookTemplate extends AbstractTemplate<BookView> {
         pages.forEach(page -> viewBuilder.addPage(applyAttributesTo(page)));
 
         return viewBuilder.build();
+    }
+
+    @Override
+    public void showTo(Player player) {
+        player.sendBookView(render());
     }
 }

@@ -1,5 +1,6 @@
 package com.atherys.core.template;
 
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
 public class TextTemplate extends AbstractTemplate<Text> {
@@ -13,5 +14,10 @@ public class TextTemplate extends AbstractTemplate<Text> {
     @Override
     public Text render() {
         return applyAttributesTo(template);
+    }
+
+    @Override
+    public void showTo(Player player) {
+        player.sendMessage(render());
     }
 }

@@ -1,5 +1,6 @@
 package com.atherys.core.template;
 
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
 public interface Template<T> {
@@ -10,16 +11,16 @@ public interface Template<T> {
 
     String ARGUMENT_END = "}";
 
-    void addAttribute(String key, Text attribute);
+    void setAttributes(TemplateAttributes attributes);
+
+    void addAttribute(String key, Object attribute);
 
     void removeAttribute(String key);
 
     Text getAttribute(String key);
 
-    default void addAttribute(String key, Object... attributes) {
-        addAttribute(key, Text.of(attributes));
-    }
-
     T render();
+
+    void showTo(Player player);
 
 }
