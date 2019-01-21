@@ -4,6 +4,7 @@ import com.atherys.core.command.CommandService;
 import com.atherys.core.db.JPAConfig;
 import com.atherys.core.event.AtherysHibernateConfigurationEvent;
 import com.atherys.core.event.AtherysHibernateInitializedEvent;
+import com.atherys.core.template.TemplateEngine;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
@@ -19,7 +20,6 @@ import org.spongepowered.api.plugin.PluginContainer;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
-
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class AtherysCore {
     public static final String ID = "atheryscore";
     public static final String NAME = "A'therys Core";
     public static final String DESCRIPTION = "The core utilities used on the A'therys Horizons server.";
-    public static final String VERSION = "1.3.0";
+    public static final String VERSION = "1.11.0";
 
     private static AtherysCore instance;
 
@@ -49,8 +49,12 @@ public class AtherysCore {
 
     private EntityManagerFactory entityManagerFactory;
 
+    private TemplateEngine templateEngine;
+
     private void init() {
         instance = this;
+
+        this.templateEngine = new TemplateEngine();
 
         try {
             coreConfig = new CoreConfig();
@@ -144,5 +148,9 @@ public class AtherysCore {
 
     public static EntityManagerFactory getEntityManagerFactory() {
         return getInstance().entityManagerFactory;
+    }
+
+    public static TemplateEngine getTemplateEngine() {
+        return getInstance().templateEngine;
     }
 }
