@@ -16,9 +16,9 @@ public class LocationConverter implements AttributeConverter<Location<World>,Str
     public Location<World> convertToEntityAttribute(String dbData) {
         String[] parsed = dbData.split(" ");
         return Sponge.getGame().getServer().getWorld(parsed[3]).get().getLocation(
-                Double.valueOf(parsed[0]),
-                Double.valueOf(parsed[1]),
-                Double.valueOf(parsed[2])
+                Double.parseDouble(parsed[0]),
+                Double.parseDouble(parsed[1]),
+                Double.parseDouble(parsed[2])
         );
     }
 }
