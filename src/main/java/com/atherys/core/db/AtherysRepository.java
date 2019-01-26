@@ -23,9 +23,9 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
 
     protected Logger logger;
 
-    private Class<T> persistable;
+    protected Class<T> persistable;
 
-    private EntityManager entityManager;
+    protected EntityManager entityManager;
 
     protected Map<ID, T> cache = new HashMap<>();
 
