@@ -145,7 +145,7 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
             if (dbResult == null) {
                 return Optional.empty();
             } else {
-                entityManager.detach(dbResult);
+                //entityManager.detach(dbResult);
                 cache.put(dbResult.getId(), dbResult);
                 return Optional.of(dbResult);
             }
@@ -158,7 +158,14 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
      * @param entity the entity to be saved
      */
     public void saveOne(T entity) {
-        transactionOf(em -> em.persist(entity));
+        transactionOf(em -> {
+            if (!em.contains(entity)) {
+                em.persist(entity);
+            } else {
+                em.refresh(entity);
+            }
+            em.flush();
+        });
         cache.put(entity.getId(), entity);
     }
 
@@ -219,7 +226,7 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
 
         asyncQueryMultiple(createQuery(query)).thenAccept(entities -> {
             entities.forEach(entity -> {
-                entityManager.detach(entity);
+                //entityManager.detach(entity);
                 cache.put(entity.getId(), entity);
             });
         });
@@ -229,6 +236,15 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
      * Saves all entities currently in the cache to the database
      */
     public void flushCache() {
-        saveAll(cache.values());
+        transactionOf(em -> {
+            cache.forEach((id, entity) -> {
+                if (!em.contains(entity)) {
+                    em.persist(entity);
+                } else {
+                    em.refresh(entity);
+                }
+            });
+            em.flush();
+        });
     }
 }
