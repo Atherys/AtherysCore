@@ -162,6 +162,7 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
             if (!em.contains(entity)) {
                 em.persist(entity);
             } else {
+                em.merge(entity);
                 em.refresh(entity);
             }
             em.flush();
@@ -170,12 +171,26 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
     }
 
     /**
-     * Saves all entities in the collection to the cache and the database, creating a transaction for each one.
+     * Saves all entities in the collection to the cache and the database, creating a single transaction
+     * for all of them.
      *
      * @param entities the entities to be saved
      */
     public void saveAll(Collection<T> entities) {
-        entities.forEach(this::saveOne);
+        transactionOf(em -> {
+            entities.forEach(entity -> {
+                if (!em.contains(entity)) {
+                    em.persist(entity);
+                } else {
+                    em.merge(entity);
+                    em.refresh(entity);
+                }
+
+                cache.put(entity.getId(), entity);
+            });
+
+            em.flush();
+        });
     }
 
     /**
@@ -184,7 +199,10 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
      * @param entity The entity to be deleted
      */
     public void deleteOne(T entity) {
-        transactionOf(em -> em.remove(entity));
+        transactionOf(em -> {
+            em.merge(entity);
+            em.remove(entity);
+        });
         cache.remove(entity.getId());
     }
 
@@ -194,7 +212,18 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
      * @param entities The entities to be deleted
      */
     public void deleteAll(Collection<T> entities) {
-        entities.forEach(this::deleteOne);
+        transactionOf(em -> {
+            entities.forEach(entity -> {
+                if (em.contains(entity)) {
+                    em.merge(entity);
+                    em.remove(entity);
+                }
+
+                cache.remove(entity.getId());
+            });
+
+            em.flush();
+        });
     }
 
     /**
