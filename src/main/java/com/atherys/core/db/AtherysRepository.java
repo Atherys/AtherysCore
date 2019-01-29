@@ -163,7 +163,6 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
                 em.persist(entity);
             } else {
                 em.merge(entity);
-                em.refresh(entity);
             }
             em.flush();
         });
@@ -183,7 +182,6 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
                     em.persist(entity);
                 } else {
                     em.merge(entity);
-                    em.refresh(entity);
                 }
 
                 cache.put(entity.getId(), entity);
@@ -200,8 +198,11 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
      */
     public void deleteOne(T entity) {
         transactionOf(em -> {
-            em.merge(entity);
-            em.remove(entity);
+            if (em.contains(entity)) {
+                em.remove(entity);
+            } else {
+                em.remove(em.merge(entity));
+            }
         });
         cache.remove(entity.getId());
     }
@@ -215,8 +216,9 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
         transactionOf(em -> {
             entities.forEach(entity -> {
                 if (em.contains(entity)) {
-                    em.merge(entity);
                     em.remove(entity);
+                } else {
+                    em.remove(em.merge(entity));
                 }
 
                 cache.remove(entity.getId());
@@ -270,9 +272,10 @@ public abstract class AtherysRepository<T extends Identifiable<ID>, ID> {
                 if (!em.contains(entity)) {
                     em.persist(entity);
                 } else {
-                    em.refresh(entity);
+                    em.refresh(em.merge(entity));
                 }
             });
+
             em.flush();
         });
     }
