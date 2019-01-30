@@ -9,6 +9,7 @@ import org.hibernate.query.Query;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -153,5 +154,21 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
 
     protected Map<ID, T> getCache() {
         return cache;
+    }
+
+    public void cacheAll() {
+        CriteriaBuilder builder = getCriteriaBuilder();
+        CriteriaQuery<T> query = builder.createQuery(persistable);
+        Root<T> variableRoot = query.from(persistable);
+
+        query.select(variableRoot);
+
+        queryMultiple(query, entities -> entities.forEach(entity -> {
+            cache.put(entity.getId(), entity);
+        }));
+    }
+
+    public void flushCache() {
+        transactionOf(session -> cache.values().forEach(session::saveOrUpdate));
     }
 }
