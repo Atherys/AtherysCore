@@ -1,6 +1,7 @@
 package com.atherys.core.db;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Optional;
@@ -62,5 +63,17 @@ public interface Repository<T extends Identifiable<ID>, ID extends Serializable>
 
     default <R> CompletableFuture<Void> queryMultipleAsync(String jpql, Class<R> result, Consumer<Collection<R>> resultConsumer) {
         return CompletableFuture.runAsync(() -> queryMultiple(jpql, result, resultConsumer));
+    }
+
+    <R> void querySingle(CriteriaQuery<R> query, Consumer<Optional<R>> resultConsumer);
+
+    <R> void queryMultiple(CriteriaQuery<R> query, Consumer<Collection<R>> resultConsumer);
+
+    default <R> CompletableFuture<Void> querySingleAsync(CriteriaQuery<R> query, Consumer<Optional<R>> resultConsumer) {
+        return CompletableFuture.runAsync(() -> querySingle(query, resultConsumer));
+    }
+
+    default <R> CompletableFuture<Void> queryMultipleAsync(CriteriaQuery<R> query, Consumer<Collection<R>> resultConsumer) {
+        return CompletableFuture.runAsync(() -> queryMultiple(query, resultConsumer));
     }
 }

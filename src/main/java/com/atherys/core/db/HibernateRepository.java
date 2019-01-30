@@ -8,6 +8,7 @@ import org.hibernate.query.Query;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -128,6 +129,24 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
         try (Session session = sessionFactory.openSession()) {
             Query<R> query = session.createQuery(jpql, result);
             List<R> r = query.getResultList();
+            resultConsumer.accept(r);
+        }
+    }
+
+    @Override
+    public <R> void querySingle(CriteriaQuery<R> query, Consumer<Optional<R>> resultConsumer) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<R> q = session.createQuery(query);
+            R r = q.getSingleResult();
+            resultConsumer.accept(Optional.ofNullable(r));
+        }
+    }
+
+    @Override
+    public <R> void queryMultiple(CriteriaQuery<R> query, Consumer<Collection<R>> resultConsumer) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<R> q = session.createQuery(query);
+            List<R> r = q.getResultList();
             resultConsumer.accept(r);
         }
     }
