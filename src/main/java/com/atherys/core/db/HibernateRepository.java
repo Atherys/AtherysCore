@@ -36,7 +36,7 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
         }
     }
 
-    private void transactionOf(Consumer<Session> sessionConsumer) {
+    protected void transactionOf(Consumer<Session> sessionConsumer) {
         CompletableFuture.runAsync(() -> {
             try (Session session = sessionFactory.openSession()) {
                 Transaction transaction = null;
