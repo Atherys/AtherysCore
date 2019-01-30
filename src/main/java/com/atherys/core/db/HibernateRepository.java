@@ -1,79 +1,138 @@
 package com.atherys.core.db;
 
-import javax.persistence.TypedQuery;
+import com.atherys.core.AtherysCore;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializable> implements Repository<T, ID> {
+
+    protected Map<ID, T> cache = new HashMap<>();
+
+    protected SessionFactory sessionFactory;
+
+    protected Class<T> persistable;
+
+    public HibernateRepository(Class<T> persistable) {
+        this.persistable = persistable;
+        EntityManagerFactory entityManagerFactory = AtherysCore.getEntityManagerFactory();
+
+        if (entityManagerFactory instanceof SessionFactory) {
+            this.sessionFactory = (SessionFactory) entityManagerFactory;
+        } else {
+            throw new IllegalStateException("JPA implementation is not Hibernate ( EMF is not instance of SessionFactory ).");
+        }
+    }
+
+    private void transactionOf(Consumer<Session> sessionConsumer) {
+        CompletableFuture.runAsync(() -> {
+            try (Session session = sessionFactory.openSession()) {
+                Transaction transaction = null;
+
+                try {
+                    transaction = session.beginTransaction();
+
+                    sessionConsumer.accept(session);
+
+                    session.flush();
+                    transaction.commit();
+                } catch (Exception e) {
+                    if (transaction != null) {
+                        transaction.rollback();
+                    }
+
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
     @Override
     public Optional<T> findById(ID id) {
-        // TODO
-        return Optional.empty();
+        T result;
+
+        T cachedEntity = cache.get(id);
+
+        if (cachedEntity == null) {
+            Session session = sessionFactory.openSession();
+            result = session.find(persistable, id);
+            session.close();
+        } else {
+            result = cachedEntity;
+        }
+
+        return Optional.ofNullable(result);
     }
 
     @Override
     public void saveOne(T entity) {
-        // TODO
+        transactionOf(session -> {
+            session.saveOrUpdate(entity);
+            cache.put(entity.getId(), entity);
+        });
     }
 
     @Override
     public void saveAll(Collection<T> entities) {
-        // TODO
+        transactionOf(session -> entities.forEach((entity -> {
+            session.saveOrUpdate(entity);
+            cache.put(entity.getId(), entity);
+        })));
     }
 
     @Override
     public void deleteOne(T entity) {
-        // TODO
+        transactionOf(session -> {
+            session.delete(entity);
+            cache.remove(entity.getId());
+        });
     }
 
     @Override
     public void deleteAll(Collection<T> entities) {
-        // TODO
+        transactionOf(session -> entities.forEach(entity -> {
+            session.delete(entity);
+            cache.remove(entity.getId());
+        }));
     }
 
     @Override
     public CriteriaBuilder getCriteriaBuilder() {
-        // TODO
-        return null;
+        return sessionFactory.getCriteriaBuilder();
     }
 
     @Override
-    public <R> TypedQuery<R> createQuery(String jpql, Class<R> result) {
-        // TODO
-        return null;
+    public <R> void querySingle(String jpql, Class<R> result, Consumer<Optional<R>> resultConsumer) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<R> query = session.createQuery(jpql, result);
+            R r = query.getSingleResult();
+            resultConsumer.accept(Optional.ofNullable(r));
+        }
     }
 
     @Override
-    public <R> TypedQuery<R> createQuery(CriteriaQuery<R> criteriaQuery) {
-        // TODO
-        return null;
+    public <R> void queryMultiple(String jpql, Class<R> result, Consumer<Collection<R>> resultConsumer) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<R> query = session.createQuery(jpql, result);
+            List<R> r = query.getResultList();
+            resultConsumer.accept(r);
+        }
     }
 
-    @Override
-    public <R> Optional<R> querySingle(TypedQuery<R> query) {
-        // TODO
-        return Optional.empty();
-    }
-
-    @Override
-    public <R> Collection<R> queryMultiple(TypedQuery<R> query) {
-        // TODO
-        return null;
-    }
-
-    @Override
-    public <R> CompletableFuture<Optional<R>> querySingleAsync(TypedQuery<R> query) {
-        // TODO
-        return null;
-    }
-
-    @Override
-    public <R> CompletableFuture<Collection<R>> queryMultipleAsync(TypedQuery<R> query) {
-        // TODO
-        return null;
+    protected Map<ID, T> getCache() {
+        return cache;
     }
 }

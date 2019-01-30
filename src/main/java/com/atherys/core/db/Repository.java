@@ -1,12 +1,11 @@
 package com.atherys.core.db;
 
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public interface Repository<T extends Identifiable<ID>, ID extends Serializable> {
 
@@ -53,52 +52,15 @@ public interface Repository<T extends Identifiable<ID>, ID extends Serializable>
      */
     CriteriaBuilder getCriteriaBuilder();
 
-    /**
-     * Create a TypedQuery from a JPQL string, and the class of the expected result
-     *
-     * @param jpql   The JPQL String
-     * @param result The expected result class
-     * @return A TypedQuery object
-     */
-    <R> TypedQuery<R> createQuery(String jpql, Class<R> result);
+    <R> void querySingle(String jpql, Class<R> result, Consumer<Optional<R>> resultConsumer);
 
-    /**
-     * Create a TypedQuery from a CriteriaQuery, and the class of the expected result
-     *
-     * @param criteriaQuery The CriteriaQuery
-     * @return A TypedQuery object
-     */
-    <R> TypedQuery<R> createQuery(CriteriaQuery<R> criteriaQuery);
+    <R> void queryMultiple(String jpql, Class<R> result, Consumer<Collection<R>> resultConsumer);
 
-    /**
-     * Query the database for a single result
-     *
-     * @param query The query
-     * @return An optional containing the result, or empty if not found
-     */
-    <R> Optional<R> querySingle(TypedQuery<R> query);
+    default <R> CompletableFuture<Void> querySingleAsync(String jpql, Class<R> result, Consumer<Optional<R>> resultConsumer) {
+        return CompletableFuture.runAsync(() -> querySingle(jpql, result, resultConsumer));
+    }
 
-    /**
-     * Query the database for multiple results
-     *
-     * @param query The query
-     * @return A collection containing the results, or empty if not found
-     */
-    <R> Collection<R> queryMultiple(TypedQuery<R> query);
-
-    /**
-     * Query the database for a single result asynchronously
-     *
-     * @param query The query
-     * @return A CompletableFuture containing an Optional containing the result, or empty if not found
-     */
-    <R> CompletableFuture<Optional<R>> querySingleAsync(TypedQuery<R> query);
-
-    /**
-     * Query the database for multiple results asynchronously
-     *
-     * @param query The query
-     * @return A CompletableFuture containing a collection containing the results, or empty if not found
-     */
-    <R> CompletableFuture<Collection<R>> queryMultipleAsync(TypedQuery<R> query);
+    default <R> CompletableFuture<Void> queryMultipleAsync(String jpql, Class<R> result, Consumer<Collection<R>> resultConsumer) {
+        return CompletableFuture.runAsync(() -> queryMultiple(jpql, result, resultConsumer));
+    }
 }
