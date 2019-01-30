@@ -11,17 +11,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializable> implements Repository<T, ID> {
 
-    protected Map<ID, T> cache = new HashMap<>();
+    protected Hashtable<ID, T> cache = new Hashtable<>();
 
     protected SessionFactory sessionFactory;
 
@@ -38,27 +34,31 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
         }
     }
 
-    protected CompletableFuture<Void> transactionOf(Consumer<Session> sessionConsumer) {
-        return CompletableFuture.runAsync(() -> {
-            try (Session session = sessionFactory.openSession()) {
-                Transaction transaction = null;
+    protected void transactionOf(Consumer<Session> sessionConsumer) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = null;
 
-                try {
-                    transaction = session.beginTransaction();
+            try {
+                transaction = session.beginTransaction();
 
-                    sessionConsumer.accept(session);
+                sessionConsumer.accept(session);
 
-                    session.flush();
-                    transaction.commit();
-                } catch (Exception e) {
-                    if (transaction != null) {
-                        transaction.rollback();
-                    }
-
-                    e.printStackTrace();
+                session.flush();
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
                 }
 
+                e.printStackTrace();
             }
+
+        }
+    }
+
+    protected CompletableFuture<Void> asyncTransactionOf(Consumer<Session> sessionConsumer) {
+        return CompletableFuture.runAsync(() -> {
+            transactionOf(sessionConsumer);
         });
     }
 
@@ -80,32 +80,64 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
     }
 
     @Override
-    public CompletableFuture<Void> saveOne(T entity) {
-        return transactionOf(session -> {
+    public void saveOne(T entity) {
+        transactionOf(session -> {
             session.saveOrUpdate(entity);
             cache.put(entity.getId(), entity);
         });
     }
 
     @Override
-    public CompletableFuture<Void> saveAll(Collection<T> entities) {
-        return transactionOf(session -> entities.forEach((entity -> {
+    public void saveAll(Collection<T> entities) {
+        transactionOf(session -> entities.forEach((entity -> {
             session.saveOrUpdate(entity);
             cache.put(entity.getId(), entity);
         })));
     }
 
     @Override
-    public CompletableFuture<Void> deleteOne(T entity) {
-        return transactionOf(session -> {
+    public void deleteOne(T entity) {
+        transactionOf(session -> {
             session.delete(entity);
             cache.remove(entity.getId());
         });
     }
 
     @Override
-    public CompletableFuture<Void> deleteAll(Collection<T> entities) {
-        return transactionOf(session -> entities.forEach(entity -> {
+    public void deleteAll(Collection<T> entities) {
+        transactionOf(session -> entities.forEach(entity -> {
+            session.delete(entity);
+            cache.remove(entity.getId());
+        }));
+    }
+
+    @Override
+    public CompletableFuture<Void> saveOneAsync(T entity) {
+        return asyncTransactionOf(session -> {
+            session.saveOrUpdate(entity);
+            cache.put(entity.getId(), entity);
+        });
+    }
+
+    @Override
+    public CompletableFuture<Void> saveAllAsync(Collection<T> entities) {
+        return asyncTransactionOf(session -> entities.forEach((entity -> {
+            session.saveOrUpdate(entity);
+            cache.put(entity.getId(), entity);
+        })));
+    }
+
+    @Override
+    public CompletableFuture<Void> deleteOneAsync(T entity) {
+        return asyncTransactionOf(session -> {
+            session.delete(entity);
+            cache.remove(entity.getId());
+        });
+    }
+
+    @Override
+    public CompletableFuture<Void> deleteAllAsync(Collection<T> entities) {
+        return asyncTransactionOf(session -> entities.forEach(entity -> {
             session.delete(entity);
             cache.remove(entity.getId());
         }));
@@ -169,6 +201,6 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
     }
 
     public void flushCache() {
-        transactionOf(session -> cache.values().forEach(session::saveOrUpdate));
+        asyncTransactionOf(session -> cache.values().forEach(session::saveOrUpdate));
     }
 }

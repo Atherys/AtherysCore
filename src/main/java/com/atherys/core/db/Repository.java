@@ -18,33 +18,41 @@ public interface Repository<T extends Identifiable<ID>, ID extends Serializable>
      */
     Optional<T> findById(ID id);
 
+    void saveOne(T entity);
+
+    void saveAll(Collection<T> entities);
+
+    void deleteOne(T entity);
+
+    void deleteAll(Collection<T> entities);
+
     /**
      * Insert or Update an entity to the database
      *
      * @param entity The entity to persist
      */
-    CompletableFuture<Void> saveOne(T entity);
+    CompletableFuture<Void> saveOneAsync(T entity);
 
     /**
      * Insert or Update multiple entities to the database
      *
      * @param entities The entities to persist
      */
-    CompletableFuture<Void> saveAll(Collection<T> entities);
+    CompletableFuture<Void> saveAllAsync(Collection<T> entities);
 
     /**
      * Delete an entity from the database
      *
      * @param entity The entity to delete
      */
-    CompletableFuture<Void> deleteOne(T entity);
+    CompletableFuture<Void> deleteOneAsync(T entity);
 
     /**
      * Delete multiple entities from the database
      *
      * @param entities The entities to delete
      */
-    CompletableFuture<Void> deleteAll(Collection<T> entities);
+    CompletableFuture<Void> deleteAllAsync(Collection<T> entities);
 
     /**
      * Retrieve a CriteriaBuilder object from the repository
