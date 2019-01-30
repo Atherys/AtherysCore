@@ -23,28 +23,28 @@ public interface Repository<T extends Identifiable<ID>, ID extends Serializable>
      *
      * @param entity The entity to persist
      */
-    void saveOne(T entity);
+    CompletableFuture<Void> saveOne(T entity);
 
     /**
      * Insert or Update multiple entities to the database
      *
      * @param entities The entities to persist
      */
-    void saveAll(Collection<T> entities);
+    CompletableFuture<Void> saveAll(Collection<T> entities);
 
     /**
      * Delete an entity from the database
      *
      * @param entity The entity to delete
      */
-    void deleteOne(T entity);
+    CompletableFuture<Void> deleteOne(T entity);
 
     /**
      * Delete multiple entities from the database
      *
      * @param entities The entities to delete
      */
-    void deleteAll(Collection<T> entities);
+    CompletableFuture<Void> deleteAll(Collection<T> entities);
 
     /**
      * Retrieve a CriteriaBuilder object from the repository

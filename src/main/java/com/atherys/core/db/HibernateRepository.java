@@ -38,8 +38,8 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
         }
     }
 
-    protected void transactionOf(Consumer<Session> sessionConsumer) {
-        CompletableFuture.runAsync(() -> {
+    protected CompletableFuture<Void> transactionOf(Consumer<Session> sessionConsumer) {
+        return CompletableFuture.runAsync(() -> {
             try (Session session = sessionFactory.openSession()) {
                 Transaction transaction = null;
 
@@ -80,32 +80,32 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
     }
 
     @Override
-    public void saveOne(T entity) {
-        transactionOf(session -> {
+    public CompletableFuture<Void> saveOne(T entity) {
+        return transactionOf(session -> {
             session.saveOrUpdate(entity);
             cache.put(entity.getId(), entity);
         });
     }
 
     @Override
-    public void saveAll(Collection<T> entities) {
-        transactionOf(session -> entities.forEach((entity -> {
+    public CompletableFuture<Void> saveAll(Collection<T> entities) {
+        return transactionOf(session -> entities.forEach((entity -> {
             session.saveOrUpdate(entity);
             cache.put(entity.getId(), entity);
         })));
     }
 
     @Override
-    public void deleteOne(T entity) {
-        transactionOf(session -> {
+    public CompletableFuture<Void> deleteOne(T entity) {
+        return transactionOf(session -> {
             session.delete(entity);
             cache.remove(entity.getId());
         });
     }
 
     @Override
-    public void deleteAll(Collection<T> entities) {
-        transactionOf(session -> entities.forEach(entity -> {
+    public CompletableFuture<Void> deleteAll(Collection<T> entities) {
+        return transactionOf(session -> entities.forEach(entity -> {
             session.delete(entity);
             cache.remove(entity.getId());
         }));
