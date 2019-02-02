@@ -17,8 +17,6 @@ import java.util.function.Consumer;
 
 public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializable> implements Repository<T, ID> {
 
-    protected Hashtable<ID, T> cache = new Hashtable<>();
-
     protected SessionFactory sessionFactory;
 
     protected Class<T> persistable;
@@ -64,17 +62,9 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
 
     @Override
     public Optional<T> findById(ID id) {
-        T result;
-
-        T cachedEntity = cache.get(id);
-
-        if (cachedEntity == null) {
-            Session session = sessionFactory.openSession();
-            result = session.find(persistable, id);
-            session.close();
-        } else {
-            result = cachedEntity;
-        }
+        Session session = sessionFactory.openSession();
+        T result = session.find(persistable, id);
+        session.close();
 
         return Optional.ofNullable(result);
     }
@@ -83,64 +73,42 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
     public void saveOne(T entity) {
         transactionOf(session -> {
             session.saveOrUpdate(entity);
-            cache.put(entity.getId(), entity);
         });
     }
 
     @Override
     public void saveAll(Collection<T> entities) {
-        transactionOf(session -> entities.forEach((entity -> {
-            session.saveOrUpdate(entity);
-            cache.put(entity.getId(), entity);
-        })));
+        transactionOf(session -> entities.forEach((session::saveOrUpdate)));
     }
 
     @Override
     public void deleteOne(T entity) {
-        transactionOf(session -> {
-            session.delete(entity);
-            cache.remove(entity.getId());
-        });
+        transactionOf(session -> session.delete(entity));
     }
 
     @Override
     public void deleteAll(Collection<T> entities) {
-        transactionOf(session -> entities.forEach(entity -> {
-            session.delete(entity);
-            cache.remove(entity.getId());
-        }));
+        transactionOf(session -> entities.forEach(session::delete));
     }
 
     @Override
     public CompletableFuture<Void> saveOneAsync(T entity) {
-        return asyncTransactionOf(session -> {
-            session.saveOrUpdate(entity);
-            cache.put(entity.getId(), entity);
-        });
+        return asyncTransactionOf(session -> session.saveOrUpdate(entity));
     }
 
     @Override
     public CompletableFuture<Void> saveAllAsync(Collection<T> entities) {
-        return asyncTransactionOf(session -> entities.forEach((entity -> {
-            session.saveOrUpdate(entity);
-            cache.put(entity.getId(), entity);
-        })));
+        return asyncTransactionOf(session -> entities.forEach((session::saveOrUpdate)));
     }
 
     @Override
     public CompletableFuture<Void> deleteOneAsync(T entity) {
-        return asyncTransactionOf(session -> {
-            session.delete(entity);
-            cache.remove(entity.getId());
-        });
+        return asyncTransactionOf(session -> session.delete(entity));
     }
 
     @Override
     public CompletableFuture<Void> deleteAllAsync(Collection<T> entities) {
-        return asyncTransactionOf(session -> entities.forEach(entity -> {
-            session.delete(entity);
-            cache.remove(entity.getId());
-        }));
+        return asyncTransactionOf(session -> entities.forEach(session::delete));
     }
 
     @Override
@@ -182,25 +150,5 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
             List<R> r = q.getResultList();
             resultConsumer.accept(r);
         }
-    }
-
-    protected Map<ID, T> getCache() {
-        return cache;
-    }
-
-    public void cacheAll() {
-        CriteriaBuilder builder = getCriteriaBuilder();
-        CriteriaQuery<T> query = builder.createQuery(persistable);
-        Root<T> variableRoot = query.from(persistable);
-
-        query.select(variableRoot);
-
-        queryMultiple(query, entities -> entities.forEach(entity -> {
-            cache.put(entity.getId(), entity);
-        }));
-    }
-
-    public void flushCache() {
-        asyncTransactionOf(session -> cache.values().forEach(session::saveOrUpdate));
     }
 }
