@@ -1,17 +1,18 @@
 package com.atherys.core.db;
 
 import com.atherys.core.AtherysCore;
+import org.hibernate.LockMode;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -25,7 +26,6 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
 
     public HibernateRepository(Class<T> persistable) {
         this.persistable = persistable;
-
         EntityManagerFactory entityManagerFactory = AtherysCore.getEntityManagerFactory();
 
         if (entityManagerFactory instanceof SessionFactory) {
@@ -35,6 +35,46 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
         }
     }
 
+    private void saveOrUpdate(T entity, Session session) {
+        session.lock(entity, LockMode.PESSIMISTIC_WRITE);
+        session.saveOrUpdate(entity);
+        cache.put(entity.getId(), entity);
+    }
+
+    private void delete(T entity, Session session) {
+        session.lock(entity, LockMode.PESSIMISTIC_WRITE);
+        session.delete(entity);
+        cache.remove(entity.getId());
+    }
+
+    protected void transactionOf(Consumer<Session> sessionConsumer) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = null;
+
+            try {
+                transaction = session.beginTransaction();
+
+                sessionConsumer.accept(session);
+
+                session.flush();
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    protected CompletableFuture<Void> asyncTransactionOf(Consumer<Session> sessionConsumer) {
+        return CompletableFuture.runAsync(() -> {
+            transactionOf(sessionConsumer);
+        });
+    }
+
     @Override
     public Optional<T> findById(ID id) {
         T result;
@@ -42,7 +82,9 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
         T cachedEntity = cache.get(id);
 
         if (cachedEntity == null) {
-            result = sessionFactory.getCurrentSession().find(persistable, id);
+            Session session = sessionFactory.openSession();
+            result = session.find(persistable, id);
+            session.close();
         } else {
             result = cachedEntity;
         }
@@ -52,44 +94,42 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
 
     @Override
     public void saveOne(T entity) {
-        sessionFactory.getCurrentSession().saveOrUpdate(entity);
-        cache.put(entity.getId(), entity);
+        transactionOf(session -> saveOrUpdate(entity, session));
     }
 
     @Override
     public void saveAll(Collection<T> entities) {
-        entities.forEach(this::saveOne);
+        transactionOf(session -> entities.forEach((entity -> saveOrUpdate(entity, session))));
     }
 
     @Override
     public void deleteOne(T entity) {
-        sessionFactory.getCurrentSession().delete(entity);
-        cache.remove(entity.getId());
+        transactionOf(session -> delete(entity, session));
     }
 
     @Override
     public void deleteAll(Collection<T> entities) {
-        entities.forEach(this::deleteOne);
+        transactionOf(session -> entities.forEach(entity -> delete(entity, session)));
     }
 
     @Override
     public CompletableFuture<Void> saveOneAsync(T entity) {
-        return CompletableFuture.runAsync(() -> saveOne(entity));
+        return asyncTransactionOf(session -> saveOrUpdate(entity, session));
     }
 
     @Override
     public CompletableFuture<Void> saveAllAsync(Collection<T> entities) {
-        return CompletableFuture.runAsync(() -> saveAll(entities));
+        return asyncTransactionOf(session -> entities.forEach((entity -> saveOrUpdate(entity, session))));
     }
 
     @Override
     public CompletableFuture<Void> deleteOneAsync(T entity) {
-        return CompletableFuture.runAsync(() -> deleteOne(entity));
+        return asyncTransactionOf(session -> delete(entity, session));
     }
 
     @Override
     public CompletableFuture<Void> deleteAllAsync(Collection<T> entities) {
-        return CompletableFuture.runAsync(() -> deleteAll(entities));
+        return asyncTransactionOf(session -> entities.forEach(entity -> delete(entity, session)));
     }
 
     @Override
@@ -99,23 +139,38 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
 
     @Override
     public <R> void querySingle(String jpql, Class<R> result, Consumer<Optional<R>> resultConsumer) {
-        resultConsumer.accept(Optional.ofNullable(sessionFactory.getCurrentSession().createQuery(jpql, result).getSingleResult()));
+        try (Session session = sessionFactory.openSession()) {
+            Query<R> query = session.createQuery(jpql, result);
+            R r = query.getSingleResult();
+            resultConsumer.accept(Optional.ofNullable(r));
+        }
     }
 
     @Override
     public <R> void queryMultiple(String jpql, Class<R> result, Consumer<Collection<R>> resultConsumer) {
-        resultConsumer.accept(sessionFactory.getCurrentSession().createQuery(jpql, result).getResultList());
-
+        try (Session session = sessionFactory.openSession()) {
+            Query<R> query = session.createQuery(jpql, result);
+            List<R> r = query.getResultList();
+            resultConsumer.accept(r);
+        }
     }
 
     @Override
     public <R> void querySingle(CriteriaQuery<R> query, Consumer<Optional<R>> resultConsumer) {
-        resultConsumer.accept(Optional.ofNullable(sessionFactory.getCurrentSession().createQuery(query).getSingleResult()));
+        try (Session session = sessionFactory.openSession()) {
+            Query<R> q = session.createQuery(query);
+            R r = q.getSingleResult();
+            resultConsumer.accept(Optional.ofNullable(r));
+        }
     }
 
     @Override
     public <R> void queryMultiple(CriteriaQuery<R> query, Consumer<Collection<R>> resultConsumer) {
-        resultConsumer.accept(sessionFactory.getCurrentSession().createQuery(query).getResultList());
+        try (Session session = sessionFactory.openSession()) {
+            Query<R> q = session.createQuery(query);
+            List<R> r = q.getResultList();
+            resultConsumer.accept(r);
+        }
     }
 
     protected Map<ID, T> getCache() {
@@ -135,6 +190,6 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
     }
 
     public void flushCache() {
-        saveAll(cache.values());
+        asyncTransactionOf(session -> cache.values().forEach(session::saveOrUpdate));
     }
 }

@@ -15,12 +15,14 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.*;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.service.economy.EconomyService;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import static com.atherys.core.AtherysCore.*;
@@ -49,6 +51,8 @@ public class AtherysCore {
 
     private TemplateEngine templateEngine;
 
+    private EconomyService economyService;
+
     private void init() {
         instance = this;
 
@@ -75,6 +79,7 @@ public class AtherysCore {
     }
 
     private void start() {
+        this.economyService = Sponge.getServiceManager().provide(EconomyService.class).orElse(null);
     }
 
     private void stop() {
@@ -162,5 +167,9 @@ public class AtherysCore {
 
     public static TemplateEngine getTemplateEngine() {
         return getInstance().templateEngine;
+    }
+
+    public static Optional<EconomyService> getEconomyService() {
+        return Optional.ofNullable(getInstance().economyService);
     }
 }
