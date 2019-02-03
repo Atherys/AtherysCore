@@ -1,5 +1,6 @@
 package com.atherys.core.db;
 
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
@@ -61,27 +62,33 @@ public interface Repository<T extends Identifiable<ID>, ID extends Serializable>
      */
     CriteriaBuilder getCriteriaBuilder();
 
-    <R> void querySingle(String jpql, Class<R> result, Consumer<Optional<R>> resultConsumer);
+    void execute(String jpql, Consumer<Query> setParams);
 
-    <R> void queryMultiple(String jpql, Class<R> result, Consumer<Collection<R>> resultConsumer);
+    <R> void querySingle(String jpql, Class<R> result, Consumer<Query> setParams, Consumer<Optional<R>> resultConsumer);
 
-    default <R> CompletableFuture<Void> querySingleAsync(String jpql, Class<R> result, Consumer<Optional<R>> resultConsumer) {
-        return CompletableFuture.runAsync(() -> querySingle(jpql, result, resultConsumer));
+    <R> void queryMultiple(String jpql, Class<R> result, Consumer<Query> setParams, Consumer<Collection<R>> resultConsumer);
+
+    default void executeAsync(String jpql, Consumer<Query> setParams) {
+        CompletableFuture.runAsync(() -> execute(jpql, setParams));
     }
 
-    default <R> CompletableFuture<Void> queryMultipleAsync(String jpql, Class<R> result, Consumer<Collection<R>> resultConsumer) {
-        return CompletableFuture.runAsync(() -> queryMultiple(jpql, result, resultConsumer));
+    default <R> CompletableFuture<Void> querySingleAsync(String jpql, Class<R> result, Consumer<Query> setParams, Consumer<Optional<R>> resultConsumer) {
+        return CompletableFuture.runAsync(() -> querySingle(jpql, result, setParams, resultConsumer));
     }
 
-    <R> void querySingle(CriteriaQuery<R> query, Consumer<Optional<R>> resultConsumer);
-
-    <R> void queryMultiple(CriteriaQuery<R> query, Consumer<Collection<R>> resultConsumer);
-
-    default <R> CompletableFuture<Void> querySingleAsync(CriteriaQuery<R> query, Consumer<Optional<R>> resultConsumer) {
-        return CompletableFuture.runAsync(() -> querySingle(query, resultConsumer));
+    default <R> CompletableFuture<Void> queryMultipleAsync(String jpql, Class<R> result,  Consumer<Query> setParams, Consumer<Collection<R>> resultConsumer) {
+        return CompletableFuture.runAsync(() -> queryMultiple(jpql, result, setParams, resultConsumer));
     }
 
-    default <R> CompletableFuture<Void> queryMultipleAsync(CriteriaQuery<R> query, Consumer<Collection<R>> resultConsumer) {
-        return CompletableFuture.runAsync(() -> queryMultiple(query, resultConsumer));
+    <R> void querySingle(CriteriaQuery<R> query, Consumer<Query> setParams, Consumer<Optional<R>> resultConsumer);
+
+    <R> void queryMultiple(CriteriaQuery<R> query, Consumer<Query> setParams, Consumer<Collection<R>> resultConsumer);
+
+    default <R> CompletableFuture<Void> querySingleAsync(CriteriaQuery<R> query, Consumer<Query> setParams, Consumer<Optional<R>> resultConsumer) {
+        return CompletableFuture.runAsync(() -> querySingle(query, setParams, resultConsumer));
+    }
+
+    default <R> CompletableFuture<Void> queryMultipleAsync(CriteriaQuery<R> query, Consumer<Query> setParams, Consumer<Collection<R>> resultConsumer) {
+        return CompletableFuture.runAsync(() -> queryMultiple(query, setParams, resultConsumer));
     }
 }

@@ -137,36 +137,49 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
     }
 
     @Override
-    public <R> void querySingle(String jpql, Class<R> result, Consumer<Optional<R>> resultConsumer) {
+    public void execute(String jpql, Consumer<javax.persistence.Query> setParams) {
+        try (Session session = sessionFactory.openSession()) {
+            Query query = session.createQuery(jpql);
+            setParams.accept(query);
+            query.executeUpdate();
+        }
+    }
+
+    @Override
+    public <R> void querySingle(String jpql, Class<R> result, Consumer<javax.persistence.Query> setParams, Consumer<Optional<R>> resultConsumer) {
         try (Session session = sessionFactory.openSession()) {
             Query<R> query = session.createQuery(jpql, result);
+            setParams.accept(query);
             R r = query.getSingleResult();
             resultConsumer.accept(Optional.ofNullable(r));
         }
     }
 
     @Override
-    public <R> void queryMultiple(String jpql, Class<R> result, Consumer<Collection<R>> resultConsumer) {
+    public <R> void queryMultiple(String jpql, Class<R> result, Consumer<javax.persistence.Query> setParams, Consumer<Collection<R>> resultConsumer) {
         try (Session session = sessionFactory.openSession()) {
             Query<R> query = session.createQuery(jpql, result);
+            setParams.accept(query);
             List<R> r = query.getResultList();
             resultConsumer.accept(r);
         }
     }
 
     @Override
-    public <R> void querySingle(CriteriaQuery<R> query, Consumer<Optional<R>> resultConsumer) {
+    public <R> void querySingle(CriteriaQuery<R> query, Consumer<javax.persistence.Query> setParams, Consumer<Optional<R>> resultConsumer) {
         try (Session session = sessionFactory.openSession()) {
             Query<R> q = session.createQuery(query);
+            setParams.accept(q);
             R r = q.getSingleResult();
             resultConsumer.accept(Optional.ofNullable(r));
         }
     }
 
     @Override
-    public <R> void queryMultiple(CriteriaQuery<R> query, Consumer<Collection<R>> resultConsumer) {
+    public <R> void queryMultiple(CriteriaQuery<R> query, Consumer<javax.persistence.Query> setParams, Consumer<Collection<R>> resultConsumer) {
         try (Session session = sessionFactory.openSession()) {
             Query<R> q = session.createQuery(query);
+            setParams.accept(q);
             List<R> r = q.getResultList();
             resultConsumer.accept(r);
         }
@@ -183,7 +196,7 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
 
         query.select(variableRoot);
 
-        queryMultiple(query, entities -> entities.forEach(entity -> {
+        queryMultiple(query, (q) -> {}, entities -> entities.forEach(entity -> {
             cache.put(entity.getId(), entity);
         }));
     }

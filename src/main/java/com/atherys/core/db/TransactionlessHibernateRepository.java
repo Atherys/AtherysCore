@@ -1,17 +1,16 @@
 package com.atherys.core.db;
 
 import com.atherys.core.AtherysCore;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -98,24 +97,52 @@ public class TransactionlessHibernateRepository<T extends Identifiable<ID>, ID e
     }
 
     @Override
-    public <R> void querySingle(String jpql, Class<R> result, Consumer<Optional<R>> resultConsumer) {
-        resultConsumer.accept(Optional.ofNullable(sessionFactory.getCurrentSession().createQuery(jpql, result).getSingleResult()));
+    public void execute(String jpql, Consumer<javax.persistence.Query> setParams) {
+        try (Session session = sessionFactory.openSession()) {
+            Query query = session.createQuery(jpql);
+            setParams.accept(query);
+            query.executeUpdate();
+        }
     }
 
     @Override
-    public <R> void queryMultiple(String jpql, Class<R> result, Consumer<Collection<R>> resultConsumer) {
-        resultConsumer.accept(sessionFactory.getCurrentSession().createQuery(jpql, result).getResultList());
-
+    public <R> void querySingle(String jpql, Class<R> result, Consumer<javax.persistence.Query> setParams, Consumer<Optional<R>> resultConsumer) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<R> query = session.createQuery(jpql, result);
+            setParams.accept(query);
+            R r = query.getSingleResult();
+            resultConsumer.accept(Optional.ofNullable(r));
+        }
     }
 
     @Override
-    public <R> void querySingle(CriteriaQuery<R> query, Consumer<Optional<R>> resultConsumer) {
-        resultConsumer.accept(Optional.ofNullable(sessionFactory.getCurrentSession().createQuery(query).getSingleResult()));
+    public <R> void queryMultiple(String jpql, Class<R> result, Consumer<javax.persistence.Query> setParams, Consumer<Collection<R>> resultConsumer) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<R> query = session.createQuery(jpql, result);
+            setParams.accept(query);
+            List<R> r = query.getResultList();
+            resultConsumer.accept(r);
+        }
     }
 
     @Override
-    public <R> void queryMultiple(CriteriaQuery<R> query, Consumer<Collection<R>> resultConsumer) {
-        resultConsumer.accept(sessionFactory.getCurrentSession().createQuery(query).getResultList());
+    public <R> void querySingle(CriteriaQuery<R> query, Consumer<javax.persistence.Query> setParams, Consumer<Optional<R>> resultConsumer) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<R> q = session.createQuery(query);
+            setParams.accept(q);
+            R r = q.getSingleResult();
+            resultConsumer.accept(Optional.ofNullable(r));
+        }
+    }
+
+    @Override
+    public <R> void queryMultiple(CriteriaQuery<R> query, Consumer<javax.persistence.Query> setParams, Consumer<Collection<R>> resultConsumer) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<R> q = session.createQuery(query);
+            setParams.accept(q);
+            List<R> r = q.getResultList();
+            resultConsumer.accept(r);
+        }
     }
 
     protected Map<ID, T> getCache() {
@@ -129,7 +156,7 @@ public class TransactionlessHibernateRepository<T extends Identifiable<ID>, ID e
 
         query.select(variableRoot);
 
-        queryMultiple(query, entities -> entities.forEach(entity -> {
+        queryMultiple(query, (q) -> {}, entities -> entities.forEach(entity -> {
             cache.put(entity.getId(), entity);
         }));
     }
