@@ -1,7 +1,6 @@
 package com.atherys.core.db;
 
 import com.atherys.core.AtherysCore;
-import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -36,13 +35,13 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
     }
 
     private void saveOrUpdate(T entity, Session session) {
-        session.lock(entity, LockMode.PESSIMISTIC_WRITE);
+        // session.lock(entity, LockMode.PESSIMISTIC_WRITE);
         session.saveOrUpdate(entity);
         cache.put(entity.getId(), entity);
     }
 
     private void delete(T entity, Session session) {
-        session.lock(entity, LockMode.PESSIMISTIC_WRITE);
+        // session.lock(entity, LockMode.PESSIMISTIC_WRITE);
         session.delete(entity);
         cache.remove(entity.getId());
     }
