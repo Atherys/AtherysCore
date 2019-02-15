@@ -202,6 +202,6 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
     }
 
     public void flushCache() {
-        asyncTransactionOf(session -> cache.values().forEach(session::saveOrUpdate));
+        transactionOf(session -> cache.values().forEach(session::saveOrUpdate));
     }
 }
