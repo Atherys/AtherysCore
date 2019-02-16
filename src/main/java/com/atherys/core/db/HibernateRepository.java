@@ -9,15 +9,14 @@ import org.hibernate.query.Query;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializable> implements Repository<T, ID> {
-
-    protected Hashtable<ID, T> cache = new Hashtable<>();
 
     protected SessionFactory sessionFactory;
 
@@ -35,15 +34,11 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
     }
 
     private void saveOrUpdate(T entity, Session session) {
-        // session.lock(entity, LockMode.PESSIMISTIC_WRITE);
         session.saveOrUpdate(entity);
-        cache.put(entity.getId(), entity);
     }
 
     private void delete(T entity, Session session) {
-        // session.lock(entity, LockMode.PESSIMISTIC_WRITE);
         session.delete(entity);
-        cache.remove(entity.getId());
     }
 
     protected void transactionOf(Consumer<Session> sessionConsumer) {
@@ -78,15 +73,9 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
     public Optional<T> findById(ID id) {
         T result;
 
-        T cachedEntity = cache.get(id);
-
-        if (cachedEntity == null) {
-            Session session = sessionFactory.openSession();
-            result = session.find(persistable, id);
-            session.close();
-        } else {
-            result = cachedEntity;
-        }
+        Session session = sessionFactory.openSession();
+        result = session.find(persistable, id);
+        session.close();
 
         return Optional.ofNullable(result);
     }
@@ -183,25 +172,5 @@ public class HibernateRepository<T extends Identifiable<ID>, ID extends Serializ
             List<R> r = q.getResultList();
             resultConsumer.accept(r);
         }
-    }
-
-    protected Map<ID, T> getCache() {
-        return cache;
-    }
-
-    public void cacheAll() {
-        CriteriaBuilder builder = getCriteriaBuilder();
-        CriteriaQuery<T> query = builder.createQuery(persistable);
-        Root<T> variableRoot = query.from(persistable);
-
-        query.select(variableRoot);
-
-        queryMultiple(query, (q) -> {}, entities -> entities.forEach(entity -> {
-            cache.put(entity.getId(), entity);
-        }));
-    }
-
-    public void flushCache() {
-        transactionOf(session -> cache.values().forEach(session::saveOrUpdate));
     }
 }
