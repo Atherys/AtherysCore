@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+@Deprecated
 public class TransactionlessHibernateRepository<T extends Identifiable<ID>, ID extends Serializable> implements Repository<T, ID> {
 
     protected Hashtable<ID, T> cache = new Hashtable<>();

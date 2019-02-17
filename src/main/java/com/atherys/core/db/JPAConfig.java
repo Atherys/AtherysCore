@@ -22,9 +22,6 @@ public final class JPAConfig {
         HIBERNATE.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
         HIBERNATE.put(Environment.SHOW_SQL, "true");
         HIBERNATE.put(Environment.HBM2DDL_AUTO, "update");
-
-        HIBERNATE.put(Environment.USE_SECOND_LEVEL_CACHE, "true");
-        HIBERNATE.put(Environment.CACHE_REGION_FACTORY, "org.hibernate.cache.ehcache.EhCacheRegionFactory");
     }
 
 }
