@@ -7,7 +7,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttributeUtils {
+public final class AttributeUtils {
 
     public static final ItemStack replaceAttributeModifiers(ItemStack itemStack, List<AttributeModification> attributeModifications) {
         List<DataContainer> modifiers = new ArrayList<>();

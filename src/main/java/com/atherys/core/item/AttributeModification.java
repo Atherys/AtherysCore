@@ -18,6 +18,7 @@ public class AttributeModification {
     private int operation;
 
     private AttributeModification(AttributeModification attributeModification) {
+        this.uuid = attributeModification.uuid;
         this.id = attributeModification.id;
         this.slot = attributeModification.slot;
         this.amount = attributeModification.amount;
