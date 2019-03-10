@@ -5,7 +5,7 @@ import org.spongepowered.api.data.DataQuery;
 
 import java.util.UUID;
 
-public class AttributeModification {
+public class AttributeModifier {
 
     private UUID uuid;
 
@@ -17,15 +17,15 @@ public class AttributeModification {
 
     private int operation;
 
-    private AttributeModification(AttributeModification attributeModification) {
-        this.uuid = attributeModification.uuid;
-        this.id = attributeModification.id;
-        this.slot = attributeModification.slot;
-        this.amount = attributeModification.amount;
-        this.operation = attributeModification.operation;
+    private AttributeModifier(AttributeModifier attributeModifier) {
+        this.uuid = attributeModifier.uuid;
+        this.id = attributeModifier.id;
+        this.slot = attributeModifier.slot;
+        this.amount = attributeModifier.amount;
+        this.operation = attributeModifier.operation;
     }
 
-    public AttributeModification(String id, String slot, float amount, int operation) {
+    AttributeModifier(String id, String slot, float amount, int operation) {
         this.uuid = UUID.randomUUID();
         this.id = id;
         this.slot = slot;
@@ -37,7 +37,7 @@ public class AttributeModification {
         return id;
     }
 
-    public AttributeModification setAttributeId(String id) {
+    public AttributeModifier setAttributeId(String id) {
         this.id = id;
         return this;
     }
@@ -46,7 +46,7 @@ public class AttributeModification {
         return slot;
     }
 
-    public AttributeModification setSlot(String slot) {
+    public AttributeModifier setSlot(String slot) {
         this.slot = slot;
         return this;
     }
@@ -55,7 +55,7 @@ public class AttributeModification {
         return amount;
     }
 
-    public AttributeModification setAmount(float amount) {
+    public AttributeModifier setAmount(float amount) {
         this.amount = amount;
         return this;
     }
@@ -64,13 +64,13 @@ public class AttributeModification {
         return operation;
     }
 
-    public AttributeModification setOperation(int operation) {
+    public AttributeModifier setOperation(int operation) {
         this.operation = operation;
         return this;
     }
 
-    public AttributeModification copy() {
-        return new AttributeModification(this);
+    public AttributeModifier copy() {
+        return new AttributeModifier(this);
     }
 
     public DataContainer asDataContainer() {
