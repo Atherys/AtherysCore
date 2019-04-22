@@ -1,5 +1,10 @@
 package com.atherys.core;
 
+import com.atherys.core.chat.ChatChannelService;
+import com.atherys.core.chat.ChatFacade;
+import com.atherys.core.chat.ChatListener;
+import com.atherys.core.chat.TestChannel;
+import com.atherys.core.chat.command.ChatCommand;
 import com.atherys.core.command.CommandService;
 import com.atherys.core.db.JPAConfig;
 import com.atherys.core.event.AtherysHibernateConfigurationEvent;
@@ -51,12 +56,18 @@ public class AtherysCore {
 
     private TemplateEngine templateEngine;
 
+    private ChatChannelService channelService;
+
+    private ChatFacade chatFacade;
+
     private EconomyService economyService;
 
     private void init() {
         instance = this;
 
         this.templateEngine = new TemplateEngine();
+        this.channelService = new ChatChannelService();
+        this.chatFacade = new ChatFacade(channelService);
 
         try {
             coreConfig = new CoreConfig();
@@ -79,6 +90,13 @@ public class AtherysCore {
     }
 
     private void start() {
+        Sponge.getEventManager().registerListeners(this, new ChatListener());
+        try {
+            CommandService.getInstance().register(new ChatCommand(), this);
+        } catch (CommandService.AnnotatedCommandException e) {
+            e.printStackTrace();
+        }
+
         this.economyService = Sponge.getServiceManager().provide(EconomyService.class).orElse(null);
     }
 
@@ -167,6 +185,10 @@ public class AtherysCore {
 
     public static TemplateEngine getTemplateEngine() {
         return getInstance().templateEngine;
+    }
+
+    public static ChatFacade getChatFacade() {
+        return instance.chatFacade;
     }
 
     public static Optional<EconomyService> getEconomyService() {
