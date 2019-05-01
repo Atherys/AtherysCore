@@ -1,6 +1,11 @@
 package com.atherys.core.chat;
 
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.channel.MessageChannel;
+import org.spongepowered.api.text.channel.MessageReceiver;
+
+import java.util.Collection;
 
 public class ChatFacade {
     private ChatChannelService channelService;
@@ -35,5 +40,10 @@ public class ChatFacade {
     public void focusChatChannel(CommandSource src, String channelId) {
         channelService.getChannels().forEach(channel -> channel.removeMember(src));
         joinChatChannel(src, channelId);
+    }
+
+    public void onPlayerChat(ChatChannel channel, CommandSource source, Text message) {
+        Collection<MessageReceiver> members = channel.collectMembers(source);
+        MessageChannel.fixed(members).send(message);
     }
 }

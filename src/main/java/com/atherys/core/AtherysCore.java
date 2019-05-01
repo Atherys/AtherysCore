@@ -2,6 +2,7 @@ package com.atherys.core;
 
 import com.atherys.core.chat.ChatChannelService;
 import com.atherys.core.chat.ChatFacade;
+import com.atherys.core.chat.ChatListener;
 import com.atherys.core.chat.command.ChatCommand;
 import com.atherys.core.command.CommandService;
 import com.atherys.core.db.JPAConfig;
@@ -90,6 +91,7 @@ public class AtherysCore {
     private void start() {
         try {
             CommandService.getInstance().register(new ChatCommand(), this);
+            Sponge.getEventManager().registerListeners(this, new ChatListener());
         } catch (CommandService.AnnotatedCommandException e) {
             e.printStackTrace();
         }
