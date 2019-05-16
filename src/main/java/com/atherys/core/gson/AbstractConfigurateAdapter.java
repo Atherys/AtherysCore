@@ -38,7 +38,7 @@ public class AbstractConfigurateAdapter<T> extends TypeAdapter<T> implements
 
             AtherysCore.getInstance().getLogger().info("Write: " + json); // DEBUG
 
-            out.jsonValue(json);
+            out.value(json);
 
         } catch (ObjectMappingException e) {
             e.printStackTrace();
