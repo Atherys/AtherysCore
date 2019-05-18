@@ -31,7 +31,6 @@ public class SerializableTypeAdapter<T extends DataSerializable> extends Abstrac
         } catch (IOException e) {
             AtherysCore.getInstance().getLogger().info("Error deserializing type {}", typeOfT); // DEBUG
         }
-
         return null;
     }
 
@@ -45,13 +44,5 @@ public class SerializableTypeAdapter<T extends DataSerializable> extends Abstrac
             AtherysCore.getInstance().getLogger().info("Error serializing type {}", typeOfSrc); // DEBUG
         }
         return null;
-    }
-
-    @SafeVarargs
-    public static void registerConfigurateAdapters(GsonBuilder builder, Class<? extends DataSerializable>...classes) {
-        for (Class<? extends DataSerializable> cls : classes) {
-            SerializableTypeAdapter<?> newAdapter = new SerializableTypeAdapter<>(cls);
-            builder.registerTypeAdapter(cls, newAdapter);
-        }
     }
 }

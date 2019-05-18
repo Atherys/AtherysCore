@@ -22,12 +22,4 @@ public class CatalogTypeAdapter<T extends CatalogType> extends AbstractTypeAdapt
     public JsonElement serialize(T src, Type typeOfSrc, JsonSerializationContext context) {
         return new JsonPrimitive(src.getId());
     }
-
-    @SafeVarargs
-    public static void registerAdaptersFor(GsonBuilder builder, Class<? extends CatalogType>...classes) {
-        for (Class<? extends CatalogType> cls : classes) {
-            CatalogTypeAdapter<?> newAdapter = new CatalogTypeAdapter<>(cls);
-            builder.registerTypeAdapter(cls, newAdapter);
-        }
-    }
 }
