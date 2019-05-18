@@ -1,7 +1,7 @@
 package com.atherys.core.utils;
 
-import com.atherys.core.command.annotation.Description;
 import com.atherys.core.AtherysCore;
+import com.atherys.core.command.annotation.Description;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;

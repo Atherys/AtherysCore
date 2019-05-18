@@ -11,14 +11,12 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-public class ConfigurateAdapter<T extends DataSerializable> implements JsonDeserializer<T>, JsonSerializer<T> {
-
-    private Class<T> clazz;
+public class SerializableTypeAdapter<T extends DataSerializable> extends AbstractTypeAdapter<T> {
 
     private JsonParser parser = new JsonParser();
 
-    protected ConfigurateAdapter(Class<T> clazz) {
-        this.clazz = clazz;
+    protected SerializableTypeAdapter(Class<T> clazz) {
+        super(clazz);
     }
 
     @Override
@@ -50,9 +48,9 @@ public class ConfigurateAdapter<T extends DataSerializable> implements JsonDeser
     }
 
     @SafeVarargs
-    public static <R extends DataSerializable> void registerConfigurateAdapters(GsonBuilder builder, Class<R>...classes) {
-        for (Class<R> cls : classes) {
-            ConfigurateAdapter<R> newAdapter = new ConfigurateAdapter<>(cls);
+    public static void registerConfigurateAdapters(GsonBuilder builder, Class<? extends DataSerializable>...classes) {
+        for (Class<? extends DataSerializable> cls : classes) {
+            SerializableTypeAdapter<?> newAdapter = new SerializableTypeAdapter<>(cls);
             builder.registerTypeAdapter(cls, newAdapter);
         }
     }

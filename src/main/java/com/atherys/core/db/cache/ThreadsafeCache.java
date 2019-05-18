@@ -4,7 +4,6 @@ import com.atherys.core.db.Identifiable;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Optional;
 import java.util.function.Predicate;
