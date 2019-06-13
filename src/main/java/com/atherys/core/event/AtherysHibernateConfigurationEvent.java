@@ -1,6 +1,5 @@
 package com.atherys.core.event;
 
-import org.hibernate.cfg.Configuration;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.cause.Cause;
