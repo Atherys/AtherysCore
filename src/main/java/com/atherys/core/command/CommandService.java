@@ -1,18 +1,19 @@
 package com.atherys.core.command;
 
 import com.atherys.core.command.annotation.*;
-import com.atherys.core.utils.PaginationUtils;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class CommandService {
 
@@ -27,12 +28,14 @@ public final class CommandService {
         Command command = buildCommandSpec(executor);
         Sponge.getCommandManager().register(plugin, command.getSpec(), command.getAliases());
         if (executor.getClass().isAnnotationPresent(HelpCommand.class) && executor.getClass().isAnnotationPresent(Children.class)) {
-
+            createHelpCommand(command, executor.getClass().getAnnotation(HelpCommand.class).title(), plugin);
         }
     }
 
     public <T extends CommandExecutor> Command buildCommandSpec(T command)
             throws AnnotatedCommandException {
+
+        Command com = new Command();
 
         Class<? extends CommandExecutor> commandClass = command.getClass();
 
@@ -71,6 +74,7 @@ public final class CommandService {
                     throw AnnotatedCommandException.childInstantiation(child);
                 }
                 spec.child(childSpec.getSpec(), childSpec.getAliases());
+                com.addChild(childSpec.getSpec());
             }
         }
 
@@ -83,22 +87,35 @@ public final class CommandService {
         spec.executor(command);
         CommandSpec commandSpec = spec.build();
 
-        if (commandClass.isAnnotationPresent(HelpCommand.class)) {
-            createHelpCommand(aliases[0], commandClass.getAnnotation(Children.class).value());
-        }
 
-        return new Command(commandSpec, aliases);
+        com.aliases = aliases;
+        com.spec = commandSpec;
+        return com;
     }
 
-    private void createHelpCommand(String alias, Class<? extends CommandExecutor>[] children) {
+
+
+    private void createHelpCommand(Command command, String title, Object plugin) {
         CommandSpec.Builder helpSpec = CommandSpec.builder();
+        if (command.children.size() == 0) return;
+
+        List<Text> help = command.children.stream()
+                .map(c -> c.getHelp(Sponge.getServer().getConsole()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        PaginationList helpList = PaginationList.builder()
+                .title(Text.of(TextColors.GOLD, TextStyles.BOLD, title))
+                .contents(help)
+                .build();
 
         CommandExecutor helpExecutor = (src, args) -> {
-            PaginationList paginationList = PaginationUtils.paginate(alias, Arrays.asList(children));
-            paginationList.sendTo(src);
+            helpList.sendTo(src);
             return CommandResult.success();
         };
         helpSpec.executor(helpExecutor);
+        Sponge.getCommandManager().register(plugin, helpSpec.build(), command.aliases[0]);
     }
 
     private String[] getAliases(Class<? extends CommandExecutor> commandClass)
@@ -124,17 +141,27 @@ public final class CommandService {
 
         String[] aliases;
         CommandSpec spec;
+        List<CommandSpec> children;
 
-        public Command(CommandSpec spec, String... aliases) {
+        Command(CommandSpec spec, String... aliases) {
+            this();
             this.aliases = aliases;
             this.spec = spec;
         }
 
-        public String[] getAliases() {
+        Command() {
+            this.children = new ArrayList<>();
+        }
+
+        void addChild(CommandSpec child) {
+            children.add(child);
+        }
+
+        String[] getAliases() {
             return aliases;
         }
 
-        public CommandSpec getSpec() {
+        CommandSpec getSpec() {
             return spec;
         }
     }
