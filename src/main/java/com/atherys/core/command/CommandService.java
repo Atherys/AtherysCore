@@ -124,12 +124,13 @@ public final class CommandService {
     private Text getHelpFor(Command command, HelpCommand annotation) {
         Text.Builder help = Text.builder();
 
-        String base = command.getAliases()[0];
+        // If there's a provided prefix, use that + a space
+        String base = "";
         if (!annotation.prefix().isEmpty()) {
-            base = annotation.prefix();
+            base = annotation.prefix() + " ";
         }
 
-        help.append(Text.of(GOLD, "/", base, " ", command.aliases[0], " "));
+        help.append(Text.of(GOLD, "/", base, command.aliases[0], " "));
 
         // Don't want to spam the message with a bunch of sub-commands
         if (command.getChildren().size() == 0) {
