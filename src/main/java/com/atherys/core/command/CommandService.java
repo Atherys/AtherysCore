@@ -1,6 +1,5 @@
 package com.atherys.core.command;
 
-import com.atherys.core.AtherysCore;
 import com.atherys.core.command.annotation.*;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
@@ -88,7 +87,9 @@ public final class CommandService {
         Command com = new Command(commandSpec, children, aliases);
 
         if (commandClass.isAnnotationPresent(HelpCommand.class)) {
-            CommandSpec helpCommand = createHelpCommand(com, commandClass.getAnnotation(HelpCommand.class).title());
+            CommandSpec helpCommand = createHelpCommand(
+                    com,
+                    commandClass.getAnnotation(HelpCommand.class));
             if (helpCommand != null) spec.child(helpCommand, "help");
             com.spec = spec.build();
         }
@@ -98,16 +99,16 @@ public final class CommandService {
 
 
 
-    private CommandSpec createHelpCommand(Command command, String title) {
+    private CommandSpec createHelpCommand(Command command, HelpCommand annotation) {
         CommandSpec.Builder helpSpec = CommandSpec.builder();
         if (command.children.size() == 0) return null;
 
         List<Text> help = command.children.stream()
-                .map(child -> getHelpFor(child, command.aliases[0]))
+                .map(child -> getHelpFor(child, annotation))
                 .collect(Collectors.toList());
 
         PaginationList helpList = PaginationList.builder()
-                .title(Text.of(GOLD, TextStyles.BOLD, title))
+                .title(Text.of(GOLD, TextStyles.BOLD, annotation.title()))
                 .padding(Text.of(DARK_GRAY, "="))
                 .contents(help)
                 .build();
@@ -120,10 +121,20 @@ public final class CommandService {
         return helpSpec.build();
     }
 
-    private Text getHelpFor(Command command, String base) {
+    private Text getHelpFor(Command command, HelpCommand annotation) {
         Text.Builder help = Text.builder();
-        help.append(Text.of(GOLD, "/", base, " ", command.aliases[0], " ",
-                command.getSpec().getUsage(console())));
+
+        String base = command.getAliases()[0];
+        if (!annotation.prefix().isEmpty()) {
+            base = annotation.prefix();
+        }
+
+        help.append(Text.of(GOLD, "/", base, " ", command.aliases[0], " "));
+
+        // Don't want to spam the message with a bunch of sub-commands
+        if (command.getChildren().size() == 0) {
+            help.append(command.getSpec().getUsage(console()));
+        }
 
         command.getSpec().getShortDescription(console()).ifPresent(desc -> {
             help.append(Text.of(DARK_GREEN, " : ", desc));
@@ -172,6 +183,10 @@ public final class CommandService {
 
         CommandSpec getSpec() {
             return spec;
+        }
+
+        List<Command> getChildren() {
+            return children;
         }
     }
 

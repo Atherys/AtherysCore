@@ -9,4 +9,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface HelpCommand {
     String title();
+
+    /**
+     * For use with sub-commands.
+     */
+    String prefix() default "";
 }
