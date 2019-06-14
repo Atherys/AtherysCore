@@ -1,6 +1,6 @@
 package com.atherys.core.utils;
 
-import com.atherys.core.AtherysCore;
+import com.atherys.core.command.annotation.Aliases;
 import com.atherys.core.command.annotation.Description;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.service.pagination.PaginationList;
@@ -15,21 +15,15 @@ public class PaginationUtils {
     /**
      * Creates a pagination list from an array of commands and descriptions. 
      */
-    public static PaginationList paginate(String title, List<Class<? extends CommandExecutor>> children, List<String> commands) {
+    public static PaginationList paginate(String title, List<Class<? extends CommandExecutor>> children) {
 
-        if (commands.size() != children.size()){
-            AtherysCore.getInstance().getLogger().error("Descriptions and children are of different lengths; not all commands will be formatted.");
-        }
-
-        List<Text> content = new ArrayList<>(commands.size());
-        int i = 0;
-        for (String command : commands){
-            Class clazz = children.get(i);
-            if (clazz.isAnnotationPresent(Description.class)){
-                String desc = ((Description) clazz.getAnnotation(Description.class)).value();
-                content.add(PaginationUtils.formatHelp(command, desc));
+        List<Text> content = new ArrayList<>(children.size());
+        for (Class<? extends CommandExecutor> command : children){
+            if (command.isAnnotationPresent(Description.class) && command.isAnnotationPresent(Aliases.class)){
+                String desc = command.getAnnotation(Description.class).value();
+                String alias = command.getAnnotation(Aliases.class).value()[0];
+                content.add(formatHelp(alias, desc));
             }
-            i++;
         }
 
         return PaginationList.builder()
@@ -42,7 +36,7 @@ public class PaginationUtils {
     /**
      * Formats a command and a description.
      */
-    public static Text formatHelp(String command, String description) {
+    private static Text formatHelp(String command, String description) {
         return Text.of(TextColors.GOLD, command, "-", TextColors.DARK_GREEN, description);
     }
 }
