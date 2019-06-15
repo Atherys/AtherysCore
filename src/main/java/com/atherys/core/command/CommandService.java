@@ -9,6 +9,8 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
 import static org.spongepowered.api.text.format.TextColors.*;
+
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextStyles;
 
 import java.util.ArrayList;
@@ -87,10 +89,10 @@ public final class CommandService {
         Command com = new Command(commandSpec, children, aliases);
 
         if (commandClass.isAnnotationPresent(HelpCommand.class)) {
-            CommandSpec helpCommand = createHelpCommand(
+            CommandExecutor helpCommand = createHelpCommand(
                     com,
                     commandClass.getAnnotation(HelpCommand.class));
-            if (helpCommand != null) spec.child(helpCommand, "help");
+            spec.executor(helpCommand);
             com.spec = spec.build();
         }
 
@@ -99,12 +101,12 @@ public final class CommandService {
 
 
 
-    private CommandSpec createHelpCommand(Command command, HelpCommand annotation) {
-        CommandSpec.Builder helpSpec = CommandSpec.builder();
-        if (command.children.size() == 0) return null;
+    private CommandExecutor createHelpCommand(Command command, HelpCommand annotation) {
+        // If command has no children, just return the command's spec
+        if (command.children.size() == 0) return command.spec.getExecutor();
 
         List<Text> help = command.children.stream()
-                .map(child -> getHelpFor(child, annotation))
+                .map(child -> getHelpFor(child, annotation, command.getAliases()[0]))
                 .collect(Collectors.toList());
 
         PaginationList helpList = PaginationList.builder()
@@ -113,28 +115,29 @@ public final class CommandService {
                 .contents(help)
                 .build();
 
-        CommandExecutor helpExecutor = (src, args) -> {
+        return (src, args) -> {
             helpList.sendTo(src);
             return CommandResult.success();
         };
-        helpSpec.executor(helpExecutor);
-        return helpSpec.build();
     }
 
-    private Text getHelpFor(Command command, HelpCommand annotation) {
+    private Text getHelpFor(Command command, HelpCommand annotation, String base) {
         Text.Builder help = Text.builder();
 
         // If there's a provided prefix, use that + a space
-        String base = "";
+        String prefix = "";
         if (!annotation.prefix().isEmpty()) {
-            base = annotation.prefix() + " ";
+            prefix = annotation.prefix() + " ";
         }
 
-        help.append(Text.of(GOLD, "/", base, command.aliases[0], " "));
+        Text commandText = Text.of(GOLD, "/" + prefix + base + " " + command.aliases[0]);
+        help.append(commandText)
+            .onClick(TextActions.suggestCommand(commandText.toPlain()))
+            .onHover(TextActions.showText(Text.of(commandText)));
 
         // Don't want to spam the message with a bunch of sub-commands
         if (command.getChildren().size() == 0) {
-            help.append(command.getSpec().getUsage(console()));
+            help.append(Text.of(" ", command.getSpec().getUsage(console())));
         }
 
         command.getSpec().getShortDescription(console()).ifPresent(desc -> {
@@ -218,5 +221,4 @@ public final class CommandService {
                     + " command class is both a parent ( Annotated with @Children ) and a ParameterizedCommand. Parent command ought not to have parameters.");
         }
     }
-
 }
