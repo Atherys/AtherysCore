@@ -38,11 +38,13 @@ public class CachedHibernateRepository<T extends Identifiable<ID>, ID extends Se
     @Override
     public void saveOne(T entity) {
         cache.add(entity);
+        super.saveOne(entity);
     }
 
     @Override
     public void saveAll(Collection<T> entities) {
         cache.addAll(entities);
+        super.saveAll(entities);
     }
 
     @Override
