@@ -87,15 +87,14 @@ public final class CommandService {
 
         Command com = new Command(commandSpec, children, aliases);
 
-        if (commandClass.isAnnotationPresent(HelpCommand.class)) {
-            HelpCommand help = commandClass.getAnnotation(HelpCommand.class);
+        getAnnotation(commandClass, HelpCommand.class).ifPresent(help -> {
             CommandExecutor helpCommand = createHelpCommand(com, help);
             if (help.command().isEmpty()) {
                 spec.executor(helpCommand);
             } else {
                 String permission = getAnnotation(commandClass, Permission.class)
                         .map(Permission::value)
-                        .orElse("");
+                        .orElse(null);
                 CommandSpec helpSpec = CommandSpec.builder()
                         .executor(helpCommand)
                         .permission(permission)
@@ -103,7 +102,7 @@ public final class CommandService {
                 spec.child(helpSpec, help.command());
             }
             com.spec = spec.build();
-        }
+        });
 
         return com;
     }
