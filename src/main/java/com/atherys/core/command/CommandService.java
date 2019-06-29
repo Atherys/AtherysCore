@@ -13,8 +13,10 @@ import static org.spongepowered.api.text.format.TextColors.*;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextStyles;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public final class CommandService {
@@ -41,16 +43,14 @@ public final class CommandService {
         CommandSpec.Builder spec = CommandSpec.builder();
 
         // set description
-        if (commandClass.isAnnotationPresent(Description.class)) {
-            String description = commandClass.getAnnotation(Description.class).value();
-            spec.description(Text.of(description));
-        }
+        getAnnotation(commandClass, Description.class).ifPresent(description -> {
+            spec.description(Text.of(description.value()));
+        });
 
         // set permission
-        if (commandClass.isAnnotationPresent(Permission.class)) {
-            String permission = commandClass.getAnnotation(Permission.class).value();
-            spec.permission(permission);
-        }
+        getAnnotation(commandClass, Permission.class).ifPresent(permission -> {
+            spec.permission(permission.value());
+        });
 
         List<Command> children = new ArrayList<>();
         // set children
@@ -82,24 +82,35 @@ public final class CommandService {
             spec.arguments(parameterizedCommand.getArguments());
         }
 
-
         spec.executor(command);
         CommandSpec commandSpec = spec.build();
 
         Command com = new Command(commandSpec, children, aliases);
 
         if (commandClass.isAnnotationPresent(HelpCommand.class)) {
-            CommandExecutor helpCommand = createHelpCommand(
-                    com,
-                    commandClass.getAnnotation(HelpCommand.class));
-            spec.executor(helpCommand);
+            HelpCommand help = commandClass.getAnnotation(HelpCommand.class);
+            CommandExecutor helpCommand = createHelpCommand(com, help);
+            if (help.command().isEmpty()) {
+                spec.executor(helpCommand);
+            } else {
+                String permission = getAnnotation(commandClass, Permission.class)
+                        .map(Permission::value)
+                        .orElse("");
+                CommandSpec helpSpec = CommandSpec.builder()
+                        .executor(helpCommand)
+                        .permission(permission)
+                        .build();
+                spec.child(helpSpec, help.command());
+            }
             com.spec = spec.build();
         }
 
         return com;
     }
 
-
+    private static <A extends Annotation> Optional<A> getAnnotation(Class clazz, Class<A> annotation) {
+        return Optional.ofNullable((A) clazz.getAnnotation(annotation));
+    }
 
     private CommandExecutor createHelpCommand(Command command, HelpCommand annotation) {
         // If command has no children, just return the command's spec

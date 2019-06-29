@@ -8,10 +8,20 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface HelpCommand {
+
+    /**
+     * The title for the help command.
+     */
     String title();
 
     /**
-     * For use with sub-commands.
+     * For use with child commands.
      */
     String prefix() default "";
+
+    /**
+     * The child command alias to use instead. For instance, "help". If left blank, no child
+     * command will be generated.
+     */
+    String command() default "";
 }
