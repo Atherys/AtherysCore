@@ -91,7 +91,7 @@ public class AtherysCore {
         entityManagerFactory.close();
     }
 
-    @Listener(order = Order.EARLY)
+    @Listener(order = Order.FIRST)
     public void onInit(GameInitializationEvent event) {
         init();
     }
