@@ -24,10 +24,16 @@ public final class UserUtils {
     public static Optional<? extends User> getUser(UUID uuid) {
         Optional<Player> onlinePlayer = Sponge.getServer().getPlayer(uuid);
 
-        if (onlinePlayer.isPresent()) {
-            return onlinePlayer;
-        }
-        return userStorage.get(uuid);
+        return onlinePlayer.isPresent() ? onlinePlayer : userStorage.get(uuid);
+    }
+
+    /**
+     * @param name the name of the player
+     */
+    public static Optional<? extends User> getUser(String name) {
+        Optional<? extends User> onlinePlayer = Sponge.getServer().getPlayer(name);
+
+        return onlinePlayer.isPresent() ? onlinePlayer : userStorage.get(name);
     }
 
 }
