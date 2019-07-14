@@ -29,7 +29,7 @@ public class EntityUtils {
                 .findFirst();
     }
 
-    public static Optional<Player> playerKilledEntity(EntityDamageSource source) {
+    public static Optional<Player> playerAttackedEntity(EntityDamageSource source) {
         if (source.getSource() instanceof Player) {
             return Optional.of((Player) source.getSource());
         }
