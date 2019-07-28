@@ -77,14 +77,9 @@ public class AtherysCore {
 
         Sponge.getEventManager().post(new AtherysHibernateInitializedEvent(entityManagerFactory));
 
-        init = true;
-    }
-
-    private void start() {
         this.economyService = Sponge.getServiceManager().provide(EconomyService.class).orElse(null);
-    }
 
-    private void stop() {
+        init = true;
     }
 
     private void stopped() {
@@ -94,20 +89,6 @@ public class AtherysCore {
     @Listener(order = Order.FIRST)
     public void onInit(GameInitializationEvent event) {
         init();
-    }
-
-    @Listener
-    public void onStart(GameStartingServerEvent event) {
-        if (init) {
-            start();
-        }
-    }
-
-    @Listener
-    public void onStop(GameStoppingServerEvent event) {
-        if (init) {
-            stop();
-        }
     }
 
     @Listener
