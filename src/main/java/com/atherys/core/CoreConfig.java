@@ -11,6 +11,9 @@ public class CoreConfig extends PluginConfig {
     @Setting("is-default")
     public boolean IS_DEFAULT = true;
 
+    @Setting("db-enabled")
+    public boolean DB_ENABLED = true;
+
     @Setting("jpa")
     public JPAConfig JPA_CONFIG = new JPAConfig();
 

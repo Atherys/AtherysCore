@@ -73,9 +73,11 @@ public class AtherysCore {
             e.printStackTrace();
         }
 
-        entityManagerFactory = createEntityManagerFactory(coreConfig.JPA_CONFIG);
+        if (coreConfig.DB_ENABLED) {
+            entityManagerFactory = createEntityManagerFactory(coreConfig.JPA_CONFIG);
 
-        Sponge.getEventManager().post(new AtherysHibernateInitializedEvent(entityManagerFactory));
+            Sponge.getEventManager().post(new AtherysHibernateInitializedEvent(entityManagerFactory));
+        }
 
         this.economyService = Sponge.getServiceManager().provide(EconomyService.class).orElse(null);
 
@@ -83,7 +85,9 @@ public class AtherysCore {
     }
 
     private void stopped() {
-        entityManagerFactory.close();
+        if (coreConfig.DB_ENABLED) {
+            entityManagerFactory.close();
+        }
     }
 
     @Listener(order = Order.FIRST)
@@ -97,7 +101,6 @@ public class AtherysCore {
             stopped();
         }
     }
-
 
     protected static EntityManagerFactory createEntityManagerFactory(JPAConfig config) {
         MetadataSources metadataSources = new MetadataSources(configureServiceRegistry(config));
