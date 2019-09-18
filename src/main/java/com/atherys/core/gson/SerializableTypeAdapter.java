@@ -26,7 +26,6 @@ public class SerializableTypeAdapter<T extends DataSerializable> extends Abstrac
         try {
             DataView view = DataFormats.JSON.read(json.toString());
             Optional<T> object = view.getSerializable(DataQuery.of(), clazz);
-            AtherysCore.getInstance().getLogger().info("" + object.isPresent());
             return object.orElse(null);
         } catch (IOException e) {
             AtherysCore.getInstance().getLogger().info("Error deserializing type {}", typeOfT); // DEBUG
@@ -38,7 +37,6 @@ public class SerializableTypeAdapter<T extends DataSerializable> extends Abstrac
     public JsonElement serialize(T src, Type typeOfSrc, JsonSerializationContext context) {
         try {
             String json = DataFormats.JSON.write(src.toContainer());
-            AtherysCore.getInstance().getLogger().info("Write: " + json); // DEBUG
             return parser.parse(json);
         } catch (IOException e) {
             AtherysCore.getInstance().getLogger().info("Error serializing type {}", typeOfSrc); // DEBUG

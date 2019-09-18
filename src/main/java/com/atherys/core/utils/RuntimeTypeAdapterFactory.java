@@ -186,7 +186,6 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
         final Map<Class<?>, TypeAdapter<?>> subtypeToDelegate
                 = new LinkedHashMap<>();
         for (Map.Entry<String, Class<?>> entry : labelToSubtype.entrySet()) {
-            AtherysCore.getInstance().getLogger().info("Loading subtype {}", entry.getKey());
             TypeAdapter<?> delegate = gson.getDelegateAdapter(this, TypeToken.get(entry.getValue()));
             labelToDelegate.put(entry.getKey(), delegate);
             subtypeToDelegate.put(entry.getValue(), delegate);
