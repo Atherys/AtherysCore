@@ -4,6 +4,7 @@ import com.atherys.core.AtherysCore;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.account.Account;
+import org.spongepowered.api.service.economy.account.UniqueAccount;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -52,7 +53,7 @@ public final class Economy {
         return AtherysCore.getEconomyService().flatMap(econ -> econ.getOrCreateAccount(account));
     }
 
-    private static Optional<? extends Account> getAccount(UUID account) {
+    private static Optional<UniqueAccount> getAccount(UUID account) {
         return AtherysCore.getEconomyService().flatMap(econ -> econ.getOrCreateAccount(account));
     }
 
