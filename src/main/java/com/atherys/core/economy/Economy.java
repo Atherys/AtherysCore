@@ -5,6 +5,7 @@ import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
+import org.spongepowered.api.service.economy.transaction.TransferResult;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -16,32 +17,40 @@ public final class Economy {
         return AtherysCore.getEconomyService().isPresent();
     }
 
-    public static void transferCurrency(UUID source, UUID destination, Currency currency, BigDecimal amount, Cause cause) {
-        getAccount(source).ifPresent(sourceAccount -> getAccount(destination).ifPresent(destinationAccount -> {
-            transfer(sourceAccount, destinationAccount, currency, amount, cause);
-        }));
+    public Optional<TransferResult> transferCurrency(UUID source, UUID destination, Currency currency, BigDecimal amount, Cause cause) {
+        return getAccount(source).flatMap(sourceAccount -> {
+            return getAccount(destination).map(destinationAccount -> {
+                return transfer(sourceAccount, destinationAccount, currency, amount, cause);
+            });
+        });
     }
 
-    public static void transferCurrency(UUID source, String destination, Currency currency, BigDecimal amount, Cause cause) {
-        getAccount(source).ifPresent(sourceAccount -> getAccount(destination).ifPresent(destinationAccount -> {
-            transfer(sourceAccount, destinationAccount, currency, amount, cause);
-        }));
+    public static Optional<TransferResult> transferCurrency(UUID source, String destination, Currency currency, BigDecimal amount, Cause cause) {
+        return getAccount(source).flatMap(sourceAccount -> {
+            return getAccount(destination).map(destinationAccount -> {
+                return transfer(sourceAccount, destinationAccount, currency, amount, cause);
+            });
+        });
     }
 
-    public static void transferCurrency(String source, UUID destination, Currency currency, BigDecimal amount, Cause cause) {
-        getAccount(source).ifPresent(sourceAccount -> getAccount(destination).ifPresent(destinationAccount -> {
-            transfer(sourceAccount, destinationAccount, currency, amount, cause);
-        }));
+    public static Optional<TransferResult> transferCurrency(String source, UUID destination, Currency currency, BigDecimal amount, Cause cause) {
+        return getAccount(source).flatMap(sourceAccount -> {
+            return getAccount(destination).map(destinationAccount -> {
+                return transfer(sourceAccount, destinationAccount, currency, amount, cause);
+            });
+        });
     }
 
-    public static void transferCurrency(String source, String destination, Currency currency, BigDecimal amount, Cause cause) {
-        getAccount(source).ifPresent(sourceAccount -> getAccount(destination).ifPresent(destinationAccount -> {
-            transfer(sourceAccount, destinationAccount, currency, amount, cause);
-        }));
+    public static Optional<TransferResult> transferCurrency(String source, String destination, Currency currency, BigDecimal amount, Cause cause) {
+        return getAccount(source).flatMap(sourceAccount -> {
+            return getAccount(destination).map(destinationAccount -> {
+                return transfer(sourceAccount, destinationAccount, currency, amount, cause);
+            });
+        });
     }
 
-    private static void transfer(Account source, Account destination, Currency currency, BigDecimal amount, Cause cause) {
-        source.transfer(
+    private static TransferResult transfer(Account source, Account destination, Currency currency, BigDecimal amount, Cause cause) {
+        return source.transfer(
                 destination,
                 currency,
                 amount,
