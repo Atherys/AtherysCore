@@ -17,7 +17,7 @@ public final class Economy {
         return AtherysCore.getEconomyService().isPresent();
     }
 
-    public Optional<TransferResult> transferCurrency(UUID source, UUID destination, Currency currency, BigDecimal amount, Cause cause) {
+    public static Optional<TransferResult> transferCurrency(UUID source, UUID destination, Currency currency, BigDecimal amount, Cause cause) {
         return getAccount(source).flatMap(sourceAccount -> {
             return getAccount(destination).map(destinationAccount -> {
                 return transfer(sourceAccount, destinationAccount, currency, amount, cause);
