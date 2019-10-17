@@ -3,6 +3,7 @@ package com.atherys.core.utils;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.effect.Viewer;
 import org.spongepowered.api.effect.sound.SoundCategory;
+import org.spongepowered.api.effect.sound.SoundCategories;
 import org.spongepowered.api.effect.sound.SoundType;
 
 public class Sound {
@@ -50,8 +51,8 @@ public class Sound {
     }
 
     public static class Builder {
-        private SoundCategory category;
         private SoundType type;
+        private SoundCategory category = SoundCategories.MASTER;
         private double minVolume = 1;
         private double pitch = 1;
         private double volume = 1;
