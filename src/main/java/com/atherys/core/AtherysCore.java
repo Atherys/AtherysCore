@@ -141,6 +141,10 @@ public class AtherysCore {
         return logger;
     }
 
+    public static CoreConfig getConfig() {
+        return getInstance().coreConfig;
+    }
+
     public static AtherysCore getInstance() {
         return instance;
     }
