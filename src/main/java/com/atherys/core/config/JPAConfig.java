@@ -1,4 +1,4 @@
-package com.atherys.core.db;
+package com.atherys.core.config;
 
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;

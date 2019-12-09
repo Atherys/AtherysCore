@@ -1,7 +1,7 @@
 package com.atherys.core;
 
 import com.atherys.core.command.CommandService;
-import com.atherys.core.db.JPAConfig;
+import com.atherys.core.config.JPAConfig;
 import com.atherys.core.event.AtherysHibernateConfigurationEvent;
 import com.atherys.core.event.AtherysHibernateInitializedEvent;
 import com.atherys.core.template.TemplateEngine;
@@ -17,6 +17,7 @@ import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
+import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
@@ -50,6 +51,8 @@ public class AtherysCore {
 
     private EntityManagerFactory entityManagerFactory;
 
+    private Jedis jedis;
+
     private TemplateEngine templateEngine;
 
     private EconomyService economyService;
@@ -78,6 +81,13 @@ public class AtherysCore {
         }
 
         this.economyService = Sponge.getServiceManager().provide(EconomyService.class).orElse(null);
+
+        if (coreConfig.CACHE_CONFIG.IS_REDIS_ENABLED) {
+            this.jedis = new Jedis(
+                    coreConfig.CACHE_CONFIG.REDIS_ADDRESS,
+                    coreConfig.CACHE_CONFIG.REDIS_PORT
+            );
+        }
 
         init = true;
     }
@@ -159,5 +169,9 @@ public class AtherysCore {
 
     public static Optional<EconomyService> getEconomyService() {
         return Optional.ofNullable(getInstance().economyService);
+    }
+
+    public static Optional<Jedis> getJedis() {
+        return Optional.ofNullable(getInstance().jedis);
     }
 }
