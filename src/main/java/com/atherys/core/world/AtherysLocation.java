@@ -7,6 +7,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -149,5 +150,41 @@ public class AtherysLocation {
                 chunkPosition,
                 biomePosition
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AtherysLocation that = (AtherysLocation) o;
+        return Objects.equals(worldUuid, that.worldUuid) &&
+                Objects.equals(position, that.position) &&
+                Objects.equals(blockPosition, that.blockPosition) &&
+                Objects.equals(chunkPosition, that.chunkPosition) &&
+                Objects.equals(biomePosition, that.biomePosition);
+    }
+
+    public boolean equals(Location<World> location) {
+        return Objects.equals(location.getExtent().getUniqueId(), this.worldUuid) &&
+                Objects.equals(location.getPosition(), this.position) &&
+                Objects.equals(location.getBlockPosition(), this.blockPosition) &&
+                Objects.equals(location.getChunkPosition(), this.chunkPosition) &&
+                Objects.equals(location.getBiomePosition(), this.biomePosition);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(worldUuid, position, blockPosition, chunkPosition, biomePosition);
+    }
+
+    @Override
+    public String toString() {
+        return "AtherysLocation{" +
+                "worldUuid=" + worldUuid +
+                ", position=" + position +
+                ", blockPosition=" + blockPosition +
+                ", chunkPosition=" + chunkPosition +
+                ", biomePosition=" + biomePosition +
+                '}';
     }
 }
