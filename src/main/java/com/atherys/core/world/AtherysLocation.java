@@ -36,9 +36,6 @@ public class AtherysLocation {
         );
     }
 
-    public AtherysLocation() {
-    }
-
     private AtherysLocation(UUID worldUuid, Vector3d position, Vector3i blockPosition, Vector3i chunkPosition, Vector3i biomePosition) {
         this.worldUuid = worldUuid;
         this.position = position;
