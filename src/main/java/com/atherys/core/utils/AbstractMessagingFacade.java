@@ -12,7 +12,7 @@ public abstract class AbstractMessagingFacade {
     private Text prefix;
 
     public AbstractMessagingFacade(String prefix) {
-        this.prefix = Text.of(GOLD, "[", DARK_GREEN, prefix, GOLD, "]");
+        this.prefix = Text.of(GOLD, "[", DARK_GREEN, prefix, GOLD, "] ");
     }
 
     public Text formatInfo(Object... message) {
