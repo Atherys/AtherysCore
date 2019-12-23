@@ -30,17 +30,17 @@ public class EntityUtils {
     }
 
     public static Optional<Player> playerAttackedEntity(EntityDamageSource source) {
-        if (source.getSource() instanceof Player) {
-            return Optional.of((Player) source.getSource());
-        }
+        Entity root = getRootEntity(source);
 
+        return root instanceof Player ? Optional.of((Player) root) : Optional.empty();
+    }
+
+    public static Entity getRootEntity(EntityDamageSource source) {
         if (source instanceof IndirectEntityDamageSource) {
             IndirectEntityDamageSource indirect = (IndirectEntityDamageSource) source;
-            if (indirect.getIndirectSource() instanceof Player) {
-                return Optional.of((Player) indirect.getIndirectSource());
-            }
+            return indirect.getIndirectSource();
         }
 
-        return Optional.empty();
+        return source.getSource();
     }
 }
