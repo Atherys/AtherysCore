@@ -1,5 +1,6 @@
 package com.atherys.core;
 
+import com.atherys.core.combat.CombatLog;
 import com.atherys.core.command.CommandService;
 import com.atherys.core.db.JPAConfig;
 import com.atherys.core.event.AtherysHibernateConfigurationEvent;
@@ -10,8 +11,13 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.entity.DamageEntityEvent;
+import org.spongepowered.api.event.entity.DestructEntityEvent;
+import org.spongepowered.api.event.filter.Getter;
+import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
@@ -54,6 +60,8 @@ public class AtherysCore {
 
     private EconomyService economyService;
 
+    private CombatLog combatLog;
+
     private void init() {
         instance = this;
         this.templateEngine = new TemplateEngine();
@@ -79,6 +87,9 @@ public class AtherysCore {
 
         this.economyService = Sponge.getServiceManager().provide(EconomyService.class).orElse(null);
 
+        this.combatLog = new CombatLog();
+        combatLog.init();
+
         init = true;
     }
 
@@ -98,6 +109,16 @@ public class AtherysCore {
         if (init) {
             stopped();
         }
+    }
+
+    @Listener
+    public void onPlayerDamage(DamageEntityEvent event, @Root Player attacker, @Getter("getTargetEntity") Player victim) {
+        combatLog.initiateCombat(attacker, victim);
+    }
+
+    @Listener
+    public void onPlayerDeath(DestructEntityEvent.Death event, @Root Player attacker, @Getter("getTargetEntity") Player victim) {
+        combatLog.endCombat(attacker, victim);
     }
 
     protected static EntityManagerFactory createEntityManagerFactory(JPAConfig config) {
@@ -155,6 +176,10 @@ public class AtherysCore {
 
     public static TemplateEngine getTemplateEngine() {
         return getInstance().templateEngine;
+    }
+
+    public static CombatLog getCombatLog() {
+        return getInstance().combatLog;
     }
 
     public static Optional<EconomyService> getEconomyService() {
