@@ -5,7 +5,7 @@ plugins {
 
 group 'com.atherys'
 
-version '1.17.0'
+version '1.17.1'
 
 dependencies {
     compile 'org.hibernate:hibernate-core:5.3.7.Final'
