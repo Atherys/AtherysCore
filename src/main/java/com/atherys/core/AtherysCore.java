@@ -6,14 +6,17 @@ import com.atherys.core.db.JPAConfig;
 import com.atherys.core.event.AtherysHibernateConfigurationEvent;
 import com.atherys.core.event.AtherysHibernateInitializedEvent;
 import com.atherys.core.template.TemplateEngine;
+import com.atherys.core.utils.EntityUtils;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.filter.Getter;
@@ -112,8 +115,14 @@ public class AtherysCore {
     }
 
     @Listener
-    public void onPlayerDamage(DamageEntityEvent event, @Root Player attacker, @Getter("getTargetEntity") Player victim) {
-        combatLog.initiateCombat(attacker, victim);
+    public void onPlayerDamage(DamageEntityEvent event, @Root EntityDamageSource source, @Getter("getTargetEntity") Player victim) {
+        Entity rootEntity = EntityUtils.getRootEntity(source);
+
+        if (!(rootEntity instanceof Player)) {
+            return;
+        }
+
+        combatLog.initiateCombat((Player) rootEntity, victim);
     }
 
     @Listener
