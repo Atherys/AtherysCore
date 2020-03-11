@@ -115,18 +115,17 @@ public final class CommandService {
         // If command has no children, just return the command's spec
         if (command.children.size() == 0) return command.spec.getExecutor();
 
-        List<Text> help = command.children.stream()
-                .map(child -> getHelpFor(child, annotation, command.getAliases()[0]))
-                .collect(Collectors.toList());
-
-        PaginationList helpList = PaginationList.builder()
+        PaginationList.Builder helpList = PaginationList.builder()
                 .title(Text.of(GOLD, TextStyles.BOLD, annotation.title()))
-                .padding(Text.of(DARK_GRAY, "="))
-                .contents(help)
-                .build();
+                .padding(Text.of(DARK_GRAY, "="));
 
         return (src, args) -> {
-            helpList.sendTo(src);
+            List<Text> help = command.children.stream()
+                    .filter(c -> c.getSpec().testPermission(src))
+                    .map(child -> getHelpFor(child, annotation, command.getAliases()[0]))
+                    .collect(Collectors.toList());
+
+            helpList.contents(help).sendTo(src);
             return CommandResult.success();
         };
     }
