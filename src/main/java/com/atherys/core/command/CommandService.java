@@ -1,6 +1,7 @@
 package com.atherys.core.command;
 
 import com.atherys.core.command.annotation.*;
+import com.google.common.collect.Lists;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.source.ConsoleSource;
@@ -120,7 +121,10 @@ public final class CommandService {
                 .padding(Text.of(DARK_GRAY, "="));
 
         return (src, args) -> {
-            List<Text> help = command.children.stream()
+            List<Command> commands = Lists.newArrayList(command);
+            commands.addAll(command.children);
+
+            List<Text> help =  commands.stream()
                     .filter(c -> c.getSpec().testPermission(src))
                     .map(child -> getHelpFor(child, annotation, command.getAliases()[0]))
                     .collect(Collectors.toList());
