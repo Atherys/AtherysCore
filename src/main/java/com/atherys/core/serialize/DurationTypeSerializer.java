@@ -47,7 +47,7 @@ public class DurationTypeSerializer implements TypeSerializer<Duration> {
             }
         }
 
-        return Duration.parse(val);
+        return result;
     }
 
     @Override
