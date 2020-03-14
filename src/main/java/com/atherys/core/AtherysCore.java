@@ -5,8 +5,11 @@ import com.atherys.core.command.CommandService;
 import com.atherys.core.db.JPAConfig;
 import com.atherys.core.event.AtherysHibernateConfigurationEvent;
 import com.atherys.core.event.AtherysHibernateInitializedEvent;
+import com.atherys.core.serialize.DurationTypeSerializer;
 import com.atherys.core.template.TemplateEngine;
 import com.atherys.core.utils.EntityUtils;
+import com.google.common.reflect.TypeToken;
+import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
@@ -30,6 +33,7 @@ import org.spongepowered.api.service.economy.EconomyService;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +72,8 @@ public class AtherysCore {
     private void init() {
         instance = this;
         this.templateEngine = new TemplateEngine();
+
+        TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(Duration.class), new DurationTypeSerializer());
 
         try {
             coreConfig = new CoreConfig();
