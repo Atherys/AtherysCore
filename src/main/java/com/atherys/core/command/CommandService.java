@@ -4,6 +4,7 @@ import com.atherys.core.command.annotation.*;
 import com.google.common.collect.Lists;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
@@ -15,9 +16,8 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextStyles;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class CommandService {
@@ -120,21 +120,33 @@ public final class CommandService {
                 .title(Text.of(GOLD, TextStyles.BOLD, annotation.title()))
                 .padding(Text.of(DARK_GRAY, "="));
 
-        return (src, args) -> {
-            List<Command> commands = Lists.newArrayList(command);
-            commands.addAll(command.children);
+        Map<Command, Text> helpText = new LinkedHashMap<>();
+        helpText.put(command, getHelpForBase(command, annotation));
 
-            List<Text> help =  commands.stream()
-                    .filter(c -> c.getSpec().testPermission(src))
-                    .map(child -> getHelpFor(child, annotation, command.getAliases()[0]))
+        for (Command child : command.children) {
+            helpText.put(child, getHelpForSub(child, annotation, command.aliases[0]));
+        }
+
+        return (src, args) -> {
+            List<Text> filtered = helpText.entrySet().stream()
+                    .filter(entry -> entry.getKey().getSpec().testPermission(src))
+                    .map(Map.Entry::getValue)
                     .collect(Collectors.toList());
 
-            helpList.contents(help).sendTo(src);
+            helpList.contents(filtered).sendTo(src);
             return CommandResult.success();
         };
     }
 
-    private Text getHelpFor(Command command, HelpCommand annotation, String base) {
+    private Text getHelpForBase(Command command, HelpCommand annotation) {
+        return getHelpFor(command, annotation, command.aliases[0], "");
+    }
+
+    private Text getHelpForSub(Command command, HelpCommand annotation, String base) {
+        return getHelpFor(command, annotation, base + " ", command.aliases[0]);
+    }
+
+    private Text getHelpFor(Command command, HelpCommand annotation, String base, String alias) {
         Text.Builder help = Text.builder();
 
         // If there's a provided prefix, use that + a space
@@ -143,7 +155,7 @@ public final class CommandService {
             prefix = annotation.prefix() + " ";
         }
 
-        Text commandText = Text.of(GOLD, "/" + prefix + base + " " + command.aliases[0]);
+        Text commandText = Text.of(GOLD, "/" + prefix + base + alias);
         help.append(commandText)
             .onClick(TextActions.suggestCommand(commandText.toPlain()))
             .onHover(TextActions.showText(Text.of(commandText)));
