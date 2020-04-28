@@ -2,6 +2,7 @@ package com.atherys.core;
 
 import com.atherys.core.combat.CombatLog;
 import com.atherys.core.command.CommandService;
+import com.atherys.core.db.DatabaseContext;
 import com.atherys.core.db.JPAConfig;
 import com.atherys.core.event.AtherysHibernateConfigurationEvent;
 import com.atherys.core.event.AtherysHibernateInitializedEvent;
@@ -12,6 +13,7 @@ import com.google.common.reflect.TypeToken;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.dialect.Database;
 import org.hibernate.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -68,6 +70,8 @@ public class AtherysCore {
     private EconomyService economyService;
 
     private CombatLog combatLog;
+
+    private DatabaseContext databaseContext;
 
     private void init() {
         instance = this;
@@ -136,39 +140,6 @@ public class AtherysCore {
         combatLog.endCombat(attacker, victim);
     }
 
-    protected static EntityManagerFactory createEntityManagerFactory(JPAConfig config) {
-        MetadataSources metadataSources = new MetadataSources(configureServiceRegistry(config));
-
-        addClasses(metadataSources);
-
-        return metadataSources.buildMetadata()
-                .getSessionFactoryBuilder()
-                .build();
-    }
-
-    protected static ServiceRegistry configureServiceRegistry(JPAConfig config) {
-        return new StandardServiceRegistryBuilder()
-                .applySettings(getProperties(config))
-                .build();
-    }
-
-    protected static Properties getProperties(JPAConfig config) {
-        Properties properties = new Properties();
-
-        config.HIBERNATE.forEach(properties::setProperty);
-
-        return properties;
-    }
-
-    protected static void addClasses(MetadataSources metadataSources) {
-        List<Class<?>> classes = new LinkedList<>();
-
-        AtherysHibernateConfigurationEvent event = new AtherysHibernateConfigurationEvent(classes);
-        Sponge.getEventManager().post(event);
-
-        classes.forEach(metadataSources::addAnnotatedClass);
-    }
-
     public static CommandService getCommandService() {
         return CommandService.getInstance();
     }
@@ -195,6 +166,10 @@ public class AtherysCore {
 
     public static CombatLog getCombatLog() {
         return getInstance().combatLog;
+    }
+
+    public static DatabaseContext getDatabaseContext() {
+        return getInstance().databaseContext;
     }
 
     public static Optional<EconomyService> getEconomyService() {
