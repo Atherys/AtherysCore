@@ -36,10 +36,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static com.atherys.core.AtherysCore.*;
 
@@ -62,8 +60,6 @@ public class AtherysCore {
     PluginContainer container;
 
     private CoreConfig coreConfig;
-
-    private EntityManagerFactory entityManagerFactory;
 
     private TemplateEngine templateEngine;
 
@@ -93,9 +89,7 @@ public class AtherysCore {
         }
 
         if (coreConfig.DB_ENABLED) {
-            entityManagerFactory = createEntityManagerFactory(coreConfig.JPA_CONFIG);
-
-            Sponge.getEventManager().post(new AtherysHibernateInitializedEvent(entityManagerFactory));
+            databaseContext = new DatabaseContext(coreConfig.JPA_CONFIG, logger);
         }
 
         this.economyService = Sponge.getServiceManager().provide(EconomyService.class).orElse(null);
@@ -108,7 +102,7 @@ public class AtherysCore {
 
     private void stopped() {
         if (coreConfig.DB_ENABLED) {
-            entityManagerFactory.close();
+            databaseContext.close();
         }
     }
 
@@ -157,7 +151,7 @@ public class AtherysCore {
     }
 
     public static EntityManagerFactory getEntityManagerFactory() {
-        return getInstance().entityManagerFactory;
+        return getDatabaseContext().getEntityManagerFactory();
     }
 
     public static TemplateEngine getTemplateEngine() {

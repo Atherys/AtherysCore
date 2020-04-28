@@ -1,10 +1,12 @@
 package com.atherys.core.db;
 
+import com.atherys.core.db.migration.DatabaseMigrator;
 import com.atherys.core.event.AtherysHibernateConfigurationEvent;
-import com.google.inject.Singleton;
+import com.atherys.core.event.AtherysHibernateInitializedEvent;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
+import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 
 import javax.persistence.EntityManagerFactory;
@@ -12,28 +14,44 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
-public class DatabaseContext {
+public class DatabaseContext implements AutoCloseable {
 
-    public DatabaseContext() {
+    private JPAConfig config;
+
+    private EntityManagerFactory entityManagerFactory;
+
+    public DatabaseContext(JPAConfig config, Logger logger) {
+        this.config = config;
+
+        DatabaseMigrator migrator = new DatabaseMigrator(config, logger);
+        migrator.migrate();
+
+        createEntityManagerFactory();
     }
 
-    public EntityManagerFactory createEntityManagerFactory(JPAConfig config) {
+    public EntityManagerFactory getEntityManagerFactory() {
+        return entityManagerFactory;
+    }
+
+    private void createEntityManagerFactory() {
         MetadataSources metadataSources = new MetadataSources(configureServiceRegistry(config));
 
         addClasses(metadataSources);
 
-        return metadataSources.buildMetadata()
+        entityManagerFactory = metadataSources.buildMetadata()
                 .getSessionFactoryBuilder()
                 .build();
+
+        Sponge.getEventManager().post(new AtherysHibernateInitializedEvent(entityManagerFactory));
     }
 
-    public ServiceRegistry configureServiceRegistry(JPAConfig config) {
+    private ServiceRegistry configureServiceRegistry(JPAConfig config) {
         return new StandardServiceRegistryBuilder()
                 .applySettings(getProperties(config))
                 .build();
     }
 
-    public Properties getProperties(JPAConfig config) {
+    private Properties getProperties(JPAConfig config) {
         Properties properties = new Properties();
 
         config.HIBERNATE.forEach(properties::setProperty);
@@ -41,7 +59,7 @@ public class DatabaseContext {
         return properties;
     }
 
-    public void addClasses(MetadataSources metadataSources) {
+    private void addClasses(MetadataSources metadataSources) {
         List<Class<?>> classes = new LinkedList<>();
 
         AtherysHibernateConfigurationEvent event = new AtherysHibernateConfigurationEvent(classes);
@@ -50,4 +68,10 @@ public class DatabaseContext {
         classes.forEach(metadataSources::addAnnotatedClass);
     }
 
+    @Override
+    public void close() {
+        if (entityManagerFactory != null ) {
+            entityManagerFactory.close();
+        }
+    }
 }
