@@ -41,8 +41,6 @@ public class DatabaseContext implements AutoCloseable {
         entityManagerFactory = metadataSources.buildMetadata()
                 .getSessionFactoryBuilder()
                 .build();
-
-        Sponge.getEventManager().post(new AtherysHibernateInitializedEvent(entityManagerFactory));
     }
 
     private ServiceRegistry configureServiceRegistry(JPAConfig config) {

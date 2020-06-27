@@ -97,6 +97,7 @@ public class AtherysCore {
         this.combatLog = new CombatLog();
         combatLog.init();
 
+        Sponge.getEventManager().post(new AtherysHibernateInitializedEvent(databaseContext.getEntityManagerFactory()));
         init = true;
     }
 
