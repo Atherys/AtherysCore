@@ -37,26 +37,26 @@ public class CachedHibernateRepository<T extends Identifiable<ID>, ID extends Se
 
     @Override
     public void saveOne(T entity) {
-        cache.add(entity);
         super.saveOne(entity);
+        cache.add(entity);
     }
 
     @Override
     public void saveAll(Collection<T> entities) {
-        cache.addAll(entities);
         super.saveAll(entities);
+        cache.addAll(entities);
     }
 
     @Override
     public void deleteOne(T entity) {
-        cache.remove(entity);
         super.deleteOne(entity);
+        cache.remove(entity);
     }
 
     @Override
     public void deleteAll(Collection<T> entities) {
-        cache.removeAll(entities);
         super.deleteAll(entities);
+        cache.removeAll(entities);
     }
 
     @Override
