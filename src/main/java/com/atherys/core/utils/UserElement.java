@@ -3,7 +3,10 @@ package com.atherys.core.utils;
 import com.google.common.collect.ImmutableMap;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.args.*;
+import org.spongepowered.api.command.args.ArgumentParseException;
+import org.spongepowered.api.command.args.CommandArgs;
+import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.service.user.UserStorageService;
@@ -19,10 +22,18 @@ import java.util.stream.Collectors;
  * A {@link User} {@link CommandElement} that only completes for online players, to avoid fetching all players.
  */
 public class UserElement extends CommandElement {
-    private static TextTemplate exception = TextTemplate.of("Input value ", TextTemplate.arg("player"), " was not a player.");
+    private static final TextTemplate exception = TextTemplate.of("Input value ", TextTemplate.arg("player"), " was not a player.");
 
     public UserElement(Text key) {
         super(key);
+    }
+
+    public static boolean startsWithIgnoreCase(String str, String prefix) {
+        return str.regionMatches(true, 0, prefix, 0, prefix.length());
+    }
+
+    private static ArgumentParseException exception(String player, CommandArgs args) {
+        return args.createError(exception.apply(ImmutableMap.of("player", player)).build());
     }
 
     @Override
@@ -45,11 +56,7 @@ public class UserElement extends CommandElement {
     public List<String> complete(CommandSource src, CommandArgs args, CommandContext context) {
         return Sponge.getGame().getServer().getOnlinePlayers().stream()
                 .map(Player::getName)
-                .filter(name -> args.nextIfPresent().map(name::startsWith).orElse(true))
+                .filter(name -> args.nextIfPresent().map(arg -> startsWithIgnoreCase(name, arg)).orElse(true))
                 .collect(Collectors.toList());
-    }
-
-    private static ArgumentParseException exception(String player, CommandArgs args) {
-        return args.createError(exception.apply(ImmutableMap.of("player", player)).build());
     }
 }
