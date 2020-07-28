@@ -61,8 +61,8 @@ public class DurationTypeSerializer implements TypeSerializer<Duration> {
             long seconds = obj.getSeconds();
             obj = obj.minusSeconds(seconds);
             long millis = obj.toMillis();
-            result = (days == 0 ? "" : days + " d") +
-                    (hours == 0 ? "" : hours + " h") +
+            result = (days == 0 ? "" : days + "d") +
+                    (hours == 0 ? "" : hours + "h") +
                     (minutes == 0 ? "" : minutes + "m") +
                     (seconds == 0 ? "" : seconds + "s") +
                     (seconds == 0 ? "" : millis + "M");
