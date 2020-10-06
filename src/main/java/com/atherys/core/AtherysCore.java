@@ -49,6 +49,8 @@ public class AtherysCore {
     public static final String DESCRIPTION = "The core utilities used on the A'therys Horizons server.";
     public static final String VERSION = "%PROJECT_VERSION%";
 
+    lmao this is invalid
+    
     private static AtherysCore instance;
 
     private static boolean init = false;
