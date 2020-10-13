@@ -27,6 +27,7 @@ import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -92,13 +93,15 @@ public class AtherysCore {
             databaseContext = new DatabaseContext(coreConfig.JPA_CONFIG, logger);
         }
 
-        this.economyService = Sponge.getServiceManager().provide(EconomyService.class).orElse(null);
-
         this.combatLog = new CombatLog();
         combatLog.init();
 
         Sponge.getEventManager().post(new AtherysHibernateInitializedEvent(databaseContext.getEntityManagerFactory()));
         init = true;
+    }
+
+    private void start() {
+        this.economyService = Sponge.getServiceManager().provide(EconomyService.class).orElse(null);
     }
 
     private void stopped() {
@@ -110,6 +113,13 @@ public class AtherysCore {
     @Listener(order = Order.FIRST)
     public void onInit(GameInitializationEvent event) {
         init();
+    }
+
+    @Listener(order = Order.LAST)
+    public void onStart(GameStartedServerEvent event) {
+        if (init) {
+            start();
+        }
     }
 
     @Listener
