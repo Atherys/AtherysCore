@@ -115,7 +115,7 @@ public class AtherysCore {
         init();
     }
 
-    @Listener(order = Order.LAST)
+    @Listener
     public void onStart(GameStartedServerEvent event) {
         if (init) {
             start();
