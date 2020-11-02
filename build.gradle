@@ -16,5 +16,5 @@ dependencies {
 }
 
 blossom {
-    replaceToken '%PLUGIN_VERSION%', project.version
+    replaceToken '%PROJECT_VERSION%', project.version
 }
