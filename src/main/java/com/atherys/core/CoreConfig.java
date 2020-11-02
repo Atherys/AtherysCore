@@ -10,9 +10,6 @@ import java.time.temporal.ChronoUnit;
 
 public class CoreConfig extends PluginConfig {
 
-    @Setting("is-default")
-    public boolean IS_DEFAULT = true;
-
     @Setting("combat-limit")
     public Duration COMBAT_LIMIT = Duration.of(30, ChronoUnit.SECONDS);
 

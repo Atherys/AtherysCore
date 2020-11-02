@@ -21,13 +21,13 @@ public final class JPAConfig {
     @Setting("hibernate")
     public Map<String,String> HIBERNATE = new HashMap<>();
     {
-        HIBERNATE.put(DRIVER_CLASS_KEY, "org.postgresql.Driver");
-        HIBERNATE.put(URL_KEY, "jdbc:postgresql://127.0.0.1:5432/atherys");
-        HIBERNATE.put(USERNAME_KEY, "postgre");
+        HIBERNATE.put(DRIVER_CLASS_KEY, "org.h2.Driver");
+        HIBERNATE.put(URL_KEY, "jdbc:h2:file:./config/atheryscore/data");
+        HIBERNATE.put(USERNAME_KEY, "sa");
         HIBERNATE.put(PASSWORD_KEY, "");
 
         HIBERNATE.put(Environment.POOL_SIZE, "10");
-        HIBERNATE.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
+        HIBERNATE.put(Environment.DIALECT, "org.hibernate.dialect.H2Dialect");
         HIBERNATE.put(Environment.SHOW_SQL, "true");
         HIBERNATE.put(Environment.HBM2DDL_AUTO, "update");
     }
