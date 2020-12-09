@@ -26,10 +26,11 @@ public final class JPAConfig {
         HIBERNATE.put(USERNAME_KEY, "sa");
         HIBERNATE.put(PASSWORD_KEY, "");
 
-        HIBERNATE.put(Environment.POOL_SIZE, "10");
+        HIBERNATE.put(Environment.POOL_SIZE, "50");
         HIBERNATE.put(Environment.DIALECT, "org.hibernate.dialect.H2Dialect");
         HIBERNATE.put(Environment.SHOW_SQL, "true");
         HIBERNATE.put(Environment.HBM2DDL_AUTO, "update");
+        HIBERNATE.put(Environment.DEFAULT_SCHEMA, "atherys");
     }
 
 }

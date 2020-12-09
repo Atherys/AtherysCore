@@ -23,8 +23,8 @@ public class DatabaseContext implements AutoCloseable {
     public DatabaseContext(JPAConfig config, Logger logger) {
         this.config = config;
 
-        //DatabaseMigrator migrator = new DatabaseMigrator(config, logger);
-        //migrator.migrate();
+        DatabaseMigrator migrator = new DatabaseMigrator(config, logger);
+        migrator.migrate();
 
         createEntityManagerFactory();
     }
