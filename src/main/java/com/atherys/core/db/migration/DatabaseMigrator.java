@@ -2,6 +2,7 @@ package com.atherys.core.db.migration;
 
 import com.atherys.core.db.JPAConfig;
 import com.atherys.core.event.AtherysDatabaseMigrationEvent;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassPathUtils;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.Location;
@@ -47,8 +48,12 @@ public class DatabaseMigrator {
                 config.HIBERNATE.get(JPAConfig.PASSWORD_KEY)
         );
 
-        AtherysDatabaseMigrationEvent event = new AtherysDatabaseMigrationEvent(cfg);
+        AtherysDatabaseMigrationEvent event = new AtherysDatabaseMigrationEvent();
         Sponge.getEventManager().post(event);
+
+        cfg.locations(
+                (String[]) event.getLocations().toArray()
+        );
 
         new Flyway(cfg).migrate();
 

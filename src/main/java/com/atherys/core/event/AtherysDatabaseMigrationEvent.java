@@ -7,19 +7,25 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.cause.Cause;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AtherysDatabaseMigrationEvent implements Event {
 
     private Cause cause;
 
-    private FluentConfiguration configuration;
+    private List<String> locations = new ArrayList<>();
 
-    public AtherysDatabaseMigrationEvent(FluentConfiguration configuration) {
+    public AtherysDatabaseMigrationEvent() {
         this.cause = Cause.builder().append(AtherysCore.getInstance()).build(Sponge.getCauseStackManager().getCurrentContext());
-        this.configuration = configuration;
     }
 
-    public FluentConfiguration getConfiguration() {
-        return configuration;
+    public void addLocation(String migrationFolderLocation) {
+        this.locations.add(migrationFolderLocation);
+    }
+
+    public List<String> getLocations() {
+        return locations;
     }
 
     @Override
