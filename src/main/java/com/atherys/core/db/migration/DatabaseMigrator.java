@@ -46,7 +46,7 @@ public class DatabaseMigrator {
         Sponge.getEventManager().post(event);
 
         event.getPluginIds().forEach(pluginId -> {
-            String location = String.format("classpath:./db/migration/%s/%s", vendor, pluginId);
+            String location = String.format("classpath:db/migration/%s/%s", pluginId, vendor);
             logger.info("Migrating " + location);
 
             FluentConfiguration cfg = new FluentConfiguration()
@@ -55,6 +55,7 @@ public class DatabaseMigrator {
                             config.HIBERNATE.get(JPAConfig.USERNAME_KEY),
                             config.HIBERNATE.get(JPAConfig.PASSWORD_KEY)
                     )
+                    .schemas(pluginId)
                     .table("flyway_schema_history_" + pluginId)
                     .locations(location);
 

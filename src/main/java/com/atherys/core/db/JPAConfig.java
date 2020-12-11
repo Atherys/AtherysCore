@@ -30,7 +30,6 @@ public final class JPAConfig {
         HIBERNATE.put(Environment.DIALECT, "org.hibernate.dialect.H2Dialect");
         HIBERNATE.put(Environment.SHOW_SQL, "true");
         HIBERNATE.put(Environment.HBM2DDL_AUTO, "update");
-        HIBERNATE.put(Environment.DEFAULT_SCHEMA, "atherys");
     }
 
 }
