@@ -6,12 +6,13 @@ plugins {
 
 group 'com.atherys'
 
-version '1.19.1'
+version '2.0.0'
 
 dependencies {
     compile 'org.hibernate:hibernate-core:5.3.7.Final'
     compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
     compile 'org.postgresql:postgresql:42.1.1'
+    compile 'org.flywaydb:flyway-core:7.3.1'
     compile ('com.github.Atherys-Horizons.TeslaPowered:TeslaLibs:v1.1.7') { transitive = false }
 }
 
