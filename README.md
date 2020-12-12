@@ -6,4 +6,4 @@ It is purely designed to provide A'thery plugins with crucial dependencies and u
 * A Database API powered by Hibernate ORM
 * GSON Utilities
 * Annotation-based Command API
-* Various Other Misc. Utilities
+* Various Other Misc. Utilitie
