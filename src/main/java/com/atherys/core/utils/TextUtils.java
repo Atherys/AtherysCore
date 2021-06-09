@@ -1,6 +1,7 @@
 package com.atherys.core.utils;
 
 import com.google.common.collect.Iterables;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.spongepowered.api.text.Text;
 
 import java.util.Arrays;
@@ -53,4 +54,25 @@ public final class TextUtils {
         return builder.build();
     }
 
+    public static Text formatDuration(long duration) {
+        String format = "H'h' m'm' s.S's'";
+
+        if (duration < 60000) {
+            format = "s.SS's'";
+        }
+
+        if (duration >= 60000 && duration < 3600000) {
+            format = "m'm' s.S's'";
+        }
+
+        if (duration >= 3600000) {
+            format = "H'h' m'm' s.S's'";
+        }
+
+        String formatted = DurationFormatUtils.formatDuration(duration, format, false);
+        // Remove the third digit after the decimal
+        formatted = new StringBuilder(formatted).deleteCharAt(formatted.length() - 2).toString();
+
+        return Text.of(formatted);
+    }
 }
