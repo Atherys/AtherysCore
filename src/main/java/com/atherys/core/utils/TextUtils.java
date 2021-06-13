@@ -58,15 +58,19 @@ public final class TextUtils {
         String format = "H'h' m'm' s.S's'";
 
         if (duration < 60000) {
-            format = "s.SS's'";
+            format = "s's'";
         }
 
         if (duration >= 60000 && duration < 3600000) {
-            format = "m'm' s.S's'";
+            format = "m'm'";
         }
 
-        if (duration >= 3600000) {
-            format = "H'h' m'm' s.S's'";
+        if (duration >= 3600000 && duration < 86400000) {
+            format = "H'h' m'm'";
+        }
+
+        if (duration >= 86400000) {
+            format = "d'd' H'h'";
         }
 
         String formatted = DurationFormatUtils.formatDuration(duration, format, false);
