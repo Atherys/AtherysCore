@@ -20,8 +20,9 @@ import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.filter.cause.Root;
-import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
+import org.spongepowered.api.event.game.GameRegistryEvent;
+import org.spongepowered.api.event.game.state.*;
+import org.spongepowered.api.item.recipe.crafting.CraftingRecipe;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
@@ -62,7 +63,8 @@ public class AtherysCore {
 
     private DatabaseContext databaseContext;
 
-    private void init() {
+    @Listener(order = Order.FIRST)
+    public void onPreInit(GamePreInitializationEvent event) {
         instance = this;
         this.templateEngine = new TemplateEngine();
 
@@ -88,21 +90,10 @@ public class AtherysCore {
         init = true;
     }
 
-    private void stopped() {
-        if (coreConfig.DB_ENABLED) {
-            databaseContext.close();
-        }
-    }
-
-    @Listener(order = Order.FIRST)
-    public void onInit(GameInitializationEvent event) {
-        init();
-    }
-
     @Listener
     public void onStopped(GameStoppedServerEvent event) {
-        if (init) {
-            stopped();
+        if (init && coreConfig.DB_ENABLED) {
+            databaseContext.close();
         }
     }
 
