@@ -69,6 +69,7 @@ public class AtherysCore {
         this.templateEngine = new TemplateEngine();
 
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(Duration.class), new DurationTypeSerializer());
+        TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(Duration.class), new DurationTypeSerializer());
 
         try {
             coreConfig = new CoreConfig();
