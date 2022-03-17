@@ -82,13 +82,16 @@ public class AtherysCore {
             databaseContext = new DatabaseContext(coreConfig.JPA_CONFIG, logger);
         }
 
-        this.economyService = Sponge.getServiceManager().provide(EconomyService.class).orElse(null);
-
         this.combatLog = new CombatLog();
         combatLog.init();
 
         Sponge.getEventManager().post(new AtherysHibernateInitializedEvent(databaseContext.getEntityManagerFactory()));
         init = true;
+    }
+
+    @Listener(order = Order.FIRST)
+    public void onInit(GameInitializationEvent event) {
+        this.economyService = Sponge.getServiceManager().provide(EconomyService.class).orElse(null);
     }
 
     @Listener
