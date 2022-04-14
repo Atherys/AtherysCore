@@ -71,6 +71,10 @@ public final class Economy {
         return getAccount(account).map(uniqueAccount -> uniqueAccount.deposit(currency, amount, cause));
     }
 
+    public static Optional<TransactionResult> addCurrency(String account, Currency currency, BigDecimal amount, Cause cause) {
+        return getAccount(account).map(uniqueAccount -> uniqueAccount.deposit(currency, amount, cause));
+    }
+
     public static Optional<TransactionResult> removeCurrency(UUID account, Currency currency, BigDecimal amount, Cause cause) {
         return getAccount(account).map(uniqueAccount -> uniqueAccount.withdraw(currency, amount, cause));
     }
