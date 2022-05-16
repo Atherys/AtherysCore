@@ -26,6 +26,7 @@ public class EntityUtils {
     public static Optional<Entity> getNonPlayerFacingEntity(Entity source, double distance) {
         return source.getWorld().getIntersectingEntities(source, distance).stream()
                 .map(EntityUniverse.EntityHit::getEntity)
+                .filter(entity -> entity != source)
                 .findFirst();
     }
 
